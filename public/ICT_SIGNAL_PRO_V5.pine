@@ -215,8 +215,10 @@ ph5 = ta.pivothigh(high, 5, 5)
 pl5 = ta.pivotlow(low, 5, 5)
 var float prevPH5 = na
 var float prevPL5 = na
-if not na(ph5) prevPH5 := ph5
-if not na(pl5) prevPL5 := pl5
+if not na(ph5)
+    prevPH5 := ph5
+if not na(pl5)
+    prevPL5 := pl5
 eqH = not na(ph5) and not na(prevPH5) and ph5 != prevPH5 and math.abs(ph5 - prevPH5) < atr * 0.12
 eqL = not na(pl5) and not na(prevPL5) and pl5 != prevPL5 and math.abs(pl5 - prevPL5) < atr * 0.12
 
@@ -227,8 +229,10 @@ var float lsh = na
 var float lsl = na
 ph = ta.pivothigh(high, swingLen, swingLen)
 pl = ta.pivotlow(low,  swingLen, swingLen)
-if not na(ph) lsh := ph
-if not na(pl) lsl := pl
+if not na(ph)
+    lsh := ph
+if not na(pl)
+    lsl := pl
 
 bosB = not na(lsh) and close > lsh and close[1] <= lsh and bull1H
 bosS = not na(lsl) and close < lsl and close[1] >= lsl and bear1H
@@ -238,8 +242,10 @@ mssB = sslStrong and chB
 mssS = bslStrong and chS
 
 var int strBias = 0
-if mssB or chB strBias :=  1
-if mssS or chS strBias := -1
+if mssB or chB
+    strBias :=  1
+if mssS or chS
+    strBias := -1
 
 // ─────────────────────────────────────────────────────────────────────
 // DISPLACEMENT
