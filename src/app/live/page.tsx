@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-const symbols = ["IXIC", "SPX", "DJI", "DXY", "EUR/USD", "BTC/USD"];
+const symbols = ["EUR/USD", "QQQ", "DIA"];
 
 export default function LivePage() {
   const [data, setData] = useState<any>(null);
