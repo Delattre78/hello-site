@@ -4,12 +4,19 @@ import { useState, useEffect, useCallback } from "react";
 import { MACRO_ASSETS, SCORES, RISKS, EXEC_SUMMARY, CALENDAR, getScoreColor, getRiskColor } from "@/lib/macro-data";
 
 // ── Twelve Data symbols ──────────────────────────────────────────────────────
+// Plan gratuit Twelve Data : on limite volontairement les appels.
+// EUR/USD = vrai forex, QQQ = proxy Nasdaq, DIA = proxy Dow, SPY = proxy S&P 500.
 const TD_SYMBOLS: Record<string, string> = {
-  eurusd:    "EUR/USD",
-  nasdaq:    "QQQ",
+  eurusd: "EUR/USD",
+  nasdaq: "QQQ",
   "dow-jones": "DIA",
-  sp500:     "SPY",
-  dxy:       "DX-Y.NYB",
+  sp500: "SPY",
+};
+
+const PROXY_LABELS: Record<string, string> = {
+  nasdaq: "QQQ proxy Nasdaq",
+  "dow-jones": "DIA proxy Dow Jones",
+  sp500: "SPY proxy S&P 500",
 };
 
 interface LivePrice {
@@ -17,40 +24,64 @@ interface LivePrice {
   change: string;
   changePercent: string;
   live: boolean;
+  source?: string;
 }
 
-// ── Fetch batch prices from Twelve Data ─────────────────────────────────────
+function fmt(value: unknown, decimals = 2) {
+  const n = Number(value);
+  if (!Number.isFinite(n)) return "—";
+  return n.toLocaleString("fr-FR", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+}
+
+// ── Fetch batch quotes from Twelve Data ───────────────────────────────────────
+// Un seul endpoint /quote, pas /price + /quote, sinon tu exploses les crédits/minute.
 async function fetchLivePrices(): Promise<Record<string, LivePrice>> {
-  const key = process.env.NEXT_PUBLIC_TWELVEDATA_KEY;
+  const key =
+    process.env.NEXT_PUBLIC_TWELVEDATA_KEY ||
+    process.env.NEXT_PUBLIC_TWELVE_DATA_API_KEY ||
+    "";
+
   if (!key || key === "demo") return {};
 
   const symbols = Object.values(TD_SYMBOLS).join(",");
-  const [priceRes, quoteRes] = await Promise.all([
-    fetch(`https://api.twelvedata.com/price?symbol=${encodeURIComponent(symbols)}&apikey=${key}`, { signal: AbortSignal.timeout(6000) }),
-    fetch(`https://api.twelvedata.com/quote?symbol=${encodeURIComponent(symbols)}&apikey=${key}`, { signal: AbortSignal.timeout(6000) }),
-  ]);
+  const url = `https://api.twelvedata.com/quote?symbol=${encodeURIComponent(symbols)}&apikey=${key}`;
 
-  if (!priceRes.ok || !quoteRes.ok) return {};
-  const prices = await priceRes.json();
-  const quotes = await quoteRes.json();
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) return {};
+
+  const quotes = await res.json();
+  if (!quotes || quotes.status === "error" || quotes.code) return {};
 
   const result: Record<string, LivePrice> = {};
+
   for (const [assetId, symbol] of Object.entries(TD_SYMBOLS)) {
-    const p = prices[symbol]?.price ?? prices?.price;
-    const q = quotes[symbol] ?? quotes;
-    if (!p) continue;
-    const price = parseFloat(p);
-    const prev  = parseFloat(q?.previous_close ?? q?.close ?? p);
-    const chg   = price - prev;
-    const pct   = prev !== 0 ? (chg / prev) * 100 : 0;
-    const isForex = symbol.includes("/");
+    const q = quotes[symbol];
+    if (!q || q.status === "error" || q.code) continue;
+
+    const rawPrice = q.close ?? q.price ?? q.previous_close;
+    const priceNum = Number(rawPrice);
+    if (!Number.isFinite(priceNum)) continue;
+
+    const previous = Number(q.previous_close ?? q.open ?? priceNum);
+    const rawChange = Number(q.change ?? (priceNum - previous));
+    const rawPct = Number(
+      q.percent_change ?? (previous ? ((priceNum - previous) / previous) * 100 : 0)
+    );
+
+    const decimals = symbol.includes("/") ? 4 : 2;
+
     result[assetId] = {
-      price:         isForex ? price.toFixed(4) : price.toLocaleString("fr-FR", { maximumFractionDigits: 2 }),
-      change:        (chg >= 0 ? "+" : "") + chg.toFixed(isForex ? 4 : 2),
-      changePercent: (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%",
+      price: fmt(priceNum, decimals),
+      change: `${rawChange >= 0 ? "+" : ""}${fmt(rawChange, decimals)}`,
+      changePercent: `${rawPct >= 0 ? "+" : ""}${fmt(rawPct, 2)}%`,
       live: true,
+      source: PROXY_LABELS[assetId] ?? symbol,
     };
   }
+
   return result;
 }
 
@@ -152,6 +183,32 @@ export default function Dashboard() {
                   </div>
                 </div>
               </Link>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Live market tape */}
+      <div className="section" style={{ marginTop: 24 }}>
+        <div className="card-title">Live Market Tape</div>
+        <div style={{ fontSize: 11, color: "var(--text-dim)", marginBottom: 12 }}>
+          EUR/USD réel · QQQ proxy Nasdaq · DIA proxy Dow Jones · SPY proxy S&P 500
+        </div>
+        <div className="grid-4">
+          {Object.entries(TD_SYMBOLS).map(([assetId, symbol]) => {
+            const lp = live[assetId];
+            const up = lp?.changePercent?.startsWith("+");
+            return (
+              <div key={assetId} className="card-sm">
+                <div className="label-xs" style={{ marginBottom: 8 }}>{lp?.source ?? symbol}</div>
+                <div style={{ fontSize: 26, fontWeight: 900, letterSpacing: -1 }}>{lp?.price ?? "—"}</div>
+                <div style={{ fontSize: 12, color: lp ? (up ? "var(--green)" : "var(--red)") : "var(--text-dim)", fontWeight: 700 }}>
+                  {lp?.changePercent ?? "En attente du flux"}
+                </div>
+                <div style={{ fontSize: 10, color: "var(--text-dim)", marginTop: 8 }}>
+                  {lp?.live ? "Twelve Data live" : "Statique / non chargé"}
+                </div>
+              </div>
             );
           })}
         </div>
