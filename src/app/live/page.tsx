@@ -8,7 +8,7 @@ export default function LivePage() {
   const [data, setData] = useState<any>(null);
 
   async function load() {
-    const key = "TA_CLE_TWELVE_DATA_ICI";
+    const key = process.env.NEXT_PUBLIC_TWELVE_DATA_API_KEY || "";
     const url = `https://api.twelvedata.com/quote?symbol=${symbols.join(",")}&apikey=${key}`;
     const res = await fetch(url);
     setData(await res.json());
