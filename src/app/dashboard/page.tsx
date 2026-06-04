@@ -1,40 +1,144 @@
 "use client";
 import Link from "next/link";
-import { MACRO_ASSETS, SCORES, RISKS, EXEC_SUMMARY, CALENDAR, getBiasColor, getScoreColor, getRiskColor } from "@/lib/macro-data";
+import { useState, useEffect, useCallback } from "react";
+import { MACRO_ASSETS, SCORES, RISKS, EXEC_SUMMARY, CALENDAR, getScoreColor, getRiskColor } from "@/lib/macro-data";
+
+// ── Twelve Data symbols ──────────────────────────────────────────────────────
+const TD_SYMBOLS: Record<string, string> = {
+  eurusd:    "EUR/USD",
+  nasdaq:    "QQQ",
+  "dow-jones": "DIA",
+  sp500:     "SPY",
+  dxy:       "DX-Y.NYB",
+};
+
+interface LivePrice {
+  price: string;
+  change: string;
+  changePercent: string;
+  live: boolean;
+}
+
+// ── Fetch batch prices from Twelve Data ─────────────────────────────────────
+async function fetchLivePrices(): Promise<Record<string, LivePrice>> {
+  const key = process.env.NEXT_PUBLIC_TWELVEDATA_KEY;
+  if (!key || key === "demo") return {};
+
+  const symbols = Object.values(TD_SYMBOLS).join(",");
+  const [priceRes, quoteRes] = await Promise.all([
+    fetch(`https://api.twelvedata.com/price?symbol=${encodeURIComponent(symbols)}&apikey=${key}`, { signal: AbortSignal.timeout(6000) }),
+    fetch(`https://api.twelvedata.com/quote?symbol=${encodeURIComponent(symbols)}&apikey=${key}`, { signal: AbortSignal.timeout(6000) }),
+  ]);
+
+  if (!priceRes.ok || !quoteRes.ok) return {};
+  const prices = await priceRes.json();
+  const quotes = await quoteRes.json();
+
+  const result: Record<string, LivePrice> = {};
+  for (const [assetId, symbol] of Object.entries(TD_SYMBOLS)) {
+    const p = prices[symbol]?.price ?? prices?.price;
+    const q = quotes[symbol] ?? quotes;
+    if (!p) continue;
+    const price = parseFloat(p);
+    const prev  = parseFloat(q?.previous_close ?? q?.close ?? p);
+    const chg   = price - prev;
+    const pct   = prev !== 0 ? (chg / prev) * 100 : 0;
+    const isForex = symbol.includes("/");
+    result[assetId] = {
+      price:         isForex ? price.toFixed(4) : price.toLocaleString("fr-FR", { maximumFractionDigits: 2 }),
+      change:        (chg >= 0 ? "+" : "") + chg.toFixed(isForex ? 4 : 2),
+      changePercent: (pct >= 0 ? "+" : "") + pct.toFixed(2) + "%",
+      live: true,
+    };
+  }
+  return result;
+}
 
 export default function Dashboard() {
+  const [live, setLive]         = useState<Record<string, LivePrice>>({});
+  const [lastUpdate, setLastUpdate] = useState<string>("");
+  const [isLive, setIsLive]     = useState(false);
   const topEvents = CALENDAR.filter(e => e.importance === 3).slice(0, 5);
+
+  const refresh = useCallback(async () => {
+    try {
+      const data = await fetchLivePrices();
+      if (Object.keys(data).length > 0) {
+        setLive(data);
+        setIsLive(true);
+        setLastUpdate(new Date().toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit", second: "2-digit" }));
+      }
+    } catch (_) {}
+  }, []);
+
+  useEffect(() => {
+    refresh();
+    const iv = setInterval(refresh, 60_000); // refresh every 60s (free plan limit)
+    return () => clearInterval(iv);
+  }, [refresh]);
+
   return (
     <div>
       {/* Hero */}
       <div className="hero">
-        <div className="hero-tag">Dashboard — Semaine 23 · 3 juin 2026</div>
+        <div className="hero-tag">Dashboard — Semaine 23 · 4 juin 2026</div>
         <h1 className="hero-title">Vue Globale des Marchés</h1>
         <p className="hero-subtitle">Snapshot macro instantané — scores, régime de marché, risques et alertes de la semaine.</p>
-        <div style={{ display: "flex", gap: 12, marginTop: 20, flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: 12, marginTop: 20, flexWrap: "wrap", alignItems: "center" }}>
           <div className="regime-pill regime-neutral"><span className="dot dot-orange" style={{ marginRight: 6 }} />Régime : Neutre</div>
-          <span className="badge badge-blue">Données MàJ : 3 juin 2026</span>
+          {isLive ? (
+            <span className="badge badge-bullish" style={{ fontSize: 10 }}>
+              <span style={{ width: 5, height: 5, borderRadius: "50%", background: "var(--green)", display: "inline-block", marginRight: 4, boxShadow: "0 0 4px var(--green)" }} />
+              Live · {lastUpdate}
+            </span>
+          ) : (
+            <span className="badge badge-neutral">Données statiques</span>
+          )}
           <span className="badge badge-orange">NFP Vendredi 6 juin ⚠</span>
         </div>
       </div>
 
       {/* Asset score cards */}
       <div className="section" style={{ marginTop: 28 }}>
-        <div className="card-title">Scores actifs</div>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+          <div className="card-title" style={{ margin: 0 }}>Scores actifs</div>
+          {isLive && (
+            <span style={{ fontSize: 10, color: "var(--text-dim)", fontStyle: "italic" }}>
+              Proxy ETF utilisé pour Nasdaq/Dow/SP500 sur plan Twelve Data actuel
+            </span>
+          )}
+        </div>
         <div className="grid-5">
           {MACRO_ASSETS.map((a) => {
-            const sc = getScoreColor(a.score);
+            const sc  = getScoreColor(a.score);
+            const lp  = live[a.id];
+            const displayPrice  = lp?.price ?? a.price;
+            const displayChange = lp?.changePercent ?? a.change;
+            const isUp = displayChange.startsWith("+");
             return (
               <Link key={a.id} href={`/markets/${a.id}`}>
-                <div className="score-card" style={{ cursor: "pointer", transition: "border-color 0.15s" }}
+                <div className="score-card" style={{ cursor: "pointer", transition: "border-color 0.15s", position: "relative" }}
                   onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = "var(--border-strong)"}
                   onMouseLeave={e => (e.currentTarget as HTMLElement).style.borderColor = "var(--border)"}
                 >
+                  {lp?.live && (
+                    <span style={{
+                      position: "absolute", top: 10, right: 10,
+                      width: 6, height: 6, borderRadius: "50%",
+                      background: "var(--green)", boxShadow: "0 0 5px var(--green)",
+                      display: "inline-block"
+                    }} />
+                  )}
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
                     <div>
                       <div className="label-xs" style={{ marginBottom: 4 }}>{a.name}</div>
-                      <div style={{ fontSize: 20, fontWeight: 900, letterSpacing: -0.5 }}>{a.price}</div>
-                      <div style={{ fontSize: 11, color: a.change.startsWith("+") ? "var(--green)" : "var(--red)", marginTop: 2 }}>{a.change}</div>
+                      <div style={{ fontSize: 20, fontWeight: 900, letterSpacing: -0.5, transition: "color 0.4s", color: lp ? (isUp ? "var(--green)" : "var(--red)") : "var(--text)" }}>
+                        {displayPrice}
+                      </div>
+                      <div style={{ fontSize: 11, color: isUp ? "var(--green)" : "var(--red)", marginTop: 2 }}>
+                        {displayChange}
+                        {lp?.live && <span style={{ color: "var(--text-dim)", marginLeft: 4 }}>· live</span>}
+                      </div>
                     </div>
                     <div>
                       <div style={{ fontSize: 26, fontWeight: 900, color: sc, letterSpacing: -1, lineHeight: 1 }}>{a.score}</div>
@@ -76,7 +180,6 @@ export default function Dashboard() {
       {/* 2 col: exec summary + events */}
       <div className="section" style={{ marginTop: 24 }}>
         <div className="grid-2">
-          {/* Exec summary */}
           <div className="card">
             <div className="card-title">Résumé exécutif</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
@@ -88,8 +191,6 @@ export default function Dashboard() {
               ))}
             </div>
           </div>
-
-          {/* Key events */}
           <div className="card">
             <div className="card-title">Événements clés à venir</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
