@@ -115,27 +115,14 @@
   .micro-trust span{display:inline-flex;align-items:center;gap:6px}
   .micro-trust .dot{color:var(--ok)}
 
-  /* ====== SCÈNE PRODUIT (SVG) ====== */
-  .stage{
-    position:relative;
-    --shell:#F4EDE3;
-    --shell-dark:#C9BBA4;
-    --shell-deep:#8A7B61;
+  /* ====== GALERIE PRODUIT (vraies photos) ====== */
+  .gallery{position:relative}
+  .gallery-main{
+    position:relative;border-radius:28px;overflow:hidden;background:#fff;
+    box-shadow:var(--shadow);aspect-ratio:1/1;
   }
-  .stage-disc{
-    position:absolute;inset:8% 4% 12% 4%;border-radius:50%;
-    background:radial-gradient(circle at 35% 30%, #fff 0%, var(--sky) 55%, rgba(226,241,240,0) 75%);
-  }
-  .stage svg{position:relative;width:100%;height:auto}
-  .shell{fill:var(--shell)}
-  .shell-detail{stroke:var(--shell-dark)}
-  .shell-shade{stroke:var(--shell-deep)}
-  .breeze{stroke:var(--teal);stroke-width:5;fill:none;stroke-linecap:round;opacity:.55}
-  .breeze path{stroke-dasharray:26 74;animation:flow 2.6s linear infinite}
-  .breeze path:nth-child(2){animation-delay:.5s}
-  .breeze path:nth-child(3){animation-delay:1s}
-  .breeze path:nth-child(4){animation-delay:1.5s}
-  @keyframes flow{to{stroke-dashoffset:-100}}
+  .gallery-main img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .22s ease}
+  .gallery-main img.fading{opacity:0}
   .chip{
     position:absolute;z-index:2;
     background:var(--card);border-radius:14px;box-shadow:var(--shadow);
@@ -144,19 +131,21 @@
     animation:floaty 5s ease-in-out infinite;
   }
   .chip small{display:block;font-weight:500;color:var(--ink-soft);font-size:11.5px;line-height:1.2}
-  .chip-1{top:9%;left:0;animation-delay:0s}
-  .chip-2{top:34%;right:-2%;animation-delay:1.2s}
-  .chip-3{bottom:10%;left:6%;animation-delay:2.4s}
+  .chip-1{top:5%;left:-3%;animation-delay:0s}
+  .chip-2{top:38%;right:-3%;animation-delay:1.2s}
+  .chip-3{bottom:7%;left:4%;animation-delay:2.4s}
   @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
-  .swatches{display:flex;justify-content:center;gap:14px;margin-top:8px;position:relative;z-index:2}
-  .swatch{
-    width:38px;height:38px;border-radius:50%;cursor:pointer;
-    border:3px solid #fff;box-shadow:0 0 0 2px rgba(19,37,59,.15);
-    transition:transform .15s ease, box-shadow .15s ease;
+  .thumbs{display:flex;gap:10px;margin-top:16px;justify-content:center;flex-wrap:wrap}
+  .thumb{border:none;background:none;cursor:pointer;padding:0;width:76px}
+  .thumb-img{
+    width:76px;height:76px;border-radius:14px;overflow:hidden;
+    border:3px solid transparent;box-shadow:0 4px 14px -6px rgba(19,37,59,.3);
+    transition:border-color .15s ease, transform .15s ease;
   }
-  .swatch:hover{transform:scale(1.1)}
-  .swatch.active{box-shadow:0 0 0 3px var(--coral)}
-  .swatch-label{text-align:center;font-size:13.5px;font-weight:600;color:var(--ink-soft);margin-top:10px}
+  .thumb:hover .thumb-img{transform:translateY(-2px)}
+  .thumb.active .thumb-img{border-color:var(--coral)}
+  .thumb-img img{width:100%;height:100%;object-fit:cover;display:block}
+  .thumb span{display:block;font-size:11.5px;font-weight:700;color:var(--ink-soft);margin-top:5px;text-align:center}
 
   /* ====== MARQUEE ====== */
   .marquee{background:var(--teal);color:#fff;overflow:hidden;padding:13px 0}
@@ -184,6 +173,26 @@
   }
   .benefit h3{font-size:19px;font-weight:700;margin-bottom:8px}
   .benefit p{font-size:15px;color:var(--ink-soft)}
+
+  /* ====== LIFESTYLE ====== */
+  .life-grid{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:center}
+  .life-photo{position:relative;border-radius:30px;overflow:hidden;box-shadow:var(--shadow)}
+  .life-photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .life-tag{
+    position:absolute;left:18px;bottom:18px;
+    background:rgba(255,255,255,.92);backdrop-filter:blur(6px);
+    border-radius:999px;padding:9px 18px;font-weight:700;font-size:14px;
+  }
+  .life-list{display:grid;gap:13px;margin-top:26px}
+  .life-item{
+    display:flex;gap:14px;align-items:flex-start;
+    background:var(--card);border:1px solid rgba(19,37,59,.06);
+    border-radius:16px;padding:14px 18px;
+    box-shadow:0 6px 20px -14px rgba(19,37,59,.25);
+  }
+  .life-item .em{font-size:22px;line-height:1.3}
+  .life-item b{display:block;font-size:15.5px}
+  .life-item p{font-size:13.5px;color:var(--ink-soft)}
 
   /* ====== SPECS + COMPARAISON ====== */
   .specs-band{background:var(--ink);color:#fff;border-radius:34px;padding:64px 56px}
@@ -335,6 +344,7 @@
     .hero-grid{grid-template-columns:1fr;gap:36px}
     .stage{max-width:480px;margin:0 auto}
     .benefits{grid-template-columns:1fr 1fr}
+    .life-grid{grid-template-columns:1fr;gap:32px}
     .reviews{grid-template-columns:1fr 1fr}
     .specs-grid{grid-template-columns:1fr;gap:40px}
     .specs-band{padding:48px 32px}
@@ -415,55 +425,31 @@
     </div>
 
     <div>
-      <div class="stage" id="stage">
-        <div class="stage-disc"></div>
-        <div class="chip chip-1">🔋 <span>16 h<small>d'autonomie</small></span></div>
-        <div class="chip chip-2">🤫 <span>28 dB<small>quasi inaudible</small></span></div>
-        <div class="chip chip-3">🪶 <span>265 g<small>ultra léger</small></span></div>
-
-        <!-- Illustration produit : ventilateur de cou sans pales -->
-        <svg viewBox="0 0 600 600" role="img" aria-label="Ventilateur de cou Brizz Air sans pales">
-          <ellipse cx="300" cy="556" rx="150" ry="16" fill="rgba(19,37,59,.12)"/>
-          <!-- flux d'air animés -->
-          <g class="breeze">
-            <path pathLength="100" d="M380 150 C390 120 378 95 392 64"/>
-            <path pathLength="100" d="M412 178 C430 150 424 122 444 96"/>
-            <path pathLength="100" d="M220 150 C210 120 222 95 208 64"/>
-            <path pathLength="100" d="M188 178 C170 150 176 122 156 96"/>
-          </g>
-          <!-- coque principale (fer à cheval) -->
-          <path class="shell" d="M378.2 162.3 A185 185 0 1 1 221.8 162.3 A40 40 0 0 0 255.6 234.8 A105 105 0 1 0 344.4 234.8 A40 40 0 0 0 378.2 162.3 Z"/>
-          <!-- reflet -->
-          <path d="M382.5 187.1 A165 165 0 0 1 442.9 412.5" stroke="rgba(255,255,255,.5)" stroke-width="20" stroke-linecap="round" fill="none"/>
-          <!-- ombrage interne -->
-          <path class="shell-shade" d="M200.4 387.5 A115 115 0 0 0 399.6 387.5" stroke-width="13" stroke-linecap="round" fill="none" opacity=".28"/>
-          <!-- ligne de design -->
-          <path class="shell-detail" d="M393.2 218.9 A145 145 0 1 1 206.8 218.9" stroke-width="2.5" fill="none" opacity=".5"/>
-          <!-- sorties d'air (bras droit) -->
-          <g class="shell-detail" stroke-width="7" stroke-linecap="round" opacity=".85">
-            <line x1="364.7" y1="226.5" x2="380.6" y2="201.1"/>
-            <line x1="384.8" y1="242.3" x2="405.6" y2="220.7"/>
-            <line x1="401.1" y1="261.8" x2="426.0" y2="245.0"/>
-            <line x1="413.1" y1="284.3" x2="440.9" y2="273.1"/>
-            <line x1="420.2" y1="308.8" x2="449.7" y2="303.6"/>
-            <!-- sorties d'air (bras gauche) -->
-            <line x1="235.3" y1="226.5" x2="219.4" y2="201.1"/>
-            <line x1="215.2" y1="242.3" x2="194.4" y2="220.7"/>
-            <line x1="198.9" y1="261.8" x2="174.0" y2="245.0"/>
-            <line x1="186.9" y1="284.3" x2="159.1" y2="273.1"/>
-            <line x1="179.8" y1="308.8" x2="150.3" y2="303.6"/>
-          </g>
-          <!-- bouton -->
-          <circle cx="300" cy="475" r="15" fill="rgba(19,37,59,.85)"/>
-          <path d="M300 468 v7 M295 470 a7 7 0 1 0 10 0" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/>
-        </svg>
+      <div class="gallery">
+        <div class="gallery-main">
+          <div class="chip chip-1">🔋 <span>16 h<small>d'autonomie</small></span></div>
+          <div class="chip chip-2">🤫 <span>28 dB<small>quasi inaudible</small></span></div>
+          <div class="chip chip-3">🪶 <span>260 g<small>ultra léger</small></span></div>
+          <img id="mainPhoto" src="img/produit-blanc.jpg" alt="Brizz Air™ — ventilateur de cou sans pales, coloris blanc" width="1600" height="1600">
+        </div>
+        <div class="thumbs" role="group" aria-label="Photos du produit">
+          <button class="thumb active" data-src="img/produit-blanc.jpg" aria-label="Coloris blanc">
+            <span class="thumb-img"><img src="img/produit-blanc.jpg" alt=""></span><span>Blanc</span>
+          </button>
+          <button class="thumb" data-src="img/produit-minuit.jpg" aria-label="Coloris bleu nuit">
+            <span class="thumb-img"><img src="img/produit-minuit.jpg" alt=""></span><span>Bleu nuit</span>
+          </button>
+          <button class="thumb" data-src="img/produit-vert.jpg" aria-label="Coloris vert forêt">
+            <span class="thumb-img"><img src="img/produit-vert.jpg" alt=""></span><span>Vert</span>
+          </button>
+          <button class="thumb" data-src="img/produit-turbines.jpg" aria-label="Détail des turbines">
+            <span class="thumb-img"><img src="img/produit-turbines.jpg" alt=""></span><span>Turbines</span>
+          </button>
+          <button class="thumb" data-src="img/lifestyle.jpg" aria-label="Porté au quotidien">
+            <span class="thumb-img"><img src="img/lifestyle.jpg" alt=""></span><span>Porté</span>
+          </button>
+        </div>
       </div>
-      <div class="swatches" role="group" aria-label="Choix du coloris">
-        <button class="swatch active" style="background:#F4EDE3" data-shell="#F4EDE3" data-dark="#C9BBA4" data-deep="#8A7B61" data-name="Sable" aria-label="Coloris Sable"></button>
-        <button class="swatch" style="background:#222A38" data-shell="#222A38" data-dark="#4A5871" data-deep="#0D1320" data-name="Minuit" aria-label="Coloris Minuit"></button>
-        <button class="swatch" style="background:#BFE5DC" data-shell="#BFE5DC" data-dark="#8FC4B8" data-deep="#5E988B" data-name="Menthe glacée" aria-label="Coloris Menthe glacée"></button>
-      </div>
-      <div class="swatch-label">Coloris : <b id="colorName">Sable</b></div>
     </div>
   </div>
 </section>
@@ -471,8 +457,8 @@
 <!-- ============ MARQUEE ============ -->
 <div class="marquee" aria-hidden="true">
   <div class="marquee-track">
-    <span>🌬️ Sans pales&nbsp;&nbsp;•&nbsp;&nbsp;🔋 16 h d'autonomie&nbsp;&nbsp;•&nbsp;&nbsp;🤫 Silencieux&nbsp;&nbsp;•&nbsp;&nbsp;⚡ USB-C&nbsp;&nbsp;•&nbsp;&nbsp;🪶 265 g&nbsp;&nbsp;•&nbsp;&nbsp;🇫🇷 Livraison offerte&nbsp;&nbsp;•&nbsp;&nbsp;</span>
-    <span>🌬️ Sans pales&nbsp;&nbsp;•&nbsp;&nbsp;🔋 16 h d'autonomie&nbsp;&nbsp;•&nbsp;&nbsp;🤫 Silencieux&nbsp;&nbsp;•&nbsp;&nbsp;⚡ USB-C&nbsp;&nbsp;•&nbsp;&nbsp;🪶 265 g&nbsp;&nbsp;•&nbsp;&nbsp;🇫🇷 Livraison offerte&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+    <span>🌬️ Sans pales&nbsp;&nbsp;•&nbsp;&nbsp;🔋 16 h d'autonomie&nbsp;&nbsp;•&nbsp;&nbsp;🤫 Silencieux&nbsp;&nbsp;•&nbsp;&nbsp;⚡ USB-C&nbsp;&nbsp;•&nbsp;&nbsp;🪶 260 g&nbsp;&nbsp;•&nbsp;&nbsp;🇫🇷 Livraison offerte&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+    <span>🌬️ Sans pales&nbsp;&nbsp;•&nbsp;&nbsp;🔋 16 h d'autonomie&nbsp;&nbsp;•&nbsp;&nbsp;🤫 Silencieux&nbsp;&nbsp;•&nbsp;&nbsp;⚡ USB-C&nbsp;&nbsp;•&nbsp;&nbsp;🪶 260 g&nbsp;&nbsp;•&nbsp;&nbsp;🇫🇷 Livraison offerte&nbsp;&nbsp;•&nbsp;&nbsp;</span>
   </div>
 </div>
 
@@ -488,12 +474,12 @@
       <div class="benefit" data-reveal>
         <div class="benefit-ico">🌀</div>
         <h3>Sans pales = zéro risque</h3>
-        <p>L'air sort de 48 micro-sorties orientées à 360°. Cheveux longs, écharpes, enfants : rien ne s'accroche, jamais.</p>
+        <p>L'air sort de 78 micro-sorties orientées à 360°. Cheveux longs, écharpes, enfants : rien ne s'accroche, jamais.</p>
       </div>
       <div class="benefit" data-reveal>
         <div class="benefit-ico">🔋</div>
         <h3>Jusqu'à 16 h d'autonomie</h3>
-        <p>Batterie 5 000 mAh rechargeable en USB-C. Une charge le matin, et il tient la journée entière.</p>
+        <p>Batterie 4 000 mAh rechargeable en USB-C. Une charge le matin, et il tient la journée entière.</p>
       </div>
       <div class="benefit" data-reveal>
         <div class="benefit-ico">🤫</div>
@@ -502,8 +488,31 @@
       </div>
       <div class="benefit" data-reveal>
         <div class="benefit-ico">🪶</div>
-        <h3>265 g, tu l'oublies</h3>
+        <h3>260 g, tu l'oublies</h3>
         <p>Plus léger qu'une canette, avec une mousse douce au contact de la nuque. Se porte comme un casque audio.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LIFESTYLE ============ -->
+<section id="lifestyle" style="padding-top:0">
+  <div class="wrap">
+    <div class="life-grid">
+      <div class="life-photo" data-reveal>
+        <img src="img/lifestyle.jpg" alt="Le Brizz Air™ porté au quotidien : jardinage, randonnée, bureau" loading="lazy">
+        <span class="life-tag">📍 Porté du matin au soir</span>
+      </div>
+      <div data-reveal>
+        <div class="sec-eyebrow">Mains libres, partout</div>
+        <h2>Tu vis. Il souffle.</h2>
+        <p class="sec-sub" style="margin-top:10px">Il se pose comme un casque audio et se fait oublier. Pendant que tout le monde s'évente, toi tu as les deux mains libres.</p>
+        <div class="life-list">
+          <div class="life-item"><span class="em">🚇</span><div><b>Métro &amp; RER en canicule</b><p>Arrive au bureau sans la chemise trempée.</p></div></div>
+          <div class="life-item"><span class="em">💻</span><div><b>Télétravail sous les toits</b><p>28 dB : tes collègues ne l'entendront jamais en visio.</p></div></div>
+          <div class="life-item"><span class="em">🎪</span><div><b>Festivals &amp; plein air</b><p>Jusqu'à 16 h d'autonomie : il tient plus longtemps que toi.</p></div></div>
+          <div class="life-item"><span class="em">👶</span><div><b>Avec les enfants</b><p>Zéro pale apparente : rien ne s'accroche, rien ne pince.</p></div></div>
+        </div>
       </div>
     </div>
   </div>
@@ -518,17 +527,17 @@
           <div class="sec-eyebrow">Caractéristiques</div>
           <h2 style="color:#fff;margin-bottom:6px">Du sérieux sous le capot.</h2>
           <div class="spec-list">
-            <div class="spec"><b>5 000 mAh</b><span>Batterie longue durée</span></div>
+            <div class="spec"><b>4 000 mAh</b><span>Batterie longue durée</span></div>
             <div class="spec"><b>6 à 16 h</b><span>Autonomie selon vitesse</span></div>
             <div class="spec"><b>28–35 dB</b><span>Niveau sonore</span></div>
             <div class="spec"><b>3 vitesses</b><span>Brise · Frais · Turbo</span></div>
-            <div class="spec"><b>265 g</b><span>Poids plume</span></div>
-            <div class="spec"><b>USB-C</b><span>Charge complète en 2 h 30</span></div>
+            <div class="spec"><b>260 g</b><span>Poids plume</span></div>
+            <div class="spec"><b>USB-C</b><span>Charge complète en 3 h</span></div>
           </div>
         </div>
         <div>
           <div class="steps">
-            <div class="step"><span class="step-num">1</span><div><b>Charge-le</b><p>USB-C, 2 h 30 pour une charge complète.</p></div></div>
+            <div class="step"><span class="step-num">1</span><div><b>Charge-le</b><p>USB-C, 3 h pour une charge complète.</p></div></div>
             <div class="step"><span class="step-num">2</span><div><b>Pose-le</b><p>Autour du cou, comme un casque audio.</p></div></div>
             <div class="step"><span class="step-num">3</span><div><b>Respire</b><p>3 vitesses, flux orienté visage et nuque à 360°.</p></div></div>
           </div>
@@ -669,11 +678,11 @@
     <div class="faq" data-reveal>
       <details>
         <summary>Comment ça souffle, sans pales ?</summary>
-        <p>Une turbine interne aspire l'air et le redistribue par 48 micro-sorties réparties le long du col. Résultat : un flux d'air continu vers le visage et la nuque, sans aucune pale apparente — donc aucun risque pour les cheveux, même longs.</p>
+        <p>Une turbine interne aspire l'air et le redistribue par 78 micro-sorties réparties le long du col. Résultat : un flux d'air continu vers le visage et la nuque, sans aucune pale apparente — donc aucun risque pour les cheveux, même longs.</p>
       </details>
       <details>
         <summary>Quelle est l'autonomie réelle ?</summary>
-        <p>Jusqu'à 16 h en vitesse 1 (brise), environ 10 h en vitesse 2 et 6 h en vitesse turbo. La batterie 5 000 mAh se recharge entièrement en 2 h 30 avec n'importe quel chargeur USB-C.</p>
+        <p>Jusqu'à 16 h en vitesse 1 (brise), environ 10 h en vitesse 2 et 6 h en vitesse turbo. La batterie 4 000 mAh se recharge entièrement en 3 h avec n'importe quel chargeur USB-C.</p>
       </details>
       <details>
         <summary>Est-ce que c'est bruyant ?</summary>
@@ -796,7 +805,38 @@ const PAYMENT_LINKS = {
   tribu: ""   // 3 × Brizz Air — 79,90 €
 };
 const OFFER_END = "2026-07-06T23:59:59"; // fin de l'offre de lancement
+/* 3) PUBS : colle ici tes identifiants de pixel quand tu lances des
+      campagnes (Meta : Gestionnaire d'événements → ton pixel → ID.
+      TikTok : TikTok Ads Manager → Assets → Events → Web Events).
+      Les pixels mesurent qui visite et qui achète = indispensable
+      pour que l'algorithme optimise tes pubs. */
+const META_PIXEL_ID = "";    // ex. "1234567890"
+const TIKTOK_PIXEL_ID = "";  // ex. "ABC123DEF456"
 /* ===================================================================== */
+
+/* ---- Pixels publicitaires (ne se chargent que si un ID est rempli) ---- */
+if (META_PIXEL_ID) {
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+  document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', META_PIXEL_ID);
+  fbq('track', 'PageView');
+  fbq('track', 'ViewContent', {content_name: 'Brizz Air', currency: 'EUR', value: 34.90});
+}
+if (TIKTOK_PIXEL_ID) {
+  !function (w, d, t) {w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];
+  ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"];
+  ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};
+  for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);
+  ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js";
+  ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,
+  ttq._o=ttq._o||{},ttq._o[e]=n||{};var o=document.createElement("script");
+  o.type="text/javascript",o.async=!0,o.src=i+"?sdkid="+e+"&lib="+t;
+  var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(o,a)};
+  ttq.load(TIKTOK_PIXEL_ID);ttq.page();}(window, document, 'ttq');
+}
 
 const PLAN_LABELS = {
   solo:  "Solo — 1 × Brizz Air™ · 34,90 €",
@@ -805,7 +845,10 @@ const PLAN_LABELS = {
 };
 
 /* ---- Achat ---- */
+const PLAN_VALUES = {solo: 34.90, duo: 59.90, tribu: 79.90};
 function checkout(plan){
+  if (typeof fbq === 'function') fbq('track', 'InitiateCheckout', {currency:'EUR', value: PLAN_VALUES[plan]});
+  if (typeof ttq === 'object' && ttq.track) ttq.track('InitiateCheckout', {currency:'EUR', value: PLAN_VALUES[plan]});
   const link = (PAYMENT_LINKS[plan] || "").trim();
   if(link){ window.location.href = link; return; }
   document.getElementById('packField').value = plan;
@@ -834,16 +877,17 @@ document.getElementById('waitForm').addEventListener('submit', async e => {
   document.getElementById('modalSuccess').style.display = 'block';
 });
 
-/* ---- Coloris ---- */
-const stage = document.getElementById('stage');
-document.querySelectorAll('.swatch').forEach(sw => {
-  sw.addEventListener('click', () => {
-    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
-    sw.classList.add('active');
-    stage.style.setProperty('--shell', sw.dataset.shell);
-    stage.style.setProperty('--shell-dark', sw.dataset.dark);
-    stage.style.setProperty('--shell-deep', sw.dataset.deep);
-    document.getElementById('colorName').textContent = sw.dataset.name;
+/* ---- Galerie photos ---- */
+const mainPhoto = document.getElementById('mainPhoto');
+document.querySelectorAll('.thumb').forEach(th => {
+  th.addEventListener('click', () => {
+    document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+    th.classList.add('active');
+    mainPhoto.classList.add('fading');
+    setTimeout(() => {
+      mainPhoto.src = th.dataset.src;
+      mainPhoto.classList.remove('fading');
+    }, 180);
   });
 });
 
@@ -868,13 +912,16 @@ new IntersectionObserver(([en]) => {
   stickyBar.classList.toggle('show', !en.isIntersecting);
 }, {threshold:.08}).observe(hero);
 
-/* ---- Apparition au scroll ---- */
-const revealEls = document.querySelectorAll('[data-reveal]');
-revealEls.forEach(el => el.classList.add('reveal-init'));
+/* ---- Apparition au scroll (uniquement sous la ligne de flottaison) ---- */
 const io = new IntersectionObserver(entries => {
   entries.forEach(en => { if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
 }, {threshold:.12});
-revealEls.forEach(el => io.observe(el));
+document.querySelectorAll('[data-reveal]').forEach(el => {
+  if (el.getBoundingClientRect().top > window.innerHeight * 0.9) {
+    el.classList.add('reveal-init');
+    io.observe(el);
+  }
+});
 </script>
 </body>
 </html>
