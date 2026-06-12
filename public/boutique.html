@@ -748,7 +748,8 @@
       <div>
         <h4>Contact</h4>
         <ul>
-          <li><a href="mailto:contact@brizz-shop.fr">contact@brizz-shop.fr</a></li>
+          <!-- TODO : remplacer par contact@brizz-shop.fr quand le domaine + l'email pro seront créés -->
+          <li><a href="mailto:delattrematteo4@gmail.com">delattrematteo4@gmail.com</a></li>
           <li>Réponse sous 24 h</li>
         </ul>
       </div>
@@ -865,16 +866,34 @@ document.getElementById('modalVeil').addEventListener('click', e => {
 });
 document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
 
-/* ---- Liste d'attente (Netlify Forms, envoi AJAX) ---- */
+/* ---- Liste d'attente : les emails arrivent dans ta boîte mail ----
+   (FormSubmit : au tout premier envoi, tu recevras UN email "Activate"
+    — clique dessus une fois, ensuite tout arrive automatiquement.) */
+const WAITLIST_INBOX = "delattrematteo4@gmail.com";
 document.getElementById('waitForm').addEventListener('submit', async e => {
   e.preventDefault();
   const form = e.target;
-  const data = new URLSearchParams(new FormData(form));
+  const fd = new FormData(form);
+  const payload = {
+    email: fd.get('email'),
+    pack: fd.get('pack'),
+    _subject: "🌬️ Brizz — nouvel inscrit liste d'attente (" + fd.get('pack') + ")"
+  };
   try{
-    await fetch('/boutique.html', { method:'POST', headers:{'Content-Type':'application/x-www-form-urlencoded'}, body:data });
-  }catch(err){ /* hors-ligne ou préversion locale : on affiche quand même la confirmation */ }
-  form.style.display = 'none';
-  document.getElementById('modalSuccess').style.display = 'block';
+    const r = await fetch('https://formsubmit.co/ajax/' + WAITLIST_INBOX, {
+      method:'POST',
+      headers:{'Content-Type':'application/json', 'Accept':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    if(!r.ok) throw new Error('formsubmit ' + r.status);
+    form.style.display = 'none';
+    document.getElementById('modalSuccess').style.display = 'block';
+  }catch(err){
+    form.style.display = 'none';
+    const s = document.getElementById('modalSuccess');
+    s.textContent = "⚠️ Petit souci technique — écris-nous directement : " + WAITLIST_INBOX;
+    s.style.display = 'block';
+  }
 });
 
 /* ---- Galerie photos ---- */
