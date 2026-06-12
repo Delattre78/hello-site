@@ -25,6 +25,7 @@ const NAV = [
     { href: "/calendar", label: "Calendrier" },
     { href: "/risk-monitor", label: "Risk Monitor" },
     { href: "/trading-plan", label: "Trading Plan" },
+    { href: "/backtest-ict.html", label: "Backtest ICT 50 ans" },
   ]},
 ];
 
@@ -47,9 +48,15 @@ export default function ClientLayout({ children }: { children: React.ReactNode }
           <div key={g.section} className="nav-section">
             <div className="nav-section-label">{g.section}</div>
             {g.items.map((item) => (
+              item.href.endsWith(".html") ? (
+                <a key={item.href} href={item.href} className="nav-item" onClick={() => setSidebarOpen(false)}>
+                  {item.label}
+                </a>
+              ) : (
               <Link key={item.href} href={item.href} className={`nav-item ${pathname === item.href ? "active" : ""}`} onClick={() => setSidebarOpen(false)}>
                 {item.label}
               </Link>
+              )
             ))}
           </div>
         ))}

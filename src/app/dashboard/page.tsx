@@ -510,6 +510,12 @@ export default function Dashboard() {
           <div className="pill">Flux live : {liveCount}/4</div>
           <div className="pill">Refresh : 60s</div>
           {error && <div className="pill orange">API : {error.slice(0, 58)}</div>}
+          <a className="pill" href="/backtest-ict.html" style={{ textDecoration: "none", color: "inherit" }}>
+            📊 Backtest ICT V6 — 50 ans
+          </a>
+          <a className="pill" href="/ICT_SIGNAL_PRO_V6.pine" download style={{ textDecoration: "none", color: "inherit" }}>
+            ↓ Code Pine V6
+          </a>
         </div>
       </section>
 
