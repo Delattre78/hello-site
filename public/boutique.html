@@ -800,10 +800,13 @@
       (les e-mails arrivent dans Netlify → onglet "Forms").
    2) FIN DE L'OFFRE : change la date de fin du compte à rebours.
    ===================================================================== */
+/* ⚠️ LIENS DE TEST Stripe (mode test, carte 4242 4242 4242 4242).
+   À remplacer par les liens de PRODUCTION quand le compte Stripe
+   sera activé (même procédure, sans le bandeau "test"). */
 const PAYMENT_LINKS = {
-  solo: "",   // 1 × Brizz Air — 34,90 €
-  duo:  "",   // 2 × Brizz Air — 59,90 €
-  tribu: ""   // 3 × Brizz Air — 79,90 €
+  solo: "https://buy.stripe.com/test_3cIbJ3d5p7XNdgz7Yv3F600",   // 1 × Brizz Air — 34,90 €
+  duo:  "https://buy.stripe.com/test_4gM5kFc1lfqf90j6Ur3F601",   // 2 × Brizz Air — 59,90 €
+  tribu: "https://buy.stripe.com/test_fZu14pghB7XNekDfqX3F602"   // 3 × Brizz Air — 79,90 €
 };
 const OFFER_END = "2026-07-06T23:59:59"; // fin de l'offre de lancement
 /* 3) PUBS : colle ici tes identifiants de pixel quand tu lances des

@@ -18,15 +18,14 @@
    ===================================================================== */
 
 /* ---------- CONFIG PRODUITS (à remplir une seule fois) ----------
-   1) Sur CJ, cherche "bladeless neck fan" (modèle FA12), ouvre le produit,
-      onglet "Variants" : chaque coloris a un identifiant "vid".
-   2) Dans Stripe, crée tes 3 liens de paiement et note leur id "plink_…"
-      (visible dans l'URL du lien dans le dashboard Stripe).               */
-const PRODUITS = {
-  // id du lien Stripe  →  contenu du pack
-  "plink_SOLO_A_REMPLACER":  { pack: "Solo",  quantite: 1 },
-  "plink_DUO_A_REMPLACER":   { pack: "Duo",   quantite: 2 },
-  "plink_TRIBU_A_REMPLACER": { pack: "Tribu", quantite: 3 },
+   Le pack est reconnu par le MONTANT payé (en centimes).
+   ⚠️ Si tu changes les prix de la boutique, mets aussi à jour ici.
+   Pour les coloris : sur CJ, ouvre la fiche produit, chaque coloris
+   a un identifiant "vid" (Claude les remplit pour toi).              */
+const PACKS_PAR_MONTANT = {
+  3490: { pack: "Solo",  quantite: 1 },
+  5990: { pack: "Duo",   quantite: 2 },
+  7990: { pack: "Tribu", quantite: 3 },
 };
 const COLORIS_VERS_CJ_VID = {
   // libellé du menu "Coloris" dans Stripe → vid de la variante CJ
@@ -62,8 +61,7 @@ export default {
 
     const session = event.data.object;
     const adresse = session.shipping_details || session.customer_details;
-    const plink = session.payment_link;
-    const produit = PRODUITS[plink];
+    const produit = PACKS_PAR_MONTANT[session.amount_total];
 
     // Coloris choisi par le client dans le champ personnalisé Stripe
     const champColoris = (session.custom_fields || []).find(
@@ -74,7 +72,7 @@ export default {
       COLORIS_PAR_DEFAUT;
 
     const recap = {
-      pack: produit ? produit.pack : "INCONNU (" + plink + ")",
+      pack: produit ? produit.pack : "INCONNU (montant " + session.amount_total + ")",
       quantite: produit ? produit.quantite : 1,
       coloris,
       montant: (session.amount_total / 100).toFixed(2) + " €",
@@ -90,7 +88,7 @@ export default {
 
     // 2. Créer la commande chez CJ Dropshipping
     try {
-      if (!produit) throw new Error("lien de paiement inconnu : " + plink);
+      if (!produit) throw new Error("montant inconnu : " + session.amount_total + " centimes");
       const vid = COLORIS_VERS_CJ_VID[coloris];
       if (!vid || vid.startsWith("VID_")) throw new Error("vid CJ non configuré pour " + coloris);
 
