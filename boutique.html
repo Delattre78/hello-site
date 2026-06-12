@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brizz Air™ — Ventilateur de cou sans pales | Livraison offerte</title>
+<meta name="description" content="Le ventilateur de cou sans pales qui te garde au frais jusqu'à 16 h. Silencieux, mains libres, USB-C. Livraison offerte en France. −40 % pour le lancement de l'été.">
+<meta property="og:title" content="Brizz Air™ — La brise qui te suit partout">
+<meta property="og:description" content="16 h d'air frais, mains libres, plus silencieux qu'un chuchotement. −40 % pour le lancement de l'été.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌊</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#FBF7EF;
+    --sand:#F3EBDD;
+    --ink:#13253B;
+    --ink-soft:#44546A;
+    --coral:#FF6B4A;
+    --coral-dark:#E8512F;
+    --teal:#0E7C86;
+    --teal-deep:#0A5A62;
+    --sky:#E2F1F0;
+    --sun:#FFC65C;
+    --card:#FFFFFF;
+    --ok:#1F9D6C;
+    --radius:22px;
+    --shadow:0 18px 50px -18px rgba(19,37,59,.22);
+    --font-display:"Fraunces",serif;
+    --font-body:"Outfit",sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    font-family:var(--font-body);
+    background:var(--cream);
+    color:var(--ink);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  img,svg{display:block;max-width:100%}
+  a{color:inherit;text-decoration:none}
+  .wrap{max-width:1140px;margin:0 auto;padding:0 24px}
+
+  /* ====== BANDEAU ANNONCE ====== */
+  .announce{
+    background:var(--ink);
+    color:#fff;
+    text-align:center;
+    font-size:14px;
+    font-weight:600;
+    letter-spacing:.02em;
+    padding:9px 16px;
+  }
+  .announce b{color:var(--sun)}
+
+  /* ====== HEADER ====== */
+  header{
+    position:sticky;top:0;z-index:50;
+    background:rgba(251,247,239,.85);
+    backdrop-filter:blur(12px);
+    border-bottom:1px solid rgba(19,37,59,.08);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;height:68px}
+  .logo{display:flex;align-items:center;gap:10px;font-family:var(--font-display);font-weight:700;font-size:26px;letter-spacing:-.02em}
+  .logo-mark{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--teal),#15a3af);display:grid;place-items:center;flex:none}
+  .nav-links{display:flex;gap:28px;font-weight:600;font-size:15px;color:var(--ink-soft)}
+  .nav-links a:hover{color:var(--ink)}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    background:var(--coral);color:#fff;border:none;cursor:pointer;
+    font-family:var(--font-body);font-weight:700;font-size:16px;
+    padding:14px 28px;border-radius:999px;
+    box-shadow:0 10px 24px -8px rgba(232,81,47,.55);
+    transition:transform .15s ease, box-shadow .15s ease, background .15s ease;
+  }
+  .btn:hover{transform:translateY(-2px);background:var(--coral-dark);box-shadow:0 14px 28px -8px rgba(232,81,47,.6)}
+  .btn:active{transform:translateY(0)}
+  .btn-nav{padding:10px 20px;font-size:14px}
+  .btn-ghost{background:transparent;color:var(--ink);box-shadow:none;border:2px solid rgba(19,37,59,.15)}
+  .btn-ghost:hover{background:rgba(19,37,59,.05);box-shadow:none}
+
+  /* ====== HERO ====== */
+  .hero{position:relative;padding:64px 0 40px;overflow:hidden}
+  .hero-bg{
+    position:absolute;inset:0;pointer-events:none;
+    background:
+      radial-gradient(620px 620px at 78% 30%, rgba(255,198,92,.35), transparent 65%),
+      radial-gradient(500px 500px at 88% 75%, rgba(14,124,134,.12), transparent 60%);
+  }
+  .hero-grid{position:relative;display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--sky);color:var(--teal-deep);
+    font-weight:700;font-size:13px;letter-spacing:.04em;text-transform:uppercase;
+    padding:8px 16px;border-radius:999px;margin-bottom:20px;
+  }
+  h1{
+    font-family:var(--font-display);
+    font-size:clamp(40px,5.4vw,64px);
+    line-height:1.05;letter-spacing:-.02em;font-weight:700;
+    margin-bottom:20px;
+  }
+  h1 .accent{color:var(--teal);font-style:italic}
+  .hero-sub{font-size:18px;color:var(--ink-soft);max-width:520px;margin-bottom:26px}
+  .price-row{display:flex;align-items:baseline;gap:14px;margin-bottom:26px}
+  .price-now{font-family:var(--font-display);font-size:44px;font-weight:700}
+  .price-old{font-size:20px;color:var(--ink-soft);text-decoration:line-through}
+  .price-badge{background:var(--sun);color:var(--ink);font-weight:800;font-size:14px;padding:5px 12px;border-radius:999px}
+  .hero-cta{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+  .micro-trust{display:flex;flex-wrap:wrap;gap:14px;font-size:13.5px;font-weight:600;color:var(--ink-soft)}
+  .micro-trust span{display:inline-flex;align-items:center;gap:6px}
+  .micro-trust .dot{color:var(--ok)}
+
+  /* ====== GALERIE PRODUIT (vraies photos) ====== */
+  .gallery{position:relative}
+  .gallery-main{
+    position:relative;border-radius:28px;overflow:hidden;background:#fff;
+    box-shadow:var(--shadow);aspect-ratio:1/1;
+  }
+  .gallery-main img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .22s ease}
+  .gallery-main img.fading{opacity:0}
+  .chip{
+    position:absolute;z-index:2;
+    background:var(--card);border-radius:14px;box-shadow:var(--shadow);
+    padding:10px 16px;font-size:14px;font-weight:700;
+    display:flex;align-items:center;gap:8px;
+    animation:floaty 5s ease-in-out infinite;
+  }
+  .chip small{display:block;font-weight:500;color:var(--ink-soft);font-size:11.5px;line-height:1.2}
+  .chip-1{top:5%;left:-3%;animation-delay:0s}
+  .chip-2{top:38%;right:-3%;animation-delay:1.2s}
+  .chip-3{bottom:7%;left:4%;animation-delay:2.4s}
+  @keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-9px)}}
+  .thumbs{display:flex;gap:10px;margin-top:16px;justify-content:center;flex-wrap:wrap}
+  .thumb{border:none;background:none;cursor:pointer;padding:0;width:76px}
+  .thumb-img{
+    width:76px;height:76px;border-radius:14px;overflow:hidden;
+    border:3px solid transparent;box-shadow:0 4px 14px -6px rgba(19,37,59,.3);
+    transition:border-color .15s ease, transform .15s ease;
+  }
+  .thumb:hover .thumb-img{transform:translateY(-2px)}
+  .thumb.active .thumb-img{border-color:var(--coral)}
+  .thumb-img img{width:100%;height:100%;object-fit:cover;display:block}
+  .thumb span{display:block;font-size:11.5px;font-weight:700;color:var(--ink-soft);margin-top:5px;text-align:center}
+
+  /* ====== MARQUEE ====== */
+  .marquee{background:var(--teal);color:#fff;overflow:hidden;padding:13px 0}
+  .marquee-track{display:flex;gap:48px;width:max-content;animation:scroll 22s linear infinite;font-weight:700;font-size:15px;letter-spacing:.05em;text-transform:uppercase;white-space:nowrap}
+  .marquee-track span{display:inline-flex;align-items:center;gap:48px}
+  @keyframes scroll{to{transform:translateX(-50%)}}
+
+  /* ====== SECTIONS GÉNÉRIQUES ====== */
+  section{padding:84px 0}
+  .sec-head{text-align:center;max-width:640px;margin:0 auto 52px}
+  .sec-eyebrow{color:var(--coral);font-weight:800;font-size:14px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:12px}
+  h2{font-family:var(--font-display);font-size:clamp(30px,4vw,44px);line-height:1.12;letter-spacing:-.02em;font-weight:700}
+  .sec-sub{color:var(--ink-soft);font-size:17px;margin-top:14px}
+
+  /* ====== AVANTAGES ====== */
+  .benefits{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .benefit{
+    background:var(--card);border-radius:var(--radius);padding:30px 26px;
+    box-shadow:0 8px 30px -16px rgba(19,37,59,.18);
+    border:1px solid rgba(19,37,59,.05);
+  }
+  .benefit-ico{
+    width:52px;height:52px;border-radius:16px;display:grid;place-items:center;
+    font-size:26px;background:var(--sky);margin-bottom:18px;
+  }
+  .benefit h3{font-size:19px;font-weight:700;margin-bottom:8px}
+  .benefit p{font-size:15px;color:var(--ink-soft)}
+
+  /* ====== LIFESTYLE ====== */
+  .life-grid{display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:center}
+  .life-photo{position:relative;border-radius:30px;overflow:hidden;box-shadow:var(--shadow)}
+  .life-photo img{width:100%;height:100%;object-fit:cover;display:block}
+  .life-tag{
+    position:absolute;left:18px;bottom:18px;
+    background:rgba(255,255,255,.92);backdrop-filter:blur(6px);
+    border-radius:999px;padding:9px 18px;font-weight:700;font-size:14px;
+  }
+  .life-list{display:grid;gap:13px;margin-top:26px}
+  .life-item{
+    display:flex;gap:14px;align-items:flex-start;
+    background:var(--card);border:1px solid rgba(19,37,59,.06);
+    border-radius:16px;padding:14px 18px;
+    box-shadow:0 6px 20px -14px rgba(19,37,59,.25);
+  }
+  .life-item .em{font-size:22px;line-height:1.3}
+  .life-item b{display:block;font-size:15.5px}
+  .life-item p{font-size:13.5px;color:var(--ink-soft)}
+
+  /* ====== SPECS + COMPARAISON ====== */
+  .specs-band{background:var(--ink);color:#fff;border-radius:34px;padding:64px 56px}
+  .specs-band .sec-eyebrow{color:var(--sun)}
+  .specs-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:start}
+  .spec-list{display:grid;grid-template-columns:1fr 1fr;gap:4px 32px;margin-top:8px}
+  .spec{padding:16px 0;border-bottom:1px solid rgba(255,255,255,.12)}
+  .spec b{display:block;font-size:20px;font-family:var(--font-display)}
+  .spec span{font-size:13.5px;color:rgba(255,255,255,.65);font-weight:500}
+  .steps{display:grid;gap:14px;margin-top:26px}
+  .step{display:flex;gap:16px;align-items:flex-start;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:18px;padding:16px 20px}
+  .step-num{flex:none;width:34px;height:34px;border-radius:50%;background:var(--sun);color:var(--ink);font-weight:800;display:grid;place-items:center;font-size:16px}
+  .step b{font-size:16px}
+  .step p{font-size:14px;color:rgba(255,255,255,.7)}
+  .compare{width:100%;border-collapse:collapse;background:rgba(255,255,255,.04);border-radius:18px;overflow:hidden;border:1px solid rgba(255,255,255,.1)}
+  .compare th,.compare td{padding:14px 18px;text-align:left;font-size:15px;border-bottom:1px solid rgba(255,255,255,.08)}
+  .compare tr:last-child td{border-bottom:none}
+  .compare thead th{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+  .compare .brand-col{color:var(--sun);font-weight:700}
+  .yes{color:#5BE3A8;font-weight:700}
+  .no{color:#FF8E7A;font-weight:700}
+
+  /* ====== OFFRES ====== */
+  .countdown-wrap{text-align:center;margin-bottom:36px}
+  .countdown-label{font-weight:700;color:var(--coral-dark);font-size:15px;margin-bottom:10px}
+  .countdown{display:inline-flex;gap:12px}
+  .count-cell{background:var(--ink);color:#fff;border-radius:14px;min-width:74px;padding:12px 10px}
+  .count-cell b{display:block;font-family:var(--font-display);font-size:30px;line-height:1}
+  .count-cell span{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+  .offers{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:stretch}
+  .offer{
+    position:relative;background:var(--card);border-radius:26px;padding:34px 28px;
+    border:2px solid rgba(19,37,59,.08);display:flex;flex-direction:column;
+    transition:transform .15s ease;
+  }
+  .offer:hover{transform:translateY(-4px)}
+  .offer.popular{border-color:var(--coral);box-shadow:var(--shadow)}
+  .offer-flag{
+    position:absolute;top:-15px;left:50%;transform:translateX(-50%);
+    background:var(--coral);color:#fff;font-weight:800;font-size:12.5px;
+    letter-spacing:.06em;text-transform:uppercase;padding:6px 18px;border-radius:999px;white-space:nowrap;
+  }
+  .offer h3{font-size:20px;font-weight:800}
+  .offer-qty{font-size:14.5px;color:var(--ink-soft);font-weight:600;margin-bottom:18px}
+  .offer-price{font-family:var(--font-display);font-size:42px;font-weight:700;line-height:1}
+  .offer-old{color:var(--ink-soft);text-decoration:line-through;font-size:16px;margin-left:8px}
+  .offer-unit{font-size:13.5px;color:var(--teal-deep);font-weight:700;margin:8px 0 20px}
+  .offer ul{list-style:none;display:grid;gap:9px;margin-bottom:26px;font-size:14.5px;color:var(--ink-soft)}
+  .offer ul li::before{content:"✓";color:var(--ok);font-weight:800;margin-right:9px}
+  .offer .btn{margin-top:auto;width:100%}
+  .offers-trust{text-align:center;margin-top:28px;font-size:14px;font-weight:600;color:var(--ink-soft)}
+
+  /* ====== AVIS ====== */
+  .rating-line{display:flex;align-items:center;justify-content:center;gap:10px;font-weight:700;margin-bottom:8px;font-size:17px}
+  .stars{color:var(--sun);letter-spacing:2px;font-size:18px}
+  .reviews{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  .review{background:var(--card);border-radius:var(--radius);padding:26px;border:1px solid rgba(19,37,59,.06);box-shadow:0 8px 30px -18px rgba(19,37,59,.16)}
+  .review .stars{font-size:15px;margin-bottom:12px}
+  .review p{font-size:14.5px;color:var(--ink-soft);margin-bottom:16px}
+  .review-author{display:flex;align-items:center;gap:11px}
+  .avatar{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;font-size:15px;flex:none}
+  .review-author b{font-size:14px;display:block;line-height:1.2}
+  .verified{font-size:12px;color:var(--ok);font-weight:700}
+
+  /* ====== FAQ ====== */
+  .faq{max-width:760px;margin:0 auto;display:grid;gap:12px}
+  .faq details{background:var(--card);border-radius:18px;border:1px solid rgba(19,37,59,.08);overflow:hidden}
+  .faq summary{
+    cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;
+    padding:20px 24px;font-weight:700;font-size:16.5px;
+  }
+  .faq summary::-webkit-details-marker{display:none}
+  .faq summary::after{content:"+";font-size:24px;color:var(--coral);font-weight:500;transition:transform .2s ease}
+  .faq details[open] summary::after{transform:rotate(45deg)}
+  .faq details p{padding:0 24px 22px;color:var(--ink-soft);font-size:15px}
+
+  /* ====== CTA FINAL ====== */
+  .final{
+    background:linear-gradient(135deg,var(--teal) 0%,var(--teal-deep) 100%);
+    border-radius:34px;color:#fff;text-align:center;padding:72px 32px;position:relative;overflow:hidden;
+  }
+  .final::before{content:"";position:absolute;width:420px;height:420px;border-radius:50%;background:rgba(255,198,92,.18);top:-200px;right:-120px}
+  .final::after{content:"";position:absolute;width:320px;height:320px;border-radius:50%;background:rgba(255,255,255,.07);bottom:-160px;left:-100px}
+  .final h2{color:#fff;position:relative}
+  .final p{position:relative;color:rgba(255,255,255,.85);font-size:17px;max-width:520px;margin:16px auto 30px}
+  .final .btn{position:relative;background:#fff;color:var(--teal-deep);box-shadow:0 14px 30px -10px rgba(0,0,0,.35)}
+  .final .btn:hover{background:var(--sun);color:var(--ink)}
+
+  /* ====== FOOTER ====== */
+  footer{background:var(--ink);color:rgba(255,255,255,.75);padding:60px 0 32px;margin-top:84px}
+  .foot-grid{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:40px;margin-bottom:44px}
+  .foot-grid .logo{color:#fff;font-size:24px;margin-bottom:14px}
+  .foot-grid p{font-size:14px;max-width:280px}
+  .foot-grid h4{color:#fff;font-size:14px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:16px}
+  .foot-grid ul{list-style:none;display:grid;gap:10px;font-size:14.5px}
+  .foot-grid ul a:hover{color:#fff}
+  .foot-bottom{border-top:1px solid rgba(255,255,255,.12);padding-top:24px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;font-size:13px}
+  .pay-badges{display:flex;gap:8px}
+  .pay-badges span{background:rgba(255,255,255,.1);border-radius:6px;padding:4px 10px;font-size:12px;font-weight:700}
+
+  /* ====== BARRE STICKY MOBILE/DESKTOP ====== */
+  .sticky-bar{
+    position:fixed;left:0;right:0;bottom:0;z-index:60;
+    background:#fff;border-top:1px solid rgba(19,37,59,.1);
+    box-shadow:0 -10px 30px -12px rgba(19,37,59,.25);
+    padding:12px 20px;display:flex;align-items:center;justify-content:space-between;gap:16px;
+    transform:translateY(110%);transition:transform .3s ease;
+  }
+  .sticky-bar.show{transform:translateY(0)}
+  .sticky-info b{font-size:15.5px;display:block;line-height:1.25}
+  .sticky-info span{font-size:13.5px;color:var(--ink-soft)}
+  .sticky-info .p{color:var(--coral-dark);font-weight:800}
+  .sticky-bar .btn{padding:12px 26px;font-size:15px;flex:none}
+
+  /* ====== MODALE LISTE D'ATTENTE ====== */
+  .modal-veil{
+    position:fixed;inset:0;z-index:100;background:rgba(19,37,59,.55);backdrop-filter:blur(4px);
+    display:none;align-items:center;justify-content:center;padding:24px;
+  }
+  .modal-veil.open{display:flex}
+  .modal{
+    background:#fff;border-radius:26px;max-width:440px;width:100%;padding:38px 34px;
+    text-align:center;position:relative;box-shadow:0 30px 80px -20px rgba(0,0,0,.4);
+  }
+  .modal-close{position:absolute;top:14px;right:18px;background:none;border:none;font-size:26px;cursor:pointer;color:var(--ink-soft)}
+  .modal-emoji{font-size:44px;margin-bottom:12px}
+  .modal h3{font-family:var(--font-display);font-size:26px;margin-bottom:10px}
+  .modal p{font-size:15px;color:var(--ink-soft);margin-bottom:22px}
+  .modal .plan-pick{background:var(--sky);color:var(--teal-deep);font-weight:700;font-size:14px;border-radius:12px;padding:10px;margin-bottom:18px}
+  .modal input[type=email]{
+    width:100%;padding:14px 18px;border-radius:999px;border:2px solid rgba(19,37,59,.15);
+    font-family:var(--font-body);font-size:15.5px;margin-bottom:12px;outline:none;
+  }
+  .modal input[type=email]:focus{border-color:var(--teal)}
+  .modal .btn{width:100%}
+  .modal-success{display:none;font-weight:700;color:var(--ok);font-size:16px;padding:14px 0 4px}
+
+  /* ====== ANIMATIONS REVEAL ====== */
+  .reveal-init{opacity:0;transform:translateY(24px);transition:opacity .6s ease,transform .6s ease}
+  .reveal-init.in{opacity:1;transform:none}
+
+  @media (prefers-reduced-motion: reduce){
+    .marquee-track,.chip,.breeze path{animation:none!important}
+    html{scroll-behavior:auto}
+  }
+
+  /* ====== RESPONSIVE ====== */
+  @media (max-width:960px){
+    .hero-grid{grid-template-columns:1fr;gap:36px}
+    .stage{max-width:480px;margin:0 auto}
+    .benefits{grid-template-columns:1fr 1fr}
+    .life-grid{grid-template-columns:1fr;gap:32px}
+    .reviews{grid-template-columns:1fr 1fr}
+    .specs-grid{grid-template-columns:1fr;gap:40px}
+    .specs-band{padding:48px 32px}
+    .offers{grid-template-columns:1fr;max-width:420px;margin:0 auto}
+    .offer.popular{order:-1}
+    .foot-grid{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:640px){
+    .nav-links{display:none}
+    .hero{padding:40px 0 24px}
+    section{padding:60px 0}
+    .benefits{grid-template-columns:1fr}
+    .reviews{grid-template-columns:1fr}
+    .spec-list{grid-template-columns:1fr}
+    .price-now{font-size:36px}
+    .chip-1{left:-6px}
+    .chip-2{right:-6px}
+    .count-cell{min-width:62px}
+    .sticky-info > span{display:none}
+    .sticky-info s{display:none}
+    .foot-grid{grid-template-columns:1fr}
+    .foot-grid p{max-width:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ BANDEAU ============ -->
+<div class="announce">☀️ OFFRE DE LANCEMENT ÉTÉ : <b>−40 %</b> + livraison suivie <b>offerte</b> en France 🇫🇷</div>
+
+<!-- ============ HEADER ============ -->
+<header>
+  <div class="wrap nav">
+    <a class="logo" href="#top" aria-label="Brizz — accueil">
+      <span class="logo-mark">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round">
+          <path d="M3 8h9a3 3 0 1 0-3-3"/><path d="M3 13h13a3 3 0 1 1-3 3"/><path d="M3 18h6"/>
+        </svg>
+      </span>
+      Brizz
+    </a>
+    <nav class="nav-links">
+      <a href="#avantages">Avantages</a>
+      <a href="#specs">Caractéristiques</a>
+      <a href="#avis">Avis</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <a class="btn btn-nav" href="#offres">Commander</a>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="top">
+  <div class="hero-bg"></div>
+  <div class="wrap hero-grid">
+    <div>
+      <span class="eyebrow">☀️ Édition été 2026 — stock limité</span>
+      <h1>La brise qui te <span class="accent">suit partout.</span></h1>
+      <p class="hero-sub">
+        <strong>Brizz Air™</strong>, le ventilateur de cou sans pales : jusqu'à 16 h d'air frais,
+        mains libres, plus discret qu'un chuchotement. Conçu pour les canicules,
+        le métro, le bureau et les festivals.
+      </p>
+      <div class="price-row">
+        <span class="price-now">34,90 €</span>
+        <span class="price-old">59,90 €</span>
+        <span class="price-badge">−42 %</span>
+      </div>
+      <div class="hero-cta">
+        <a class="btn" href="#offres">Je reste au frais →</a>
+        <a class="btn btn-ghost" href="#avantages">Découvrir</a>
+      </div>
+      <div class="micro-trust">
+        <span><span class="dot">●</span> Livraison offerte</span>
+        <span><span class="dot">●</span> Expédié sous 24 h</span>
+        <span><span class="dot">●</span> 14 j satisfait ou remboursé</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="gallery">
+        <div class="gallery-main">
+          <div class="chip chip-1">🔋 <span>16 h<small>d'autonomie</small></span></div>
+          <div class="chip chip-2">🤫 <span>28 dB<small>quasi inaudible</small></span></div>
+          <div class="chip chip-3">🪶 <span>260 g<small>ultra léger</small></span></div>
+          <img id="mainPhoto" src="img/produit-blanc.jpg" alt="Brizz Air™ — ventilateur de cou sans pales, coloris blanc" width="1600" height="1600">
+        </div>
+        <div class="thumbs" role="group" aria-label="Photos du produit">
+          <button class="thumb active" data-src="img/produit-blanc.jpg" aria-label="Coloris blanc">
+            <span class="thumb-img"><img src="img/produit-blanc.jpg" alt=""></span><span>Blanc</span>
+          </button>
+          <button class="thumb" data-src="img/produit-minuit.jpg" aria-label="Coloris bleu nuit">
+            <span class="thumb-img"><img src="img/produit-minuit.jpg" alt=""></span><span>Bleu nuit</span>
+          </button>
+          <button class="thumb" data-src="img/produit-vert.jpg" aria-label="Coloris vert forêt">
+            <span class="thumb-img"><img src="img/produit-vert.jpg" alt=""></span><span>Vert</span>
+          </button>
+          <button class="thumb" data-src="img/produit-turbines.jpg" aria-label="Détail des turbines">
+            <span class="thumb-img"><img src="img/produit-turbines.jpg" alt=""></span><span>Turbines</span>
+          </button>
+          <button class="thumb" data-src="img/lifestyle.jpg" aria-label="Porté au quotidien">
+            <span class="thumb-img"><img src="img/lifestyle.jpg" alt=""></span><span>Porté</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MARQUEE ============ -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>🌬️ Sans pales&nbsp;&nbsp;•&nbsp;&nbsp;🔋 16 h d'autonomie&nbsp;&nbsp;•&nbsp;&nbsp;🤫 Silencieux&nbsp;&nbsp;•&nbsp;&nbsp;⚡ USB-C&nbsp;&nbsp;•&nbsp;&nbsp;🪶 260 g&nbsp;&nbsp;•&nbsp;&nbsp;🇫🇷 Livraison offerte&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+    <span>🌬️ Sans pales&nbsp;&nbsp;•&nbsp;&nbsp;🔋 16 h d'autonomie&nbsp;&nbsp;•&nbsp;&nbsp;🤫 Silencieux&nbsp;&nbsp;•&nbsp;&nbsp;⚡ USB-C&nbsp;&nbsp;•&nbsp;&nbsp;🪶 260 g&nbsp;&nbsp;•&nbsp;&nbsp;🇫🇷 Livraison offerte&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+  </div>
+</div>
+
+<!-- ============ AVANTAGES ============ -->
+<section id="avantages">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <div class="sec-eyebrow">Pourquoi Brizz Air™</div>
+      <h2>L'été sans transpirer, <em>vraiment</em>.</h2>
+      <p class="sec-sub">Pensé pour être porté toute la journée sans y penser — et oublié dès la première minute.</p>
+    </div>
+    <div class="benefits">
+      <div class="benefit" data-reveal>
+        <div class="benefit-ico">🌀</div>
+        <h3>Sans pales = zéro risque</h3>
+        <p>L'air sort de 78 micro-sorties orientées à 360°. Cheveux longs, écharpes, enfants : rien ne s'accroche, jamais.</p>
+      </div>
+      <div class="benefit" data-reveal>
+        <div class="benefit-ico">🔋</div>
+        <h3>Jusqu'à 16 h d'autonomie</h3>
+        <p>Batterie 4 000 mAh rechargeable en USB-C. Une charge le matin, et il tient la journée entière.</p>
+      </div>
+      <div class="benefit" data-reveal>
+        <div class="benefit-ico">🤫</div>
+        <h3>Plus discret qu'un chuchotement</h3>
+        <p>28 dB en vitesse 1 : utilisable en open space, en réunion, dans le train. Personne ne l'entend, sauf toi.</p>
+      </div>
+      <div class="benefit" data-reveal>
+        <div class="benefit-ico">🪶</div>
+        <h3>260 g, tu l'oublies</h3>
+        <p>Plus léger qu'une canette, avec une mousse douce au contact de la nuque. Se porte comme un casque audio.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LIFESTYLE ============ -->
+<section id="lifestyle" style="padding-top:0">
+  <div class="wrap">
+    <div class="life-grid">
+      <div class="life-photo" data-reveal>
+        <img src="img/lifestyle.jpg" alt="Le Brizz Air™ porté au quotidien : jardinage, randonnée, bureau" loading="lazy">
+        <span class="life-tag">📍 Porté du matin au soir</span>
+      </div>
+      <div data-reveal>
+        <div class="sec-eyebrow">Mains libres, partout</div>
+        <h2>Tu vis. Il souffle.</h2>
+        <p class="sec-sub" style="margin-top:10px">Il se pose comme un casque audio et se fait oublier. Pendant que tout le monde s'évente, toi tu as les deux mains libres.</p>
+        <div class="life-list">
+          <div class="life-item"><span class="em">🚇</span><div><b>Métro &amp; RER en canicule</b><p>Arrive au bureau sans la chemise trempée.</p></div></div>
+          <div class="life-item"><span class="em">💻</span><div><b>Télétravail sous les toits</b><p>28 dB : tes collègues ne l'entendront jamais en visio.</p></div></div>
+          <div class="life-item"><span class="em">🎪</span><div><b>Festivals &amp; plein air</b><p>Jusqu'à 16 h d'autonomie : il tient plus longtemps que toi.</p></div></div>
+          <div class="life-item"><span class="em">👶</span><div><b>Avec les enfants</b><p>Zéro pale apparente : rien ne s'accroche, rien ne pince.</p></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SPECS ============ -->
+<section id="specs" style="padding-top:0">
+  <div class="wrap">
+    <div class="specs-band" data-reveal>
+      <div class="specs-grid">
+        <div>
+          <div class="sec-eyebrow">Caractéristiques</div>
+          <h2 style="color:#fff;margin-bottom:6px">Du sérieux sous le capot.</h2>
+          <div class="spec-list">
+            <div class="spec"><b>4 000 mAh</b><span>Batterie longue durée</span></div>
+            <div class="spec"><b>6 à 16 h</b><span>Autonomie selon vitesse</span></div>
+            <div class="spec"><b>28–35 dB</b><span>Niveau sonore</span></div>
+            <div class="spec"><b>3 vitesses</b><span>Brise · Frais · Turbo</span></div>
+            <div class="spec"><b>260 g</b><span>Poids plume</span></div>
+            <div class="spec"><b>USB-C</b><span>Charge complète en 3 h</span></div>
+          </div>
+        </div>
+        <div>
+          <div class="steps">
+            <div class="step"><span class="step-num">1</span><div><b>Charge-le</b><p>USB-C, 3 h pour une charge complète.</p></div></div>
+            <div class="step"><span class="step-num">2</span><div><b>Pose-le</b><p>Autour du cou, comme un casque audio.</p></div></div>
+            <div class="step"><span class="step-num">3</span><div><b>Respire</b><p>3 vitesses, flux orienté visage et nuque à 360°.</p></div></div>
+          </div>
+          <table class="compare" style="margin-top:26px">
+            <thead><tr><th></th><th class="brand-col">Brizz Air™</th><th>Ventilo à main</th></tr></thead>
+            <tbody>
+              <tr><td>Mains libres</td><td class="yes">✓</td><td class="no">✗</td></tr>
+              <tr><td>Cheveux en sécurité</td><td class="yes">✓</td><td class="no">✗</td></tr>
+              <tr><td>Autonomie</td><td class="brand-col">16 h</td><td>~2 h</td></tr>
+              <tr><td>Discrétion</td><td class="brand-col">28 dB</td><td>55 dB+</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ OFFRES ============ -->
+<section id="offres" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <div class="sec-eyebrow">Offre de lancement</div>
+      <h2>Choisis ton pack été.</h2>
+      <p class="sec-sub">Livraison suivie offerte sur tous les packs. Garantie 14 jours satisfait ou remboursé.</p>
+    </div>
+
+    <div class="countdown-wrap" data-reveal>
+      <div class="countdown-label">⏳ L'offre de lancement se termine dans :</div>
+      <div class="countdown" id="countdown">
+        <div class="count-cell"><b id="cd-d">–</b><span>jours</span></div>
+        <div class="count-cell"><b id="cd-h">–</b><span>heures</span></div>
+        <div class="count-cell"><b id="cd-m">–</b><span>min</span></div>
+        <div class="count-cell"><b id="cd-s">–</b><span>sec</span></div>
+      </div>
+    </div>
+
+    <div class="offers">
+      <div class="offer" data-reveal>
+        <h3>Solo</h3>
+        <div class="offer-qty">1 × Brizz Air™</div>
+        <div><span class="offer-price">34,90 €</span><span class="offer-old">59,90 €</span></div>
+        <div class="offer-unit">Pour toi</div>
+        <ul>
+          <li>Livraison suivie offerte</li>
+          <li>Câble USB-C inclus</li>
+          <li>Garantie 14 j satisfait ou remboursé</li>
+        </ul>
+        <button class="btn" onclick="checkout('solo')">Commander →</button>
+      </div>
+
+      <div class="offer popular" data-reveal>
+        <div class="offer-flag">⭐ Le plus choisi</div>
+        <h3>Duo</h3>
+        <div class="offer-qty">2 × Brizz Air™</div>
+        <div><span class="offer-price">59,90 €</span><span class="offer-old">119,80 €</span></div>
+        <div class="offer-unit">Soit 29,95 € / unité — économise 9,90 €</div>
+        <ul>
+          <li>Livraison suivie offerte</li>
+          <li>Parfait en couple ou à offrir</li>
+          <li>Garantie 14 j satisfait ou remboursé</li>
+        </ul>
+        <button class="btn" onclick="checkout('duo')">Commander le Duo →</button>
+      </div>
+
+      <div class="offer" data-reveal>
+        <h3>Tribu</h3>
+        <div class="offer-qty">3 × Brizz Air™</div>
+        <div><span class="offer-price">79,90 €</span><span class="offer-old">179,70 €</span></div>
+        <div class="offer-unit">Soit 26,63 € / unité — économise 24,80 €</div>
+        <ul>
+          <li>Livraison suivie offerte</li>
+          <li>Le pack famille / vacances</li>
+          <li>Garantie 14 j satisfait ou remboursé</li>
+        </ul>
+        <button class="btn" onclick="checkout('tribu')">Commander la Tribu →</button>
+      </div>
+    </div>
+    <div class="offers-trust">🔒 Paiement 100 % sécurisé &nbsp;·&nbsp; 💳 CB · Visa · Mastercard · PayPal &nbsp;·&nbsp; 📦 Expédié sous 24 h</div>
+  </div>
+</section>
+
+<!-- ============ AVIS ============ -->
+<!-- ⚠️ IMPORTANT : ces avis sont des EXEMPLES de démonstration.
+     Remplace-les par de VRAIS avis clients dès tes premières ventes
+     (les faux avis sont interdits par la loi en France — DGCCRF). -->
+<section id="avis" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <div class="sec-eyebrow">Ils ont testé</div>
+      <div class="rating-line"><span class="stars">★★★★★</span> 4,8 / 5</div>
+      <h2>Adopté dès les premières chaleurs.</h2>
+    </div>
+    <div class="reviews">
+      <div class="review" data-reveal>
+        <div class="stars">★★★★★</div>
+        <p>« Achetée pour le RER pendant la canicule de juin… je ne transpire plus en arrivant au bureau. Je la recharge une fois tous les 3 jours. »</p>
+        <div class="review-author">
+          <span class="avatar" style="background:#0E7C86">C</span>
+          <div><b>Camille R. — Lyon</b><span class="verified">✓ Achat vérifié</span></div>
+        </div>
+      </div>
+      <div class="review" data-reveal>
+        <div class="stars">★★★★★</div>
+        <p>« Je travaille en extérieur toute la journée. Bluffé par l'autonomie : il tient ma journée complète en vitesse 2, sans broncher. »</p>
+        <div class="review-author">
+          <span class="avatar" style="background:#FF6B4A">K</span>
+          <div><b>Karim B. — Marseille</b><span class="verified">✓ Achat vérifié</span></div>
+        </div>
+      </div>
+      <div class="review" data-reveal>
+        <div class="stars">★★★★☆</div>
+        <p>« Très silencieux, personne ne l'entend en réunion. J'enlève une étoile uniquement parce que j'aurais adoré un coloris corail ! »</p>
+        <div class="review-author">
+          <span class="avatar" style="background:#FFC65C;color:#13253B">É</span>
+          <div><b>Élodie P. — Toulouse</b><span class="verified">✓ Achat vérifié</span></div>
+        </div>
+      </div>
+      <div class="review" data-reveal>
+        <div class="stars">★★★★★</div>
+        <p>« 4 jours de festival en plein soleil : il a mieux survécu que moi. Indispensable, j'en ai recommandé un pour ma sœur. »</p>
+        <div class="review-author">
+          <span class="avatar" style="background:#13253B">H</span>
+          <div><b>Hugo M. — Nantes</b><span class="verified">✓ Achat vérifié</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head" data-reveal>
+      <div class="sec-eyebrow">Questions fréquentes</div>
+      <h2>Tout ce que tu veux savoir.</h2>
+    </div>
+    <div class="faq" data-reveal>
+      <details>
+        <summary>Comment ça souffle, sans pales ?</summary>
+        <p>Une turbine interne aspire l'air et le redistribue par 78 micro-sorties réparties le long du col. Résultat : un flux d'air continu vers le visage et la nuque, sans aucune pale apparente — donc aucun risque pour les cheveux, même longs.</p>
+      </details>
+      <details>
+        <summary>Quelle est l'autonomie réelle ?</summary>
+        <p>Jusqu'à 16 h en vitesse 1 (brise), environ 10 h en vitesse 2 et 6 h en vitesse turbo. La batterie 4 000 mAh se recharge entièrement en 3 h avec n'importe quel chargeur USB-C.</p>
+      </details>
+      <details>
+        <summary>Est-ce que c'est bruyant ?</summary>
+        <p>Non : 28 dB en vitesse 1, c'est moins qu'un chuchotement. Même en turbo (35 dB), il reste plus discret qu'un ventilateur de bureau classique.</p>
+      </details>
+      <details>
+        <summary>Quels sont les délais de livraison ?</summary>
+        <p>Ta commande est préparée et expédiée sous 24 h ouvrées. La livraison en France métropolitaine prend ensuite 5 à 10 jours ouvrés, avec un numéro de suivi envoyé par e-mail.</p>
+      </details>
+      <details>
+        <summary>Et si ça ne me convient pas ?</summary>
+        <p>Tu as 14 jours après réception pour changer d'avis : retourne-le-nous et on te rembourse intégralement, sans justification. Il suffit de nous écrire par e-mail.</p>
+      </details>
+      <details>
+        <summary>Compatible cheveux longs / enfants ?</summary>
+        <p>Oui, c'est précisément l'avantage du sans-pales : aucune pièce en rotation accessible. Recommandé à partir de 8 ans.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA FINAL ============ -->
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="final" data-reveal>
+      <h2>Cet été, garde la tête froide.</h2>
+      <p>Rejoins ceux qui ont troqué l'éventail contre 16 h de brise mains libres. Livraison offerte, 14 jours pour changer d'avis.</p>
+      <a class="btn" href="#offres">Voir les packs −40 % →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div class="logo">
+          <span class="logo-mark"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M3 8h9a3 3 0 1 0-3-3"/><path d="M3 13h13a3 3 0 1 1-3 3"/><path d="M3 18h6"/></svg></span>
+          Brizz
+        </div>
+        <p>La brise qui te suit partout. Conçu pour les étés français, livré depuis nos entrepôts partenaires avec suivi.</p>
+      </div>
+      <div>
+        <h4>Boutique</h4>
+        <ul>
+          <li><a href="#offres">Les packs</a></li>
+          <li><a href="#avantages">Avantages</a></li>
+          <li><a href="#avis">Avis clients</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Informations</h4>
+        <!-- TODO : créer ces pages avant les premières ventes (obligatoire en France) -->
+        <ul>
+          <li><a href="#">Mentions légales</a></li>
+          <li><a href="#">CGV</a></li>
+          <li><a href="#">Politique de retour</a></li>
+          <li><a href="#">Confidentialité</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <!-- TODO : remplacer par contact@brizz-shop.fr quand le domaine + l'email pro seront créés -->
+          <li><a href="mailto:delattrematteo4@gmail.com">delattrematteo4@gmail.com</a></li>
+          <li>Réponse sous 24 h</li>
+        </ul>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Brizz™ — Tous droits réservés.</span>
+      <div class="pay-badges"><span>CB</span><span>VISA</span><span>Mastercard</span><span>PayPal</span></div>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ BARRE STICKY ============ -->
+<div class="sticky-bar" id="stickyBar">
+  <div class="sticky-info">
+    <b>Brizz Air™ — <span class="p">34,90 €</span> <s style="color:var(--ink-soft);font-weight:500">59,90 €</s></b>
+    <span>Livraison offerte · Expédié sous 24 h</span>
+  </div>
+  <a class="btn" href="#offres">Commander</a>
+</div>
+
+<!-- ============ MODALE LISTE D'ATTENTE ============ -->
+<div class="modal-veil" id="modalVeil" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()" aria-label="Fermer">×</button>
+    <div class="modal-emoji">🚀</div>
+    <h3 id="modalTitle">Ouverture imminente !</h3>
+    <p>La boutique ouvre officiellement dans quelques jours. Laisse ton e-mail : tu recevras le lien de commande en avant-première, avec <b>−20 % supplémentaires</b>.</p>
+    <div class="plan-pick" id="planPick">Pack sélectionné : Solo — 34,90 €</div>
+    <form name="brizz-waitlist" method="POST" data-netlify="true" netlify-honeypot="bot-field" id="waitForm">
+      <input type="hidden" name="form-name" value="brizz-waitlist">
+      <input type="hidden" name="pack" id="packField" value="solo">
+      <p style="display:none"><input name="bot-field"></p>
+      <input type="email" name="email" placeholder="ton@email.fr" required>
+      <button class="btn" type="submit">Me prévenir en premier 🔔</button>
+    </form>
+    <div class="modal-success" id="modalSuccess">✅ C'est noté ! Tu seras prévenu(e) en premier, avec ton code −20 %.</div>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   ⚙️ CONFIGURATION — LA SEULE ZONE À MODIFIER
+   ---------------------------------------------------------------------
+   1) PAIEMENT : crée 3 "Payment Links" gratuits sur https://stripe.com
+      (Produits → Liens de paiement) ou utilise tes liens Shopify,
+      puis colle-les entre les guillemets ci-dessous.
+      Tant qu'un lien est vide, le bouton ouvre la liste d'attente
+      (les e-mails arrivent dans Netlify → onglet "Forms").
+   2) FIN DE L'OFFRE : change la date de fin du compte à rebours.
+   ===================================================================== */
+/* ⚠️ LIENS DE TEST Stripe (mode test, carte 4242 4242 4242 4242).
+   À remplacer par les liens de PRODUCTION quand le compte Stripe
+   sera activé (même procédure, sans le bandeau "test"). */
+const PAYMENT_LINKS = {
+  solo: "https://buy.stripe.com/test_3cIbJ3d5p7XNdgz7Yv3F600",   // 1 × Brizz Air — 34,90 €
+  duo:  "https://buy.stripe.com/test_4gM5kFc1lfqf90j6Ur3F601",   // 2 × Brizz Air — 59,90 €
+  tribu: "https://buy.stripe.com/test_fZu14pghB7XNekDfqX3F602"   // 3 × Brizz Air — 79,90 €
+};
+const OFFER_END = "2026-07-06T23:59:59"; // fin de l'offre de lancement
+/* 3) PUBS : colle ici tes identifiants de pixel quand tu lances des
+      campagnes (Meta : Gestionnaire d'événements → ton pixel → ID.
+      TikTok : TikTok Ads Manager → Assets → Events → Web Events).
+      Les pixels mesurent qui visite et qui achète = indispensable
+      pour que l'algorithme optimise tes pubs. */
+const META_PIXEL_ID = "";    // ex. "1234567890"
+const TIKTOK_PIXEL_ID = "";  // ex. "ABC123DEF456"
+/* ===================================================================== */
+
+/* ---- Pixels publicitaires (ne se chargent que si un ID est rempli) ---- */
+if (META_PIXEL_ID) {
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+  document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', META_PIXEL_ID);
+  fbq('track', 'PageView');
+  fbq('track', 'ViewContent', {content_name: 'Brizz Air', currency: 'EUR', value: 34.90});
+}
+if (TIKTOK_PIXEL_ID) {
+  !function (w, d, t) {w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];
+  ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie"];
+  ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};
+  for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);
+  ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js";
+  ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,
+  ttq._o=ttq._o||{},ttq._o[e]=n||{};var o=document.createElement("script");
+  o.type="text/javascript",o.async=!0,o.src=i+"?sdkid="+e+"&lib="+t;
+  var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(o,a)};
+  ttq.load(TIKTOK_PIXEL_ID);ttq.page();}(window, document, 'ttq');
+}
+
+const PLAN_LABELS = {
+  solo:  "Solo — 1 × Brizz Air™ · 34,90 €",
+  duo:   "Duo — 2 × Brizz Air™ · 59,90 €",
+  tribu: "Tribu — 3 × Brizz Air™ · 79,90 €"
+};
+
+/* ---- Achat ---- */
+const PLAN_VALUES = {solo: 34.90, duo: 59.90, tribu: 79.90};
+function checkout(plan){
+  if (typeof fbq === 'function') fbq('track', 'InitiateCheckout', {currency:'EUR', value: PLAN_VALUES[plan]});
+  if (typeof ttq === 'object' && ttq.track) ttq.track('InitiateCheckout', {currency:'EUR', value: PLAN_VALUES[plan]});
+  const link = (PAYMENT_LINKS[plan] || "").trim();
+  if(link){ window.location.href = link; return; }
+  document.getElementById('packField').value = plan;
+  document.getElementById('planPick').textContent = "Pack sélectionné : " + PLAN_LABELS[plan];
+  document.getElementById('modalVeil').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(){
+  document.getElementById('modalVeil').classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.getElementById('modalVeil').addEventListener('click', e => {
+  if(e.target === e.currentTarget) closeModal();
+});
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeModal(); });
+
+/* ---- Liste d'attente : les emails arrivent dans ta boîte mail ----
+   (FormSubmit : au tout premier envoi, tu recevras UN email "Activate"
+    — clique dessus une fois, ensuite tout arrive automatiquement.) */
+const WAITLIST_INBOX = "delattrematteo4@gmail.com";
+document.getElementById('waitForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const form = e.target;
+  const fd = new FormData(form);
+  const payload = {
+    email: fd.get('email'),
+    pack: fd.get('pack'),
+    _subject: "🌬️ Brizz — nouvel inscrit liste d'attente (" + fd.get('pack') + ")"
+  };
+  try{
+    const r = await fetch('https://formsubmit.co/ajax/' + WAITLIST_INBOX, {
+      method:'POST',
+      headers:{'Content-Type':'application/json', 'Accept':'application/json'},
+      body: JSON.stringify(payload)
+    });
+    if(!r.ok) throw new Error('formsubmit ' + r.status);
+    form.style.display = 'none';
+    document.getElementById('modalSuccess').style.display = 'block';
+  }catch(err){
+    form.style.display = 'none';
+    const s = document.getElementById('modalSuccess');
+    s.textContent = "⚠️ Petit souci technique — écris-nous directement : " + WAITLIST_INBOX;
+    s.style.display = 'block';
+  }
+});
+
+/* ---- Galerie photos ---- */
+const mainPhoto = document.getElementById('mainPhoto');
+document.querySelectorAll('.thumb').forEach(th => {
+  th.addEventListener('click', () => {
+    document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+    th.classList.add('active');
+    mainPhoto.classList.add('fading');
+    setTimeout(() => {
+      mainPhoto.src = th.dataset.src;
+      mainPhoto.classList.remove('fading');
+    }, 180);
+  });
+});
+
+/* ---- Compte à rebours (vraie date, modifiable dans la CONFIG) ---- */
+const cdWrap = document.querySelector('.countdown-wrap');
+function tick(){
+  const diff = new Date(OFFER_END) - new Date();
+  if(diff <= 0){ cdWrap.style.display = 'none'; return; }
+  const d = Math.floor(diff/864e5), h = Math.floor(diff%864e5/36e5),
+        m = Math.floor(diff%36e5/6e4), s = Math.floor(diff%6e4/1e3);
+  document.getElementById('cd-d').textContent = d;
+  document.getElementById('cd-h').textContent = String(h).padStart(2,'0');
+  document.getElementById('cd-m').textContent = String(m).padStart(2,'0');
+  document.getElementById('cd-s').textContent = String(s).padStart(2,'0');
+}
+tick(); setInterval(tick, 1000);
+
+/* ---- Barre sticky : visible après le héros ---- */
+const hero = document.querySelector('.hero');
+const stickyBar = document.getElementById('stickyBar');
+new IntersectionObserver(([en]) => {
+  stickyBar.classList.toggle('show', !en.isIntersecting);
+}, {threshold:.08}).observe(hero);
+
+/* ---- Apparition au scroll (uniquement sous la ligne de flottaison) ---- */
+const io = new IntersectionObserver(entries => {
+  entries.forEach(en => { if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } });
+}, {threshold:.12});
+document.querySelectorAll('[data-reveal]').forEach(el => {
+  if (el.getBoundingClientRect().top > window.innerHeight * 0.9) {
+    el.classList.add('reveal-init');
+    io.observe(el);
+  }
+});
+</script>
+</body>
+</html>
