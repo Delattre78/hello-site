@@ -1,7 +1,10 @@
 //@version=6
 // ═══════════════════════════════════════════════════════════════════════════
-//  ICT SIGNAL PRO V6 — FULL ENGINE (Pine Script v6)
-//  EURUSD · NASDAQ · DOW JONES · S&P500   |   TF conseillé : 5m / 15m
+//  ICT SIGNAL PRO V6.1 — FULL ENGINE (Pine Script v6)
+//  EURUSD · NASDAQ (NAS100/US100) · DOW (US30) · S&P500 (US500/SPX500)
+//  TF conseillé : 15m (5m = plus de signaux, 1h = moins)
+//  V6.1 : mode signaux Élite/Équilibré/Fréquent · dashboard Mini/Compact/
+//         Complet · fix compte à rebours news
 //
 //  GRAPHIQUE 100% PROPRE : seuls les signaux BUY / SELL sont affichés.
 //  TOUT le reste est calculé en interne et restitué dans le dashboard :
@@ -35,6 +38,7 @@ rr3     = input.float(3.5, "TP3 R:R",        group=grpR, minval=1.5, step=0.25)
 riskPct = input.float(1.0, "Risk % / trade", group=grpR, minval=0.1, step=0.1)
 
 grpF = "Filtres signal"
+sigMode   = input.string("Équilibré", "Mode signaux", options=["Élite (rare)", "Équilibré", "Fréquent"], group=grpF, tooltip="Élite = setups parfaits uniquement (rare). Équilibré = bon compromis. Fréquent = plus de signaux (fenêtres élargies, 1 seul timeframe directeur suffit).")
 minScoreL = input.int(26, "Score MIN Long  /50",  group=grpF, minval=15, maxval=50)
 minScoreS = input.int(26, "Score MIN Short /50",  group=grpF, minval=15, maxval=50)
 htf       = input.timeframe("60",  "HTF 1",          group=grpF)
@@ -74,7 +78,14 @@ grpD = "Affichage (chart clean)"
 showLbl   = input.bool(true,  "Label BUY/SELL (entry/SL/TP/raisons)", group=grpD)
 showLines = input.bool(false, "Lignes SL/TP du dernier signal",       group=grpD)
 dbOn      = input.bool(true,  "Dashboard",                            group=grpD)
+dbSize    = input.string("Compact", "Taille dashboard", options=["Mini", "Compact", "Complet"], group=grpD)
 dbRight   = input.bool(true,  "Dashboard à droite (sinon gauche)",    group=grpD)
+
+// Mode signaux → fenêtres, score et direction plus ou moins permissifs
+eliteM = sigMode == "Élite (rare)"
+freqM  = sigMode == "Fréquent"
+wF     = eliteM ? 1.0 : freqM ? 2.0 : 1.5
+scAdj  = eliteM ? 0 : freqM ? -4 : -2
 
 // ─────────────────────────────────────────────────────────────────────
 //  NEWS — blocage + compte à rebours
@@ -83,19 +94,38 @@ nwMs = newsMin * 60000
 nn(t) => math.abs(time - t) <= nwMs
 newsBlocked = useNews and (nn(news1) or nn(news2) or nn(news3) or nn(news4) or nn(news5) or nn(news6) or nn(news7) or nn(news8) or nn(news9) or nn(news10))
 
-// prochaine annonce dans le futur
-nxt(best, t) => t > time and (na(best) or t < best) ? t : best
+// prochaine annonce dans le futur (if explicites — fiabilité maximale)
 int nextNews = na
-nextNews := nxt(nextNews, news1)
-nextNews := nxt(nextNews, news2)
-nextNews := nxt(nextNews, news3)
-nextNews := nxt(nextNews, news4)
-nextNews := nxt(nextNews, news5)
-nextNews := nxt(nextNews, news6)
-nextNews := nxt(nextNews, news7)
-nextNews := nxt(nextNews, news8)
-nextNews := nxt(nextNews, news9)
-nextNews := nxt(nextNews, news10)
+if news1 > time
+    if na(nextNews) or news1 < nextNews
+        nextNews := news1
+if news2 > time
+    if na(nextNews) or news2 < nextNews
+        nextNews := news2
+if news3 > time
+    if na(nextNews) or news3 < nextNews
+        nextNews := news3
+if news4 > time
+    if na(nextNews) or news4 < nextNews
+        nextNews := news4
+if news5 > time
+    if na(nextNews) or news5 < nextNews
+        nextNews := news5
+if news6 > time
+    if na(nextNews) or news6 < nextNews
+        nextNews := news6
+if news7 > time
+    if na(nextNews) or news7 < nextNews
+        nextNews := news7
+if news8 > time
+    if na(nextNews) or news8 < nextNews
+        nextNews := news8
+if news9 > time
+    if na(nextNews) or news9 < nextNews
+        nextNews := news9
+if news10 > time
+    if na(nextNews) or news10 < nextNews
+        nextNews := news10
 
 newsCountdown() =>
     if na(nextNews)
@@ -335,8 +365,8 @@ bslRaw = high > liqH and close < liqH and wickUp > atr * 0.25 and close < open
 
 sinceSSL  = nz(ta.barssince(sslRaw), 99999)
 sinceBSL  = nz(ta.barssince(bslRaw), 99999)
-sweepBull = sinceSSL <= sweepWin      // FIX: fenêtre au lieu d'exiger 2 barres consécutives
-sweepBear = sinceBSL <= sweepWin
+sweepBull = sinceSSL <= sweepWin * wF      // FIX: fenêtre au lieu d'exiger 2 barres consécutives
+sweepBear = sinceBSL <= sweepWin * wF
 
 // EQH/EQL — FIX: comparer au pivot PRÉCÉDENT avant de le mettre à jour
 ph5 = ta.pivothigh(high, 5, 5)
@@ -389,8 +419,8 @@ mssS = chS and sweepBear and (dispBear or sBearC)
 
 sinceStrB = nz(ta.barssince(mssB or chB or bosB), 99999)
 sinceStrS = nz(ta.barssince(mssS or chS or bosS), 99999)
-structB   = sinceStrB <= structWin
-structS   = sinceStrS <= structWin
+structB   = sinceStrB <= structWin * wF
+structS   = sinceStrS <= structWin * wF
 
 // ─────────────────────────────────────────────────────────────────────
 //  FVG — avec invalidation + expiration (FIX zombies)
@@ -604,20 +634,24 @@ levS = slPS > 0.001 ? math.round(riskPct / slPS, 1) : 0.0
 // ─────────────────────────────────────────────────────────────────────
 canTrade = inKillzone and not newsBlocked and volFilter and barstate.isconfirmed
 
-longDir  = bull1H and bull4H
+// Direction requise selon le mode :
+//  Élite     = 1H ET 4H alignés   |  Équilibré = 1H, ou 4H+Daily
+//  Fréquent  = un seul TF directeur suffit (1H, 4H, ou Daily+Weekly)
+longDir  = eliteM ? (bull1H and bull4H) : freqM ? (bull1H or bull4H or (bullD and bullW)) : (bull1H or (bull4H and bullD))
+shortDir = eliteM ? (bear1H and bear4H) : freqM ? (bear1H or bear4H or (bearD and bearW)) : (bear1H or (bear4H and bearD))
+
 longZone = bfvg or ibfvg or bob or inBullOB or brkBull or vpReclaimB
 longLoc  = dis or inOTEB or vpDiscount
-longFlow = cumDelta > 0 or delta3 > 0
+longFlow = freqM ? true : (cumDelta > 0 or delta3 > 0)
 longCore = longDir and sweepBull and structB and longZone and longLoc and longFlow
 
-shortDir  = bear1H and bear4H
 shortZone = sfvg or isfvg or sob or inBearOB or brkBear or vpReclaimS
 shortLoc  = pre or inOTES or vpPremium
-shortFlow = cumDelta < 0 or delta3 < 0
+shortFlow = freqM ? true : (cumDelta < 0 or delta3 < 0)
 shortCore = shortDir and sweepBear and structS and shortZone and shortLoc and shortFlow
 
-buyS  = canTrade and ls >= minScoreL and longCore  and slVL
-sellS = canTrade and ss >= minScoreS and shortCore and slVS
+buyS  = canTrade and ls >= minScoreL + scAdj and longCore  and slVL
+sellS = canTrade and ss >= minScoreS + scAdj and shortCore and slVS
 
 aPPBuy  = buyS  and ls >= 40 and po3AnyB and inOTEB and (bullEng or hammBull or dispBull or ofImbBull)
 aPPSell = sellS and ss >= 40 and po3AnyS and inOTES and (bearEng or hammBear or dispBear or ofImbBear)
@@ -781,7 +815,7 @@ sec(r, t) =>
 biasTxt(b, s) => b ? "BULL" : s ? "BEAR" : "—"
 biasCol(b, s) => b ? cgn : s ? crd : cgy
 
-if dbOn and barstate.islast
+if dbOn and dbSize == "Complet" and barstate.islast
     // ── TITRE + SIGNAL ──
     table.cell(db, 0, 0, "ICT PRO V6 — " + syminfo.ticker + " " + timeframe.period, bgcolor=ch, text_color=color.white, text_size=size.small)
     table.merge_cells(db, 0, 0, 3, 0)
@@ -926,6 +960,82 @@ if dbOn and barstate.islast
         tc  = r < jn ? (str.contains(txt, "▲") ? cgn : crd) : color.new(#222233, 0)
         table.cell(db, 0, 36 + r, txt, bgcolor=cb, text_color=tc, text_size=size.tiny)
         table.merge_cells(db, 0, 36 + r, 3, 36 + r)
+
+// ── DASHBOARD COMPACT (défaut) : l'essentiel en 14 lignes ──
+if dbOn and dbSize == "Compact" and barstate.islast
+    table.cell(db, 0, 0, "ICT V6 — " + syminfo.ticker + " " + timeframe.period, bgcolor=ch, text_color=color.white, text_size=size.tiny)
+    table.merge_cells(db, 0, 0, 3, 0)
+    sigT = aPPBuy ? "★ BUY A++ [" + str.tostring(ls) + "/50]" : buyS ? "▲ BUY " + gr(ls) + " [" + str.tostring(ls) + "/50]" : aPPSell ? "★ SELL A++ [" + str.tostring(ss) + "/50]" : sellS ? "▼ SELL " + gr(ss) + " [" + str.tostring(ss) + "/50]" : "ATTENTE · L:" + str.tostring(ls) + " S:" + str.tostring(ss)
+    sigC = aPPBuy ? color.new(#00ffcc, 0) : buyS ? color.new(#00ff88, 0) : aPPSell ? color.new(#ff88cc, 0) : sellS ? color.new(#ff3333, 0) : cgy
+    table.cell(db, 0, 1, sigT, bgcolor=ch, text_color=sigC, text_size=size.small)
+    table.merge_cells(db, 0, 1, 3, 1)
+    dc(0, 2, "Session", cb, cgy)
+    dc(1, 2, inLondon ? "LONDON" : inNY ? "NY" : inAsian ? "ASIE" : "OFF", cb, inKillzone ? cgn : inAsian ? cgd : crd)
+    dc(2, 2, "News", cb, cgy)
+    dc(3, 2, newsBlocked ? "BLOQUÉ" : newsCountdown(), cb, newsBlocked ? crd : cgn)
+    alignT2 = pentaBull ? "PENTA B" : pentaBear ? "PENTA S" : quadBull ? "QUAD B" : quadBear ? "QUAD S" : tripleBull ? "3TF B" : tripleBear ? "3TF S" : bull1H ? "1H B" : bear1H ? "1H S" : bull4H ? "4H B" : bear4H ? "4H S" : "MIXTE"
+    dc(0, 3, "Biais", cb, cgy)
+    dc(1, 3, alignT2, cb, (pentaBull or quadBull or tripleBull or bull1H or bull4H) ? cgn : (pentaBear or quadBear or tripleBear or bear1H or bear4H) ? crd : cgy)
+    strT2 = mssB ? "MSS B" : mssS ? "MSS S" : chB ? "CHoCH B" : chS ? "CHoCH S" : bosB ? "BOS B" : bosS ? "BOS S" : structB ? "STR B ok" : structS ? "STR S ok" : "—"
+    dc(2, 3, "Structure", cb, cgy)
+    dc(3, 3, strT2, cb, (mssB or chB or bosB or structB) ? cgn : (mssS or chS or bosS or structS) ? crd : cgy)
+    swpT2 = sslRaw ? "SSL!" : bslRaw ? "BSL!" : sweepBull ? "SSL -" + str.tostring(sinceSSL) + "b" : sweepBear ? "BSL -" + str.tostring(sinceBSL) + "b" : "—"
+    dc(0, 4, "Sweep", cb, cgy)
+    dc(1, 4, swpT2, cb, (sslRaw or sweepBull) ? cgn : (bslRaw or sweepBear) ? crd : cgy)
+    znT = bfvg or ibfvg ? "FVG B" : bob or inBullOB or brkBull ? "OB B" : sfvg or isfvg ? "FVG S" : sob or inBearOB or brkBear ? "OB S" : "—"
+    dc(2, 4, "Zone", cb, cgy)
+    dc(3, 4, znT + (inOTEB ? " +OTE" : inOTES ? " +OTE" : ""), cb, (bfvg or ibfvg or bob or inBullOB or brkBull) ? cgn : (sfvg or isfvg or sob or inBearOB or brkBear) ? crd : cgy)
+    vpT2 = vpReclaimB ? "RECLAIM VAL" : vpReclaimS ? "REJET VAH" : vpDiscount ? "Discount" : vpPremium ? "Premium" : nearPOC ? "POC" : "VA"
+    dc(0, 5, "Vol.Profile", cb, cgy)
+    dc(1, 5, vpT2, cb, (vpReclaimB or vpDiscount) ? cgn : (vpReclaimS or vpPremium) ? crd : cpu)
+    ofT = ofImbBull ? "IMB ACHAT" : ofImbBear ? "IMB VENTE" : absBull ? "ABSORB B" : absBear ? "ABSORB S" : cumDelta > 0 ? "Δ+" : "Δ-"
+    dc(2, 5, "Order Flow", cb, cgy)
+    dc(3, 5, ofT, cb, (ofImbBull or absBull or cumDelta > 0) ? cgn : crd)
+    dc(0, 6, "LONG", cb, cgy)
+    dc(1, 6, str.tostring(ls) + "/50 " + gr(ls), cb, grC(ls))
+    dc(2, 6, "SHORT", cb, cgy)
+    dc(3, 6, str.tostring(ss) + "/50 " + gr(ss), cb, grC(ss))
+    dc(0, 7, "Dernier", cb, cgy)
+    dc(1, 7, lastDir, cb, str.contains(lastDir, "BUY") ? cgn : str.contains(lastDir, "SELL") ? crd : cgy)
+    dc(2, 7, "Quand", cb, cgy)
+    dc(3, 7, lastInfo, cb, color.white)
+    dc(0, 8, "Entrée", cb, cgy)
+    dc(1, 8, not na(lastEntry) ? str.tostring(lastEntry, format.mintick) : "—", cb, color.white)
+    dc(2, 8, "SL", cb, cgy)
+    dc(3, 8, not na(lastSL) ? str.tostring(lastSL, format.mintick) : "—", cb, crd)
+    dc(0, 9, "TP1", cb, cgy)
+    dc(1, 9, not na(lastT1) ? str.tostring(lastT1, format.mintick) : "—", cb, cgn)
+    dc(2, 9, "TP2/TP3", cb, cgy)
+    dc(3, 9, not na(lastT2) ? str.tostring(lastT2, format.mintick) + " / " + str.tostring(lastT3, format.mintick) : "—", cb, cgn)
+    table.cell(db, 0, 10, "POURQUOI : " + lastWhy, bgcolor=cb, text_color=cbl, text_size=size.tiny)
+    table.merge_cells(db, 0, 10, 3, 10)
+    jn2 = array.size(jrn)
+    for r = 0 to 2
+        txt2 = r < jn2 ? array.get(jrn, r) : "·"
+        tc2  = r < jn2 ? (str.contains(txt2, "▲") ? cgn : crd) : color.new(#222233, 0)
+        table.cell(db, 0, 11 + r, txt2, bgcolor=cb, text_color=tc2, text_size=size.tiny)
+        table.merge_cells(db, 0, 11 + r, 3, 11 + r)
+
+// ── DASHBOARD MINI : signal + plan, 6 lignes ──
+if dbOn and dbSize == "Mini" and barstate.islast
+    sigT3 = aPPBuy ? "★ BUY A++" : buyS ? "▲ BUY " + gr(ls) : aPPSell ? "★ SELL A++" : sellS ? "▼ SELL " + gr(ss) : "ATTENTE L:" + str.tostring(ls) + " S:" + str.tostring(ss)
+    sigC3 = aPPBuy ? color.new(#00ffcc, 0) : buyS ? color.new(#00ff88, 0) : aPPSell ? color.new(#ff88cc, 0) : sellS ? color.new(#ff3333, 0) : cgy
+    table.cell(db, 0, 0, syminfo.ticker + " · " + sigT3, bgcolor=ch, text_color=sigC3, text_size=size.small)
+    table.merge_cells(db, 0, 0, 3, 0)
+    dc(0, 1, "Dernier", cb, cgy)
+    dc(1, 1, lastDir, cb, str.contains(lastDir, "BUY") ? cgn : str.contains(lastDir, "SELL") ? crd : cgy)
+    dc(2, 1, lastInfo, cb, color.white)
+    dc(3, 1, inKillzone ? (inLondon ? "LDN" : "NY") : "off", cb, inKillzone ? cgn : cgy)
+    dc(0, 2, "Entrée", cb, cgy)
+    dc(1, 2, not na(lastEntry) ? str.tostring(lastEntry, format.mintick) : "—", cb, color.white)
+    dc(2, 2, "SL", cb, cgy)
+    dc(3, 2, not na(lastSL) ? str.tostring(lastSL, format.mintick) : "—", cb, crd)
+    dc(0, 3, "TP1", cb, cgy)
+    dc(1, 3, not na(lastT1) ? str.tostring(lastT1, format.mintick) : "—", cb, cgn)
+    dc(2, 3, "TP2/3", cb, cgy)
+    dc(3, 3, not na(lastT2) ? str.tostring(lastT2, format.mintick) + "/" + str.tostring(lastT3, format.mintick) : "—", cb, cgn)
+    table.cell(db, 0, 4, lastWhy, bgcolor=cb, text_color=cbl, text_size=size.tiny)
+    table.merge_cells(db, 0, 4, 3, 4)
 
 // ═══════════════════════════════════════════════════════════════════════
 //  ALERTES
