@@ -12,8 +12,8 @@
 
    ⚙️ VARIABLES À CONFIGURER (Worker → Settings → Variables & Secrets) :
    - STRIPE_WEBHOOK_SECRET : whsec_… (Stripe → Développeurs → Webhooks)
-   - CJ_EMAIL              : ton email CJ Dropshipping
-   - CJ_PASSWORD           : ton MOT DE PASSE CJ (pas email, le mdp)
+   - CJ_API_KEY            : clé API CJ (format CJxxxxx@api@xxxxx)
+                             → CJ → Settings → "Sécurité du compte" → API Key → Generate
    - ALERT_EMAIL           : delattrematteo4@gmail.com
    ===================================================================== */
 
@@ -123,7 +123,7 @@ async function cjToken(env) {
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email: env.CJ_EMAIL, password: env.CJ_PASSWORD }),
+      body: JSON.stringify({ apiKey: env.CJ_API_KEY }),
     }
   );
   const d = await r.json();
