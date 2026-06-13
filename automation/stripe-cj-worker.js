@@ -17,28 +17,21 @@
    - ALERT_EMAIL           : delattrematteo4@gmail.com
    ===================================================================== */
 
-/* ---------- CONFIG PRODUITS (à remplir une seule fois) ----------
-   Le pack est reconnu par le MONTANT payé (en centimes).
-   ⚠️ Si tu changes les prix de la boutique, mets aussi à jour ici.
+/* ---------- CONFIG PRODUITS ----------------------------------------
+   Produit  : Neck Hanging Bladeless Fan — White Luxury Style
+   SKU CJ   : CJJD274007001AZ
+   PID CJ   : 2014603723890790401
+   Couleur  : Blanc uniquement (seule variante disponible)
 
-   Produit CJ : Neck Hanging Bladeless Fan — Luxury Style
-   PID CJ     : 2014603723890790401
-   URL CJ     : https://cjdropshipping.com/product/neck-hanging-bladeless-fan-white-luxury-style-3-gears-2000-4000mah-usb-rechargeable-retractable-air-outlet-3-6h-battery-life-p-2014603723890790401.html
+   ⚠️ SEULE VALEUR À REMPLACER : le VID ci-dessous.
+      Lance get-vid.sh en Terminal pour l'obtenir (voir automation/).   */
+const VID_PRODUIT = "VID_A_REMPLACER"; // ← remplacer par le vrai VID
 
-   Pour les coloris : sur CJ, ouvre la fiche produit, clique sur chaque
-   coloris et regarde l'URL ou l'onglet réseau → récupère le "vid".     */
 const PACKS_PAR_MONTANT = {
   3490: { pack: "Solo",  quantite: 1 },
   5990: { pack: "Duo",   quantite: 2 },
   7990: { pack: "Tribu", quantite: 3 },
 };
-const COLORIS_VERS_CJ_VID = {
-  // libellé du menu "Coloris" dans Stripe → vid de la variante CJ
-  "Blanc":     "VID_BLANC_A_REMPLACER",
-  "Bleu nuit": "VID_BLEU_A_REMPLACER",
-  "Vert":      "VID_VERT_A_REMPLACER",
-};
-const COLORIS_PAR_DEFAUT = "Blanc";
 const LOGISTIQUE = "CJPacket Ordinary"; // livraison suivie FR ~6-10 j
 
 /* ===================================================================== */
@@ -68,18 +61,9 @@ export default {
     const adresse = session.shipping_details || session.customer_details;
     const produit = PACKS_PAR_MONTANT[session.amount_total];
 
-    // Coloris choisi par le client dans le champ personnalisé Stripe
-    const champColoris = (session.custom_fields || []).find(
-      f => f.key && f.key.toLowerCase().includes("coloris")
-    );
-    const coloris =
-      (champColoris && champColoris.dropdown && champColoris.dropdown.value) ||
-      COLORIS_PAR_DEFAUT;
-
     const recap = {
       pack: produit ? produit.pack : "INCONNU (montant " + session.amount_total + ")",
       quantite: produit ? produit.quantite : 1,
-      coloris,
       montant: (session.amount_total / 100).toFixed(2) + " €",
       client: adresse?.name,
       email: session.customer_details?.email,
@@ -94,8 +78,8 @@ export default {
     // 2. Créer la commande chez CJ Dropshipping
     try {
       if (!produit) throw new Error("montant inconnu : " + session.amount_total + " centimes");
-      const vid = COLORIS_VERS_CJ_VID[coloris];
-      if (!vid || vid.startsWith("VID_")) throw new Error("vid CJ non configuré pour " + coloris);
+      if (!VID_PRODUIT || VID_PRODUIT === "VID_A_REMPLACER") throw new Error("VID CJ non configuré — lance get-vid.sh");
+      const vid = VID_PRODUIT;
 
       const token = await cjToken(env);
       const cjResp = await fetch(
