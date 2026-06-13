@@ -20,8 +20,13 @@
 /* ---------- CONFIG PRODUITS (à remplir une seule fois) ----------
    Le pack est reconnu par le MONTANT payé (en centimes).
    ⚠️ Si tu changes les prix de la boutique, mets aussi à jour ici.
-   Pour les coloris : sur CJ, ouvre la fiche produit, chaque coloris
-   a un identifiant "vid" (Claude les remplit pour toi).              */
+
+   Produit CJ : Neck Hanging Bladeless Fan — Luxury Style
+   PID CJ     : 2014603723890790401
+   URL CJ     : https://cjdropshipping.com/product/neck-hanging-bladeless-fan-white-luxury-style-3-gears-2000-4000mah-usb-rechargeable-retractable-air-outlet-3-6h-battery-life-p-2014603723890790401.html
+
+   Pour les coloris : sur CJ, ouvre la fiche produit, clique sur chaque
+   coloris et regarde l'URL ou l'onglet réseau → récupère le "vid".     */
 const PACKS_PAR_MONTANT = {
   3490: { pack: "Solo",  quantite: 1 },
   5990: { pack: "Duo",   quantite: 2 },
