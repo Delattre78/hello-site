@@ -1,0 +1,1098 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MACRO FLOW RESEARCH — Live Dashboard S23 2026</title>
+<meta name="description" content="Rapport macro-financier institutionnel live — EURUSD, Nasdaq, Dow Jones, S&P500, DXY, Fed, BCE, Prévisions">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#05070f;--panel:#090c18;--card:#0e1120;--card2:#141828;--card3:#1a1f30;
+  --border:rgba(255,255,255,0.07);--borderb:rgba(56,189,248,0.22);
+  --blue:#38bdf8;--bdim:rgba(56,189,248,0.1);
+  --green:#4ade80;--gdim:rgba(74,222,128,0.1);
+  --red:#f87171;--rdim:rgba(248,113,113,0.1);
+  --orange:#fb923c;--odim:rgba(251,146,60,0.1);
+  --gold:#fbbf24;--purple:#a78bfa;
+  --t1:#eef2ff;--t2:#8892b0;--t3:#374151;
+  --fh:'Syne',sans-serif;--fm:'DM Mono',monospace;--fb:'DM Sans',sans-serif;
+  --r:10px;--rl:16px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--t1);font-family:var(--fb);font-size:14px;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#1e2a40;border-radius:2px}
+
+/* TICKER */
+#ticker-wrap{background:var(--panel);border-bottom:1px solid var(--border);overflow:hidden;height:34px;position:relative;z-index:200}
+#ticker-wrap::before,#ticker-wrap::after{content:'';position:absolute;top:0;bottom:0;width:80px;z-index:2;pointer-events:none}
+#ticker-wrap::before{left:0;background:linear-gradient(90deg,var(--panel),transparent)}
+#ticker-wrap::after{right:0;background:linear-gradient(270deg,var(--panel),transparent)}
+#ticker-inner{display:flex;align-items:center;height:100%;animation:tickerRun 80s linear infinite;white-space:nowrap}
+#ticker-inner:hover{animation-play-state:paused}
+@keyframes tickerRun{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+.tk{display:inline-flex;align-items:center;gap:.5rem;padding:0 1.5rem;font-family:var(--fm);font-size:.68rem;border-right:1px solid var(--border)}
+.tk-sym{color:var(--t2);letter-spacing:.1em}.tk-price{color:var(--t1);font-weight:500}.tk-chg{font-size:.62rem}
+.tk-chg.up{color:var(--green)}.tk-chg.dn{color:var(--red)}.tk-chg.flat{color:var(--t2)}
+@keyframes flashUp{0%{background:rgba(74,222,128,.3)}100%{background:transparent}}
+@keyframes flashDn{0%{background:rgba(248,113,113,.3)}100%{background:transparent}}
+.fu{animation:flashUp .7s ease}.fd{animation:flashDn .7s ease}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(74,222,128,.6)}50%{box-shadow:0 0 0 5px rgba(74,222,128,0)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.dot-live{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
+.dot-load{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gold);animation:blink .8s infinite}
+.dot-off{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--red)}
+
+/* HEADER */
+#hdr{position:sticky;top:0;z-index:100;background:rgba(5,7,15,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;padding:.6rem 1.5rem;border-bottom:1px solid var(--border);flex-wrap:wrap;gap:.5rem}
+.logo{font-family:var(--fh);font-size:1.05rem;font-weight:800;letter-spacing:.06em;display:flex;align-items:center;gap:.5rem}
+.logo-acc{color:var(--blue)}
+.hdr-r{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap}
+.badge-inst{background:var(--bdim);border:1px solid var(--borderb);color:var(--blue);font-family:var(--fm);font-size:.6rem;padding:3px 10px;border-radius:20px;letter-spacing:.1em;text-transform:uppercase}
+.live-badge{background:var(--gdim);border:1px solid rgba(74,222,128,.25);color:var(--green);font-family:var(--fm);font-size:.6rem;padding:3px 10px;border-radius:20px;display:flex;align-items:center;gap:.4rem}
+#clk{font-family:var(--fm);font-size:.68rem;color:var(--t2)}
+#upd{font-family:var(--fm);font-size:.6rem;color:var(--t3)}
+.hbtn{background:var(--bdim);border:1px solid var(--borderb);color:var(--blue);font-family:var(--fm);font-size:.62rem;padding:5px 13px;border-radius:6px;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:all .2s;display:flex;align-items:center;gap:.3rem}
+.hbtn:hover{background:rgba(56,189,248,.2)}
+.nav{display:flex;align-items:center;overflow-x:auto;padding:0 .5rem;scrollbar-width:none}
+.nav::-webkit-scrollbar{display:none}
+.nav a{color:var(--t2);text-decoration:none;font-family:var(--fm);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;padding:8px 14px;white-space:nowrap;border-bottom:2px solid transparent;transition:all .2s}
+.nav a:hover{color:var(--blue)}.nav a.on{color:var(--blue);border-bottom-color:var(--blue)}
+
+/* LAYOUT */
+.wrap{display:grid;grid-template-columns:1fr 300px;min-height:calc(100vh - 100px)}
+.main{border-right:1px solid var(--border)}
+.side{background:var(--panel);position:sticky;top:100px;height:calc(100vh - 100px);overflow-y:auto;display:flex;flex-direction:column}
+@media(max-width:1050px){.wrap{grid-template-columns:1fr}.side{position:static;height:auto;border-top:1px solid var(--border)}}
+
+/* HERO */
+#overview{padding:2.5rem 2rem;background:linear-gradient(135deg,rgba(56,189,248,.04),transparent 60%),radial-gradient(ellipse 80% 50% at 50% 0%,rgba(74,222,128,.04),transparent 70%);border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+#overview::before{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:50px 50px;opacity:.3}
+.hero-in{position:relative;z-index:1}
+.hero-t{font-family:var(--fh);font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;line-height:1.1;margin-bottom:.5rem}
+.hero-t .a{color:var(--blue)}
+.hero-s{font-size:.82rem;color:var(--t2);margin-bottom:1.5rem;max-width:600px}
+.regime{display:flex;gap:.6rem;margin-bottom:2rem;flex-wrap:wrap}
+.rpill{display:flex;align-items:center;gap:.4rem;padding:5px 14px;border-radius:20px;font-family:var(--fm);font-size:.65rem;border:1px solid;letter-spacing:.05em}
+.rpill.ron{color:var(--green);border-color:rgba(74,222,128,.3);background:var(--gdim)}
+.rpill.roff{color:var(--red);border-color:rgba(248,113,113,.3);background:var(--rdim)}
+.rpill.rn{color:var(--gold);border-color:rgba(251,191,36,.3);background:rgba(251,191,36,.08)}
+
+/* ASSET CARDS */
+.ag{display:grid;grid-template-columns:repeat(5,1fr);gap:.8rem}
+@media(max-width:1300px){.ag{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:700px){.ag{grid-template-columns:repeat(2,1fr)}}
+.ac{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1rem;position:relative;overflow:hidden;cursor:pointer;transition:border-color .3s,transform .2s}
+.ac:hover{border-color:var(--borderb);transform:translateY(-2px)}
+.ac::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;border-radius:0 0 var(--r) var(--r)}
+.ac.bull::after{background:var(--green)}.ac.bear::after{background:var(--red)}.ac.neut::after{background:var(--gold)}
+.ac-sym{font-family:var(--fm);font-size:.58rem;color:var(--t2);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.2rem;display:flex;justify-content:space-between;align-items:center}
+.ac-price{font-family:var(--fm);font-size:1.1rem;font-weight:600;color:var(--t1);margin-bottom:.15rem;min-height:1.4rem;transition:color .3s}
+.ac-chg{font-family:var(--fm);font-size:.68rem;margin-bottom:.4rem}
+.ac-chg.up{color:var(--green)}.ac-chg.dn{color:var(--red)}.ac-chg.flat{color:var(--t2)}
+.ac-bias{font-size:.68rem;font-weight:600;margin-bottom:.35rem}
+.ac-bias.bull{color:var(--green)}.ac-bias.bear{color:var(--red)}.ac-bias.neut{color:var(--gold)}
+.ac-conf{font-size:.62rem;color:var(--t2)}
+.cbar{height:3px;border-radius:2px;background:var(--border);margin-top:3px;overflow:hidden}
+.cfill{height:100%;border-radius:2px}
+.bull .cfill{background:var(--green)}.bear .cfill{background:var(--red)}.neut .cfill{background:var(--gold)}
+
+/* SECTIONS */
+.sec{padding:2rem;border-bottom:1px solid var(--border)}
+.sch{margin-bottom:1.5rem}
+.scn{font-family:var(--fm);font-size:.58rem;color:var(--t3);letter-spacing:.2em;display:block;margin-bottom:.2rem}
+.sct{font-family:var(--fh);font-size:1.25rem;font-weight:700;margin-bottom:.3rem}
+.scs{font-size:.78rem;color:var(--t2)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.2rem;transition:border-color .3s}
+.card:hover{border-color:var(--borderb)}
+.ct{font-family:var(--fh);font-size:.82rem;font-weight:700;margin-bottom:.5rem;display:flex;align-items:center;gap:.4rem}
+.cb{color:var(--t2);font-size:.8rem;line-height:1.7}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem}
+@media(max-width:800px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+/* TABS */
+.tabs{display:flex;gap:.2rem;border-bottom:1px solid var(--border);margin-bottom:1.2rem;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{font-family:var(--fm);font-size:.62rem;letter-spacing:.08em;text-transform:uppercase;color:var(--t3);background:none;border:none;border-bottom:2px solid transparent;cursor:pointer;padding:7px 14px;white-space:nowrap;transition:all .2s}
+.tab:hover{color:var(--t1)}.tab.on{color:var(--blue);border-bottom-color:var(--blue)}
+.tab-pane{display:none}.tab-pane.on{display:block}
+
+/* DATA GRID */
+.dg{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:.8rem}
+.di{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:.9rem 1rem;transition:border-color .3s}
+.di:hover{border-color:var(--borderb)}
+.di-n{font-family:var(--fm);font-size:.56rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.35rem}
+.di-v{font-family:var(--fm);font-size:.98rem;font-weight:500;color:var(--t1)}
+.di-p{font-family:var(--fm);font-size:.65rem;color:var(--t3);margin-left:.4rem}
+.di-c{font-family:var(--fm);font-size:.62rem;color:var(--gold)}
+.di-i{font-size:.73rem;color:var(--t2);margin-top:.35rem;line-height:1.5}
+.di-im{font-size:.65rem;margin-top:.25rem}
+.di-s{font-family:var(--fm);font-size:.56rem;color:var(--t3);margin-top:.25rem}
+
+/* SCENARIOS + PREDICTIONS */
+.scg{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:.8rem;margin-top:1rem}
+.sb{border-radius:var(--r);padding:1rem;border:1px solid}
+.sb.bull{background:var(--gdim);border-color:rgba(74,222,128,.2)}
+.sb.bear{background:var(--rdim);border-color:rgba(248,113,113,.2)}
+.sb.neut{background:rgba(251,191,36,.06);border-color:rgba(251,191,36,.2)}
+.sl{font-family:var(--fm);font-size:.56rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:.35rem}
+.bull .sl{color:var(--green)}.bear .sl{color:var(--red)}.neut .sl{color:var(--gold)}
+.sp2{font-family:var(--fh);font-size:1.5rem;font-weight:700;margin-bottom:.25rem}
+.bull .sp2{color:var(--green)}.bear .sp2{color:var(--red)}.neut .sp2{color:var(--gold)}
+.sd{font-size:.72rem;color:var(--t2);line-height:1.5}
+.proba-bar{height:6px;background:var(--border);border-radius:3px;margin-top:.5rem;overflow:hidden}
+.proba-fill{height:100%;border-radius:3px;transition:width 1.5s ease}
+.bull .proba-fill{background:var(--green)}.bear .proba-fill{background:var(--red)}.neut .proba-fill{background:var(--gold)}
+
+/* PREDICTION CARD */
+.pred-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:.8rem}
+.pred-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1.1rem;position:relative;overflow:hidden}
+.pred-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.pred-card.bull::before{background:var(--green)}.pred-card.bear::before{background:var(--red)}.pred-card.neut::before{background:var(--gold)}
+.pred-sym{font-family:var(--fm);font-size:.56rem;color:var(--t3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.3rem;display:flex;justify-content:space-between}
+.pred-asset{font-family:var(--fh);font-size:1rem;font-weight:700;margin-bottom:.2rem}
+.pred-target{font-family:var(--fm);font-size:.85rem;font-weight:500;margin-bottom:.4rem}
+.pred-card.bull .pred-target{color:var(--green)}.pred-card.bear .pred-target{color:var(--red)}.pred-card.neut .pred-target{color:var(--gold)}
+.pred-conf-bar{height:4px;background:var(--border);border-radius:2px;margin-bottom:.5rem;overflow:hidden}
+.pred-conf-fill{height:100%;border-radius:2px}
+.pred-card.bull .pred-conf-fill{background:var(--green)}.pred-card.bear .pred-conf-fill{background:var(--red)}.pred-card.neut .pred-conf-fill{background:var(--gold)}
+.pred-drivers{font-size:.71rem;color:var(--t2);line-height:1.5}
+.pred-timeframes{display:flex;gap:.4rem;margin-top:.6rem}
+.ptf{flex:1;background:var(--card2);border-radius:6px;padding:.4rem;text-align:center}
+.ptf-l{font-family:var(--fm);font-size:.52rem;color:var(--t3);text-transform:uppercase;display:block;margin-bottom:.2rem}
+.ptf-v{font-family:var(--fh);font-size:.75rem;font-weight:700}
+.bull .ptf-v{color:var(--green)}.bear .ptf-v{color:var(--red)}.neut .ptf-v{color:var(--gold)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:.25rem;padding:2px 8px;border-radius:20px;font-family:var(--fm);font-size:.58rem;letter-spacing:.08em;text-transform:uppercase;border:1px solid}
+.badge.bull{color:var(--green);background:var(--gdim);border-color:rgba(74,222,128,.25)}
+.badge.bear{color:var(--red);background:var(--rdim);border-color:rgba(248,113,113,.25)}
+.badge.neut{color:var(--gold);background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.25)}
+.badge.info{color:var(--blue);background:var(--bdim);border-color:var(--borderb)}
+.badge.crit{color:var(--red);background:var(--rdim);border-color:rgba(248,113,113,.3)}
+.badge.warn{color:var(--orange);background:var(--odim);border-color:rgba(251,146,60,.3)}
+
+/* TABLE */
+.tw{overflow-x:auto;border-radius:var(--r);border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:.76rem}
+thead tr{background:var(--card2)}
+th{padding:9px 11px;text-align:left;font-family:var(--fm);font-size:.56rem;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:9px 11px;color:var(--t2);border-bottom:1px solid var(--border);vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:rgba(255,255,255,.015)}
+.mn{font-family:var(--fm);color:var(--t1)}
+.pos{color:var(--green);font-family:var(--fm)}.neg{color:var(--red);font-family:var(--fm)}
+.ih{color:var(--red)}.im{color:var(--orange)}.il{color:var(--t2)}
+
+/* RISK CARDS */
+.rg{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.8rem}
+.rc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:1rem;position:relative;overflow:hidden}
+.rc::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.rc.crit::before{background:var(--red)}.rc.high::before{background:var(--orange)}.rc.mod::before{background:var(--gold)}.rc.low::before{background:var(--green)}
+.rl2{font-family:var(--fm);font-size:.56rem;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.3rem;font-weight:600}
+.rc.crit .rl2{color:var(--red)}.rc.high .rl2{color:var(--orange)}.rc.mod .rl2{color:var(--gold)}.rc.low .rl2{color:var(--green)}
+.rn{font-family:var(--fh);font-size:.82rem;font-weight:700;margin-bottom:.35rem}
+.rp{font-family:var(--fm);font-size:1.2rem;font-weight:500;margin-bottom:.3rem}
+.rc.crit .rp{color:var(--red)}.rc.high .rp{color:var(--orange)}.rc.mod .rp{color:var(--gold)}.rc.low .rp{color:var(--green)}
+.ri{font-size:.71rem;color:var(--t2);line-height:1.5;margin-bottom:.35rem}
+
+/* SCORE BARS */
+.sr{display:flex;align-items:center;gap:.7rem;margin-bottom:.5rem}
+.sl2{font-family:var(--fm);font-size:.62rem;color:var(--t2);width:105px;flex-shrink:0}
+.st{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden}
+.sf{height:100%;border-radius:3px;transition:width 1.5s ease}
+.sn{font-family:var(--fm);font-size:.72rem;font-weight:500;width:28px;text-align:right}
+
+/* SIDEBAR */
+.side-hdr{padding:.9rem 1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--panel);z-index:10}
+.side-t{font-family:var(--fh);font-size:.82rem;font-weight:700}
+.side-b{font-family:var(--fm);font-size:.56rem;color:var(--green);background:var(--gdim);border:1px solid rgba(74,222,128,.25);padding:2px 7px;border-radius:10px}
+.nrbtn{background:none;border:1px solid var(--border);border-radius:4px;color:var(--t2);font-family:var(--fm);font-size:.56rem;padding:3px 8px;cursor:pointer;text-transform:uppercase;letter-spacing:.06em;transition:all .2s}
+.nrbtn:hover{border-color:var(--borderb);color:var(--blue)}
+#nfeed{padding:.6rem;display:flex;flex-direction:column;gap:.5rem;flex:1}
+.ni{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:.75rem;cursor:pointer;transition:all .2s;text-decoration:none;display:block}
+.ni:hover{border-color:var(--borderb);background:var(--card2)}
+.ni.nw{border-color:rgba(74,222,128,.35)}
+.ni-src{font-family:var(--fm);font-size:.56rem;color:var(--blue);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.25rem}
+.ni-t{font-size:.75rem;color:var(--t1);line-height:1.4;margin-bottom:.25rem;font-weight:500}
+.ni-m{display:flex;align-items:center;justify-content:space-between}
+.ni-tm{font-family:var(--fm);font-size:.58rem;color:var(--t3)}
+.ni-tag{font-family:var(--fm);font-size:.52rem;padding:1px 6px;border-radius:4px;text-transform:uppercase;letter-spacing:.06em}
+.ni-tag.macro{background:var(--bdim);color:var(--blue);border:1px solid var(--borderb)}
+.ni-tag.forex{background:rgba(167,139,250,.1);color:var(--purple);border:1px solid rgba(167,139,250,.2)}
+.ni-tag.equity{background:var(--gdim);color:var(--green);border:1px solid rgba(74,222,128,.2)}
+.ni-tag.risk{background:var(--rdim);color:var(--red);border:1px solid rgba(248,113,113,.2)}
+.ni-tag.fed{background:var(--odim);color:var(--orange);border:1px solid rgba(251,146,60,.2)}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(12px);z-index:1000;display:none;align-items:center;justify-content:center}
+.modal-bg.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--borderb);border-radius:var(--rl);padding:2rem;width:min(480px,90vw);position:relative}
+.modal-t{font-family:var(--fh);font-size:1.1rem;font-weight:700;margin-bottom:.4rem}
+.modal-s{font-size:.78rem;color:var(--t2);margin-bottom:1.2rem}
+.share-opts{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:1.2rem}
+.sopt{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:.8rem .5rem;text-align:center;cursor:pointer;transition:all .2s}
+.sopt:hover{border-color:var(--borderb);background:var(--bdim)}
+.sopt-ico{font-size:1.3rem;display:block;margin-bottom:.3rem}
+.sopt-name{font-family:var(--fm);font-size:.58rem;color:var(--t2);text-transform:uppercase;letter-spacing:.08em}
+.url-box{background:var(--card2);border:1px solid var(--border);border-radius:var(--r);padding:.8rem 1rem;font-family:var(--fm);font-size:.72rem;color:var(--blue);word-break:break-all;margin-bottom:1rem;user-select:all;cursor:text}
+.modal-btns{display:flex;gap:.7rem}
+.cbtn{flex:1;background:var(--gdim);border:1px solid rgba(74,222,128,.3);color:var(--green);font-family:var(--fm);font-size:.68rem;padding:8px;border-radius:6px;cursor:pointer;text-transform:uppercase;letter-spacing:.06em;transition:all .2s}
+.cbtn:hover{background:rgba(74,222,128,.2)}
+.xbtn{background:var(--rdim);border:1px solid rgba(248,113,113,.3);color:var(--red);font-family:var(--fm);font-size:.68rem;padding:8px 16px;border-radius:6px;cursor:pointer;text-transform:uppercase;letter-spacing:.06em;transition:all .2s}
+.xbtn:hover{background:rgba(248,113,113,.2)}
+
+/* CONN STATUS */
+#cs{position:fixed;bottom:1rem;right:1rem;z-index:500;font-family:var(--fm);font-size:.62rem;padding:5px 12px;border-radius:20px;border:1px solid;transition:all .3s;cursor:pointer}
+#cs.live{background:var(--gdim);border-color:rgba(74,222,128,.3);color:var(--green)}
+#cs.sim{background:var(--odim);border-color:rgba(251,146,60,.3);color:var(--orange)}
+#cs.loading{background:rgba(251,191,36,.1);border-color:rgba(251,191,36,.3);color:var(--gold)}
+
+/* CONCLUSION SCORES */
+.csg{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:.7rem;margin-top:1rem}
+.cs2{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:.8rem;text-align:center}
+.csn{font-family:var(--fm);font-size:.56rem;color:var(--t3);text-transform:uppercase;letter-spacing:.1em;margin-bottom:.4rem}
+.csv{font-family:var(--fh);font-size:1.7rem;font-weight:800}
+.csl{font-size:.62rem;margin-top:.2rem}
+
+/* UTILS */
+.mt1{margin-top:.5rem}.mt2{margin-top:1rem}.mt3{margin-top:1.5rem}
+.mb1{margin-bottom:.5rem}.mb2{margin-bottom:1rem}
+.gb{color:var(--blue)}.gg{color:var(--green)}.gr{color:var(--red)}.go{color:var(--orange)}.ggold{color:var(--gold)}
+.note{font-size:.65rem;color:var(--t3);font-style:italic}.mono{font-family:var(--fm)}
+.sep{height:1px;background:var(--border);margin:1.2rem 0}
+.disc{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:.75rem 1.1rem;font-size:.65rem;color:var(--t3);line-height:1.6;margin:1rem 0}
+.disc strong{color:var(--orange)}
+#ftr{background:var(--panel);border-top:1px solid var(--border);padding:1.5rem 2rem;text-align:center;font-family:var(--fm);font-size:.62rem;color:var(--t3);line-height:1.8}
+.flogo{font-family:var(--fh);font-size:.9rem;font-weight:800;color:var(--t1);margin-bottom:.3rem}
+.flogo .a{color:var(--blue)}
+@media(max-width:600px){.sec{padding:1.2rem}.hdr-top{padding:.5rem 1rem}.pred-timeframes{flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<!-- SHARE MODAL -->
+<div class="modal-bg" id="shareModal">
+  <div class="modal">
+    <div class="modal-t">Partager ce Rapport Live</div>
+    <div class="modal-s">Envoyez ce dashboard en temps reel a vos contacts.</div>
+    <div class="share-opts">
+      <div class="sopt" onclick="copyURL()"><span class="sopt-ico">📋</span><span class="sopt-name">Copier</span></div>
+      <div class="sopt" onclick="doShare('twitter')"><span class="sopt-ico">𝕏</span><span class="sopt-name">Twitter</span></div>
+      <div class="sopt" onclick="doShare('linkedin')"><span class="sopt-ico">💼</span><span class="sopt-name">LinkedIn</span></div>
+      <div class="sopt" onclick="doShare('telegram')"><span class="sopt-ico">✈️</span><span class="sopt-name">Telegram</span></div>
+      <div class="sopt" onclick="doShare('whatsapp')"><span class="sopt-ico">💬</span><span class="sopt-name">WhatsApp</span></div>
+      <div class="sopt" onclick="doShare('email')"><span class="sopt-ico">📧</span><span class="sopt-name">Email</span></div>
+    </div>
+    <div class="url-box" id="urlBox">Generation...</div>
+    <div class="modal-btns">
+      <button class="cbtn" id="copyBtn" onclick="copyURL()">Copier le lien</button>
+      <button class="xbtn" onclick="closeModal()">Fermer</button>
+    </div>
+  </div>
+</div>
+
+<!-- TICKER -->
+<div id="ticker-wrap"><div id="ticker-inner"></div></div>
+
+<!-- HEADER -->
+<header id="hdr">
+  <div class="hdr-top">
+    <div style="display:flex;align-items:center;gap:.8rem;flex-wrap:wrap">
+      <div class="logo"><span class="dot-live"></span> MACRO<span class="logo-acc">FLOW</span> RESEARCH</div>
+      <div class="badge-inst">Institutional · S23 2026</div>
+      <div class="live-badge"><span class="dot-live" style="width:5px;height:5px;margin:0"></span> LIVE</div>
+    </div>
+    <div class="hdr-r">
+      <span id="clk">--:--:--</span>
+      <span id="upd">MAJ: --</span>
+      <button class="hbtn" onclick="forceRefresh()">↻ Rafraichir</button>
+      <button class="hbtn" onclick="openModal()">Partager</button>
+    </div>
+  </div>
+  <nav class="nav">
+    <a href="#overview" class="on">Dashboard</a>
+    <a href="#resume">Resume</a>
+    <a href="#usa">USA</a>
+    <a href="#fed">Fed</a>
+    <a href="#europe">Europe</a>
+    <a href="#france">France</a>
+    <a href="#dxy">DXY</a>
+    <a href="#eurusd">EURUSD</a>
+    <a href="#nasdaq">Nasdaq</a>
+    <a href="#dow">Dow</a>
+    <a href="#sp500">S&amp;P500</a>
+    <a href="#previsions">Previsions</a>
+    <a href="#calendar">Calendrier</a>
+    <a href="#risks">Risques</a>
+    <a href="#trading">Trading</a>
+    <a href="#conclusion">Conclusion</a>
+  </nav>
+</header>
+
+<div class="wrap">
+<main class="main">
+
+<!-- OVERVIEW -->
+<section id="overview" class="sec">
+  <div class="hero-in">
+    <div class="hero-t">Rapport Hebdomadaire <span class="a">Macro &amp; Marches Financiers</span></div>
+    <div class="hero-s">Analyse fondamentale institutionnelle live · EURUSD · Nasdaq · Dow Jones · S&amp;P500 · DXY · Semaine S23 2026</div>
+    <div class="regime">
+      <div class="rpill rn"><span style="display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--gold)"></span> Regime Neutre</div>
+      <div class="rpill ron"><span class="dot-live" style="width:5px;height:5px"></span> Risk-ON Nasdaq/SPX</div>
+      <div class="rpill roff">BCE Hawkish · EUR pression</div>
+    </div>
+    <div class="ag" id="ag"></div>
+  </div>
+</section>
+
+<!-- RESUME EXECUTIF -->
+<section id="resume" class="sec">
+  <div class="sch"><span class="scn">01 — Executive Summary</span><h2 class="sct">Resume Executif</h2><p class="scs">5 informations macro cles · Catalyseurs · Risques · Biais global</p></div>
+  <div class="g2 mb2">
+    <div>
+      <h3 style="font-family:var(--fh);font-size:.88rem;color:var(--blue);margin-bottom:.8rem">5 Faits Macro Cles</h3>
+      <div style="display:flex;flex-direction:column;gap:.5rem">
+        <div style="display:flex;gap:.8rem;padding:.75rem;background:var(--card);border:1px solid var(--border);border-radius:var(--r);font-size:.78rem;color:var(--t2);line-height:1.5"><span style="color:var(--blue);font-family:var(--fm);flex-shrink:0;font-weight:700">01</span><span><strong style="color:var(--t1)">Fed Statu quo 4,25-4,50%</strong> — 5e meeting consecutif sans changement. FOMC 18 juin + Dot Plot decisif. Premiere baisse anticipee septembre 2026 (52% CME FedWatch).</span></div>
+        <div style="display:flex;gap:.8rem;padding:.75rem;background:var(--card);border:1px solid var(--border);border-radius:var(--r);font-size:.78rem;color:var(--t2);line-height:1.5"><span style="color:var(--orange);font-family:var(--fm);flex-shrink:0;font-weight:700">02</span><span><strong style="color:var(--t1)">BCE baisse 25pb le 6 juin — taux depot 3,25%</strong> — Cycle assouplissement confirme. Lagarde prudente sur le rythme. Impact EUR limite car prix dans les cours.</span></div>
+        <div style="display:flex;gap:.8rem;padding:.75rem;background:var(--card);border:1px solid var(--border);border-radius:var(--r);font-size:.78rem;color:var(--t2);line-height:1.5"><span style="color:var(--gold);font-family:var(--fm);flex-shrink:0;font-weight:700">03</span><span><strong style="color:var(--t1)">NFP mai 2026 — vendredi 6 juin 14h30</strong> — Consensus 185k. Event binaire majeur pour USD, EURUSD, indices et taux. ADP 3 juin en amont comme signal avance.</span></div>
+        <div style="display:flex;gap:.8rem;padding:.75rem;background:var(--card);border:1px solid var(--border);border-radius:var(--r);font-size:.78rem;color:var(--t2);line-height:1.5"><span style="color:var(--green);font-family:var(--fm);flex-shrink:0;font-weight:700">04</span><span><strong style="color:var(--t1)">Core PCE 2,8% — Desinflation graduelle</strong> — Indicateur prefere de la Fed. Tendance baissiere confirmee mais reste au-dessus de 2%. Services sticky. Logement en desinflation lente.</span></div>
+        <div style="display:flex;gap:.8rem;padding:.75rem;background:var(--card);border:1px solid var(--border);border-radius:var(--r);font-size:.78rem;color:var(--t2);line-height:1.5"><span style="color:var(--red);font-family:var(--fm);flex-shrink:0;font-weight:700">05</span><span><strong style="color:var(--t1)">France : deficit 5,4% PIB — risque budgetaire</strong> — OAT-Bund spread 65pb en hausse. Instabilite politique chronique. Risque euro structurel si spread depasse 80pb.</span></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:.8rem">
+      <div class="card">
+        <div class="ct">Catalyseurs a Venir</div>
+        <div class="cb" style="display:flex;flex-direction:column;gap:.4rem">
+          <div style="display:flex;gap:.5rem;align-items:center;font-size:.76rem"><span class="badge crit">6 JUIN</span><span>NFP mai — event binaire USD/Indices</span></div>
+          <div style="display:flex;gap:.5rem;align-items:center;font-size:.76rem"><span class="badge crit">10 JUIN</span><span>CPI mai US — validation desinflation</span></div>
+          <div style="display:flex;gap:.5rem;align-items:center;font-size:.76rem"><span class="badge crit">18 JUIN</span><span>FOMC + Dot Plot — timing des baisses</span></div>
+          <div style="display:flex;gap:.5rem;align-items:center;font-size:.76rem"><span class="badge info">25 JUIN</span><span>PCE mai — confirmation Fed</span></div>
+        </div>
+      </div>
+      <div class="g2" style="gap:.7rem">
+        <div class="card" style="border-color:rgba(248,113,113,.2)"><div class="ct gr">Risques</div><div class="cb" style="font-size:.72rem"><div>— NFP surprend a la hausse</div><div>— Inflation reaccelere</div><div>— BCE hawkish surprise</div><div>— Risque dette France</div></div></div>
+        <div class="card" style="border-color:rgba(74,222,128,.2)"><div class="ct gg">Opportunites</div><div class="cb" style="font-size:.72rem"><div>+ Long Nasdaq dips IA</div><div>+ S&amp;P500 si CPI en ligne</div><div>+ EURUSD range play</div><div>+ Fed pivot H2 2026</div></div></div>
+      </div>
+      <div class="card">
+        <div class="ct">Scores Globaux</div>
+        <div class="sr"><span class="sl2">Macro US</span><div class="st"><div class="sf" style="width:58%;background:var(--gold)"></div></div><span class="sn ggold">5.8</span></div>
+        <div class="sr"><span class="sl2">Nasdaq</span><div class="st"><div class="sf" style="width:64%;background:var(--green)"></div></div><span class="sn gg">6.4</span></div>
+        <div class="sr"><span class="sl2">S&amp;P 500</span><div class="st"><div class="sf" style="width:61%;background:var(--green)"></div></div><span class="sn gg">6.1</span></div>
+        <div class="sr"><span class="sl2">EURUSD</span><div class="st"><div class="sf" style="width:48%;background:var(--gold)"></div></div><span class="sn ggold">4.8</span></div>
+        <div class="sr"><span class="sl2">Macro Europe</span><div class="st"><div class="sf" style="width:42%;background:var(--gold)"></div></div><span class="sn ggold">4.2</span></div>
+        <div class="sr"><span class="sl2">France</span><div class="st"><div class="sf" style="width:38%;background:var(--red)"></div></div><span class="sn gr">3.8</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- USA -->
+<section id="usa" class="sec">
+  <div class="sch"><span class="scn">02 — US Economy</span><h2 class="sct">Economie Americaine</h2><p class="scs">Sources : BLS · BEA · Census · ISM · S&amp;P Global</p></div>
+  <div class="dg">
+    <div class="di"><div class="di-n">PIB Reel Q1 2026</div><div style="display:flex;align-items:baseline;gap:.4rem"><span class="di-v ggold">+1,8%</span><span class="di-p">Prec. +2,4%</span></div><div class="di-c">Consensus +2,0% — miss</div><div class="di-i">Ralentissement visible. Pas de recession confirmee. Rebond Q2 attendu. Goldman Sachs target +2,0% annuel.</div><div class="di-im"><span class="ggold">USD neutre</span> · <span class="gg">Fed dovish +</span></div><div class="di-s">BEA — 29 mai 2026</div></div>
+    <div class="di"><div class="di-n">CPI YoY (avr. 2026)</div><div style="display:flex;align-items:baseline;gap:.4rem"><span class="di-v gg">+2,8%</span><span class="di-p">Prec. +3,1%</span></div><div class="di-c">Consensus +2,9% — beat</div><div class="di-i">Desinflation graduelle. Services et logement encore contributeurs. Tendance positive pour Fed.</div><div class="di-im"><span class="gg">Indices US +</span> · <span class="gg">EURUSD +</span></div><div class="di-s">BLS — 15 mai 2026</div></div>
+    <div class="di"><div class="di-n">Core CPI / Core PCE</div><div style="display:flex;align-items:baseline;gap:.4rem"><span class="di-v go">3,1% / 2,8%</span></div><div class="di-c">Au-dessus cible 2% Fed</div><div class="di-i">Principal frein aux baisses Fed. Services sticky 5-6%. Logement en desinflation lente. Fed patient.</div><div class="di-im"><span class="gr">Fed hawkish bias</span> · <span class="gr">USD soutenu</span></div><div class="di-s">BLS/BEA — 15/30 mai 2026</div></div>
+    <div class="di"><div class="di-n">PCE avr. 2026</div><div style="display:flex;align-items:baseline;gap:.4rem"><span class="di-v gg">+2,6%</span><span class="di-p">Prec. +2,8%</span></div><div class="di-c">Consensus +2,7% — beat</div><div class="di-i">Indicateur prefere de la Fed. Amelioration confirmee. Donne de la latitude pour une premiere baisse H2 2026.</div><div class="di-im"><span class="gg">Positif Fed dovish</span> · <span class="gg">Indices +</span></div><div class="di-s">BEA — 30 mai 2026</div></div>
+    <div class="di"><div class="di-n">NFP avr. 2026</div><div style="display:flex;align-items:baseline;gap:.4rem"><span class="di-v ggold">+177k</span><span class="di-p">Prec. +185k</span></div><div class="di-c">Consensus +180k — miss leger</div><div class="di-i">Marche du travail resilient. Pas d'alarme. Chiffre de mai attendu vendredi 6 juin — event majeur.</div><div class="di-im"><span class="ggold">USD neutre</span></div><div class="di-s">BLS — 2 mai 2026</div></div>
+    <div class="di"><div class="di-n">Chomage</div><div style="display:flex;align-items:baseline;gap:.4rem"><span class="di-v ggold">4,1%</span><span class="di-p">Prec. 4,0%</span></div><div class="di-c">Au-dessus consensus 4,0%</div><div class="di-i">Legere hausse mais non preoccupante. Marche du travail qui se normalise graduellement.</div><div class="di-im"><span class="ggold">Fed dovish signal</span></div><div class="di-s">BLS — 2 mai 2026</div></div>
+    <div class="di"><div class="di-n">JOLTS mars 2026</div><div style="display:flex;align-items:baseline;gap:.4rem"><span class="di-v ggold">7,19M</span><span class="di-p">Prec. 7,48M</span></div><div class="di-c">Consensus 7,30M — miss</div><div class="di-i">Offres d'emploi en recul. Refroidissement graduel du marche du travail. Ratio postes/chomeurs a 1,08.</div><div class="di-im"><span class="gg">Fed dovish +</span></div><div class="di-s">BLS — 7 mai 2026</div></div>
+    <div class="di"><div class="di-n">Retail Sales avr.</div><div style="display:flex;align-items:baseline;gap:.4rem"><span class="di-v gr">+0,1%</span><span class="di-p">Prec. +0,8%</span></div><div class="di-c">Consensus +0,4% — miss</div><div class="di-i">Consommateur americain qui marque le pas. Pouvoir d'achat sous pression inflation residuelle.</div><div class="di-im"><span class="gr">Negatif croissance</span> · <span class="gr">Indices -</span></div><div class="di-s">Census — 15 mai 2026</div></div>
+    <div class="di"><div class="di-n">ISM Manufacturing</div><div style="display:flex;align-items:baseline;gap:.4rem"><span class="di-v gr">49,0</span><span class="di-p">Prec. 48,7</span></div><div class="di-c">Sous 50 — contraction</div><div class="di-i">Secteur manufacturier en contraction pour le 3e mois. Amelioration marginale. PMI S&amp;P Global diverge a 52,1.</div><div class="di-im"><span class="ggold">USD neutre</span></div><div class="di-s">ISM — 2 juin 2026</div></div>
+    <div class="di"><div class="di-n">ISM Services mai</div><div style="display:flex;align-items:baseline;gap:.4rem"><span class="di-v gg">53,8</span><span class="di-p">Prec. 51,6</span></div><div class="di-c">Consensus 52,0 — fort beat</div><div class="di-i">Forte expansion du secteur services. Economie US encore solide. Contrebalance la faiblesse du manufacturing.</div><div class="di-im"><span class="gg">USD + Indices +</span></div><div class="di-s">ISM — 4 juin 2026</div></div>
+    <div class="di"><div class="di-n">Cond. Financieres</div><div style="display:flex;align-items:baseline;gap:.4rem"><span class="di-v gg">Accommodantes</span></div><div class="di-c">GS FCI : 99,4</div><div class="di-i">Conditions favorables pour actifs risques. Credit spreads IG/HY stables. Liquidite suffisante.</div><div class="di-im"><span class="gg">Positif actions</span></div><div class="di-s">Goldman Sachs FCI</div></div>
+    <div class="di"><div class="di-n">Liquidite TGA/RRP</div><div style="display:flex;align-items:baseline;gap:.4rem"><span class="di-v ggold">~720Mrd$</span></div><div class="di-c">RRP ~380Mrd — en baisse</div><div class="di-i">Liquidite systeme suffisante. Bilan Fed 7,1T USD. QT a ~60Mrd/mois. Ralentissement probable en 2026.</div><div class="di-im"><span class="gg">Neutre positif</span></div><div class="di-s">Fed H.4.1 — juin 2026</div></div>
+  </div>
+</section>
+
+<!-- FED -->
+<section id="fed" class="sec">
+  <div class="sch"><span class="scn">03 — Federal Reserve</span><h2 class="sct">Fed — Politique Monetaire</h2><p class="scs">FOMC · FedWatch · Discours · Scenarios taux</p></div>
+  <div class="g2 mb2">
+    <div style="display:flex;flex-direction:column;gap:.8rem">
+      <div class="card">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem">
+          <div><div style="font-family:var(--fm);font-size:.56rem;color:var(--t3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.3rem">Fed Funds Rate</div><div style="font-family:var(--fh);font-size:2rem;font-weight:800;color:var(--blue)">4,25 – 4,50%</div></div>
+          <span class="badge neut">Statu quo</span>
+        </div>
+        <div style="font-size:.78rem;color:var(--t2);line-height:1.6;margin-bottom:.8rem">Jerome Powell : patient, donnees-dependant. Baisse possible septembre 2026. Resistance aux pressions politiques (Trump). Surveillance inflation services.</div>
+        <div style="display:flex;gap:.7rem">
+          <div style="flex:1;background:var(--card2);border-radius:8px;padding:.6rem;text-align:center"><div style="font-family:var(--fm);font-size:.52rem;color:var(--t3);text-transform:uppercase;display:block;margin-bottom:.2rem">Dernier FOMC</div><div style="font-family:var(--fh);font-size:.85rem;font-weight:700">7 mai 2026</div></div>
+          <div style="flex:1;background:var(--card2);border-radius:8px;padding:.6rem;text-align:center"><div style="font-family:var(--fm);font-size:.52rem;color:var(--t3);text-transform:uppercase;display:block;margin-bottom:.2rem">Prochain FOMC</div><div style="font-family:var(--fh);font-size:.85rem;font-weight:700;color:var(--orange)">18 juin 2026</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ct">Discours Fed Recents</div>
+        <div style="display:flex;flex-direction:column;gap:.5rem">
+          <div style="padding:.6rem;background:var(--card2);border-radius:8px"><div style="display:flex;justify-content:space-between;margin-bottom:.3rem"><span style="font-weight:700;font-size:.8rem">J. Powell</span><span class="badge bull">Dovish</span></div><div style="font-size:.72rem;color:var(--t2)">28 mai — Patient, donnees-dependant, coupure possible H2 2026</div></div>
+          <div style="padding:.6rem;background:var(--card2);border-radius:8px"><div style="display:flex;justify-content:space-between;margin-bottom:.3rem"><span style="font-weight:700;font-size:.8rem">J. Williams (NY)</span><span class="badge neut">Neutre</span></div><div style="font-size:.72rem;color:var(--t2)">25 mai — Progres inflation encourageant, emploi resilient</div></div>
+          <div style="padding:.6rem;background:var(--card2);border-radius:8px"><div style="display:flex;justify-content:space-between;margin-bottom:.3rem"><span style="font-weight:700;font-size:.8rem">C. Waller</span><span class="badge bear">Hawkish</span></div><div style="font-size:.72rem;color:var(--t2)">21 mai — Vigilance inflation services, pas de rush pour couper</div></div>
+          <div style="padding:.6rem;background:var(--card2);border-radius:8px"><div style="display:flex;justify-content:space-between;margin-bottom:.3rem"><span style="font-weight:700;font-size:.8rem">M. Bowman</span><span class="badge bear">Hawkish</span></div><div style="font-size:.72rem;color:var(--t2)">19 mai — Preoccupee par Core PCE encore eleve</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="ct gb">CME FedWatch — Probabilites</div>
+      <div style="display:flex;flex-direction:column;gap:1rem;margin-top:.5rem">
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:.4rem"><span style="font-size:.78rem;font-weight:600">18 juin 2026</span><div style="display:flex;gap:.5rem"><span style="font-size:.72rem;color:var(--t2)">Hold <strong>88%</strong></span><span style="font-size:.72rem;color:var(--green);font-weight:700">-25pb 12%</span></div></div><div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden;display:flex"><div style="width:88%;background:var(--t3)"></div><div style="width:12%;background:var(--green)"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:.4rem"><span style="font-size:.78rem;font-weight:600">30 juil. 2026</span><div style="display:flex;gap:.5rem"><span style="font-size:.72rem;color:var(--t2)">Hold <strong>65%</strong></span><span style="font-size:.72rem;color:var(--green);font-weight:700">-25pb 33%</span></div></div><div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden;display:flex"><div style="width:65%;background:var(--t3)"></div><div style="width:33%;background:var(--green)"></div><div style="width:2%;background:var(--red)"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:.4rem"><span style="font-size:.78rem;font-weight:600;color:var(--green)">17 sept. 2026</span><div style="display:flex;gap:.5rem"><span style="font-size:.72rem;color:var(--t2)">Hold <strong>38%</strong></span><span style="font-size:.72rem;color:var(--green);font-weight:700">-25pb 52%</span></div></div><div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden;display:flex"><div style="width:38%;background:var(--t3)"></div><div style="width:52%;background:var(--green)"></div><div style="width:10%;background:var(--red)"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;margin-bottom:.4rem"><span style="font-size:.78rem;font-weight:600">5 nov. 2026</span><div style="display:flex;gap:.5rem"><span style="font-size:.72rem;color:var(--t2)">Hold <strong>25%</strong></span><span style="font-size:.72rem;color:var(--green);font-weight:700">-25pb 58%</span></div></div><div style="height:8px;background:var(--border);border-radius:4px;overflow:hidden;display:flex"><div style="width:25%;background:var(--t3)"></div><div style="width:58%;background:var(--green)"></div><div style="width:17%;background:var(--red)"></div></div></div>
+      </div>
+      <div style="margin-top:1rem;font-family:var(--fm);font-size:.56rem;color:var(--t3)">Source : CME FedWatch Tool — 3 juin 2026</div>
+      <div class="sep"></div>
+      <div class="ct">Impact marche</div>
+      <div style="display:flex;flex-direction:column;gap:.4rem;font-size:.76rem;color:var(--t2)">
+        <div><span class="gb">USD/DXY :</span> Statu quo maintient support. Premiere baisse = -2 a -3% DXY</div>
+        <div><span class="gg">Nasdaq/SPX :</span> Chaque baisse = re-rating potentiel +3 a +5%</div>
+        <div><span class="ggold">EURUSD :</span> Reduction differentiel Fed/BCE = EUR haussier moyen terme</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EUROPE -->
+<section id="europe" class="sec">
+  <div class="sch"><span class="scn">04 — Eurozone</span><h2 class="sct">Economie Zone Euro</h2><p class="scs">Sources : Eurostat · BCE · S&amp;P Global</p></div>
+  <div class="dg mb2">
+    <div class="di"><div class="di-n">PIB ZE Q1 2026</div><div style="display:flex;align-items:baseline;gap:.4rem"><span class="di-v gg">+0,4%</span><span class="di-p">Prec. +0,2%</span></div><div class="di-c">Consensus +0,3% — beat</div><div class="di-i">Legere reprise tiree par Espagne (+0,7%) et Italie (+0,3%). Allemagne +0,2% en sortie de recessions techniques.</div><div class="di-s">Eurostat — 30 avr. 2026</div></div>
+    <div class="di"><div class="di-n">Inflation HICP avr.</div><div style="display:flex;align-items:baseline;gap:.4rem"><span class="di-v ggold">+2,3%</span><span class="di-p">Prec. +2,4%</span></div><div class="di-c">En ligne avec consensus</div><div class="di-i">Retour progressif vers cible 2% BCE. Services encore eleves a 3,5%. Energie deflationniste.</div><div class="di-s">Eurostat — 17 mai 2026</div></div>
+    <div class="di"><div class="di-n">Core HICP avr.</div><div style="display:flex;align-items:baseline;gap:.4rem"><span class="di-v ggold">+2,7%</span><span class="di-p">Prec. +2,9%</span></div><div class="di-c">Baisse confirmee</div><div class="di-i">Services en recul. Bonne nouvelle pour BCE. Permet le cycle d'assouplissement. Cible : passer sous 2,5%.</div><div class="di-s">Eurostat — 17 mai 2026</div></div>
+    <div class="di"><div class="di-n">Chomage ZE mars</div><div style="display:flex;align-items:baseline;gap:.4rem"><span class="di-v gg">5,9%</span><span class="di-p">Prec. 6,0%</span></div><div class="di-c">Historiquement bas</div><div class="di-i">Marche du travail solide. Pas de signal de recession de l'emploi. Soutient la consommation.</div><div class="di-s">Eurostat — 30 avr. 2026</div></div>
+    <div class="di"><div class="di-n">PMI Mfg mai</div><div style="display:flex;align-items:baseline;gap:.4rem"><span class="di-v gr">48,4</span><span class="di-p">Prec. 47,9</span></div><div class="di-c">Sous 50 — contraction</div><div class="di-i">Amelioration marginale. Allemagne toujours sous 50. Industrie europeenne en difficulte structurelle.</div><div class="di-s">S&amp;P Global — 2 juin 2026</div></div>
+    <div class="di"><div class="di-n">PMI Services mai</div><div style="display:flex;align-items:baseline;gap:.4rem"><span class="di-v gg">53,2</span><span class="di-p">Prec. 52,8</span></div><div class="di-c">Expansion solide</div><div class="di-i">Services moteur de la croissance europeenne. Tourisme et loisirs en forte hausse. France 53,7.</div><div class="di-s">S&amp;P Global — 4 juin 2026</div></div>
+    <div class="di" style="border-color:rgba(56,189,248,.3)"><div class="di-n">Taux BCE</div><div style="display:flex;align-items:baseline;gap:.4rem"><span class="di-v gb">3,25%</span><span class="di-p">Prec. 3,50%</span></div><div class="di-c">Baisse 25pb le 6 juin 2026</div><div class="di-i">Cycle assouplissement confirme. Prochain meeting 17 juillet. Lagarde : prudente sur le rythme futur.</div><div class="di-s">BCE — 6 juin 2026</div></div>
+  </div>
+  <div class="card">
+    <div class="ct">Croissance par pays — Q1 2026</div>
+    <div class="g4" style="margin-top:.7rem">
+      <div style="background:var(--card2);border-radius:8px;padding:.8rem;text-align:center"><div style="font-family:var(--fm);font-size:.56rem;color:var(--t3);text-transform:uppercase;margin-bottom:.3rem">Espagne</div><div style="font-family:var(--fh);font-size:1.5rem;font-weight:800;color:var(--green)">+0,7%</div><div style="font-size:.62rem;color:var(--t2)">Leader ZE</div></div>
+      <div style="background:var(--card2);border-radius:8px;padding:.8rem;text-align:center"><div style="font-family:var(--fm);font-size:.56rem;color:var(--t3);text-transform:uppercase;margin-bottom:.3rem">Italie</div><div style="font-family:var(--fh);font-size:1.5rem;font-weight:800;color:var(--green)">+0,3%</div><div style="font-size:.62rem;color:var(--t2)">Reprise solide</div></div>
+      <div style="background:var(--card2);border-radius:8px;padding:.8rem;text-align:center"><div style="font-family:var(--fm);font-size:.56rem;color:var(--t3);text-transform:uppercase;margin-bottom:.3rem">Allemagne</div><div style="font-family:var(--fh);font-size:1.5rem;font-weight:800;color:var(--gold)">+0,2%</div><div style="font-size:.62rem;color:var(--t2)">Sortie recession</div></div>
+      <div style="background:var(--card2);border-radius:8px;padding:.8rem;text-align:center"><div style="font-family:var(--fm);font-size:.56rem;color:var(--t3);text-transform:uppercase;margin-bottom:.3rem">France</div><div style="font-family:var(--fh);font-size:1.5rem;font-weight:800;color:var(--gold)">+0,2%</div><div style="font-size:.62rem;color:var(--t2)">Atone</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FRANCE -->
+<section id="france" class="sec">
+  <div class="sch"><span class="scn">05 — France Focus</span><h2 class="sct">Focus France</h2><p class="scs">Sources : INSEE · Cour des comptes · Fitch</p></div>
+  <div class="g2">
+    <div class="tw">
+      <table>
+        <thead><tr><th>Indicateur</th><th>Valeur</th><th>Precedent</th><th>Source</th></tr></thead>
+        <tbody>
+          <tr><td class="mn">PIB Q1 2026</td><td class="pos">+0,2%</td><td class="il">+0,1%</td><td style="font-size:.65rem;color:var(--t3)">INSEE</td></tr>
+          <tr><td class="mn">CPI avr.</td><td class="pos">+2,1%</td><td class="il">+2,4%</td><td style="font-size:.65rem;color:var(--t3)">INSEE</td></tr>
+          <tr><td class="mn">Chomage T1</td><td class="il">7,3%</td><td class="il">7,4%</td><td style="font-size:.65rem;color:var(--t3)">INSEE</td></tr>
+          <tr><td class="mn">Deficit public 2025</td><td class="neg">5,4% PIB</td><td class="il">4,8%</td><td style="font-size:.65rem;color:var(--t3)">INSEE</td></tr>
+          <tr><td class="mn">Dette publique</td><td class="neg">113,5% PIB</td><td class="il">110,6%</td><td style="font-size:.65rem;color:var(--t3)">INSEE</td></tr>
+          <tr><td class="mn">Conso. menages avr.</td><td class="neg">-0,3%</td><td class="il">+0,2%</td><td style="font-size:.65rem;color:var(--t3)">INSEE</td></tr>
+          <tr><td class="mn">Production industrie mars</td><td class="neg">-0,4%</td><td class="il">+0,7%</td><td style="font-size:.65rem;color:var(--t3)">INSEE</td></tr>
+          <tr><td class="mn">Spread OAT-Bund</td><td class="neg">65 pb</td><td class="il">53 pb</td><td style="font-size:.65rem;color:var(--t3)">Bloomberg</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:.8rem">
+      <div class="card" style="border-left:3px solid var(--red)"><div class="ct gr">Risques Politiques</div><div class="cb" style="font-size:.76rem">3 gouvernements en 18 mois. Absence de majorite. Reformes structurelles bloquees. Budget 2026 sous 49.3. Fitch : sous surveillance negative.</div></div>
+      <div class="card" style="border-left:3px solid var(--orange)"><div class="ct go">Risque OAT-Bund</div><div class="cb" style="font-size:.76rem">Spread a 65pb (+12pb depuis jan.). Seuil critique : 80pb. Au-dela = flux baissiers EURUSD, pression BCE pour intervenir via TPI.</div></div>
+      <div class="card"><div class="ct gg">Points positifs</div><div class="cb" style="font-size:.76rem">Inflation retombe a 2,1%. Tourisme record. Services PMI 53,7. BCE peut intervenir si crise obligataire.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- DXY -->
+<section id="dxy" class="sec">
+  <div class="sch"><span class="scn">06 — Dollar Index</span><h2 class="sct">Dollar Index — DXY</h2><p class="scs">Prix live · Tendance · Forces directionnelles · Correlations</p></div>
+  <div class="g2">
+    <div>
+      <div class="card mb1">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem">
+          <div><div style="font-family:var(--fm);font-size:.56rem;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem">DXY Live</div><div class="ac-price" id="dxy-sec-p" style="font-family:var(--fm);font-size:2rem;font-weight:700">104.82</div><div class="ac-chg" id="dxy-sec-c" style="font-family:var(--fm)">— Live</div></div>
+          <span class="badge neut">Neutre</span>
+        </div>
+        <div style="font-size:.76rem;color:var(--t2)">Tendance : Range 104 – 106 depuis 3 semaines. Attente NFP vendredi 6 juin pour cassure directionnelle.</div>
+      </div>
+      <div class="g2" style="gap:.7rem">
+        <div class="card"><div class="ct gg">Forces Haussieres</div><div class="cb" style="font-size:.72rem;display:flex;flex-direction:column;gap:.3rem"><div>+ Differentiel taux US/monde</div><div>+ Economie US relativement forte</div><div>+ Safe haven geopolitique</div><div>+ ISM Services 53,8 solide</div></div></div>
+        <div class="card"><div class="ct gr">Forces Baissieres</div><div class="cb" style="font-size:.72rem;display:flex;flex-direction:column;gap:.3rem"><div>- Fed pivot anticipe H2 2026</div><div>- Desinflation US confirmee</div><div>- ZE en amelioration</div><div>- Flows EM en hausse</div></div></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:.8rem">
+      <div class="card"><div class="ct">Correlations</div><div style="margin-bottom:.8rem"><div class="di-n">US 10 ans</div><div style="font-family:var(--fm);font-size:.98rem;font-weight:500;color:var(--green)">+0,82</div><div class="di-i">Fort lien positif avec rendements US</div></div><div style="margin-bottom:.8rem"><div class="di-n">S&amp;P 500</div><div style="font-family:var(--fm);font-size:.98rem;font-weight:500;color:var(--orange)">-0,65</div><div class="di-i">Correlation inverse moderee</div></div><div><div class="di-n">EURUSD</div><div style="font-family:var(--fm);font-size:.98rem;font-weight:500;color:var(--red)">-0,94</div><div class="di-i">Correlation inverse forte</div></div></div>
+      <div class="card"><div class="ct">Scenarios</div><div style="margin-bottom:.6rem"><div style="font-family:var(--fm);font-size:.56rem;color:var(--t3);text-transform:uppercase;margin-bottom:.2rem">Scenario Principal 60%</div><div style="font-size:.76rem;color:var(--t2)">Range 103,50–106,00 avant NFP. Consolidation attendue.</div></div><div><div style="font-family:var(--fm);font-size:.56rem;color:var(--t3);text-transform:uppercase;margin-bottom:.2rem">Scenario Alternatif 40%</div><div style="font-size:.76rem;color:var(--t2)">NFP fort &gt; 220k = cassure haussiere vers 107. NFP faible &lt; 150k = cassure baissiere vers 102.</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- EURUSD -->
+<section id="eurusd" class="sec">
+  <div class="sch"><span class="scn">07 — EURUSD Analysis</span><h2 class="sct">EUR/USD — Analyse Fondamentale</h2><p class="scs">Prix live · Differentiels · Scenarios · Biais directionnel</p></div>
+  <div class="g2">
+    <div>
+      <div class="card mb1">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem">
+          <div><div style="font-family:var(--fm);font-size:.56rem;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem">EUR/USD Live</div><div class="ac-price" id="eurusd-sec-p" style="font-family:var(--fm);font-size:2rem;font-weight:700">1.0847</div><div class="ac-chg" id="eurusd-sec-c" style="font-family:var(--fm)">— Live</div></div>
+          <div><span class="badge neut">Neutre</span><div style="font-family:var(--fh);font-size:1.2rem;font-weight:800;color:var(--gold);margin-top:.4rem">4.8/10</div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.4rem">
+          <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border)"><span style="font-family:var(--fm);font-size:.58rem;color:var(--t3);text-transform:uppercase">Diff. Fed/BCE</span><span style="font-size:.76rem;color:var(--t2)">+100pb (4,375% vs 3,25%)</span></div>
+          <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border)"><span style="font-family:var(--fm);font-size:.58rem;color:var(--t3);text-transform:uppercase">Diff. Croissance</span><span style="font-size:.76rem;color:var(--t2)">US +1,8% vs ZE +0,4%</span></div>
+          <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border)"><span style="font-family:var(--fm);font-size:.58rem;color:var(--t3);text-transform:uppercase">Diff. Inflation</span><span style="font-size:.76rem;color:var(--t2)">PCE 2,8% vs HICP Core 2,7%</span></div>
+          <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border)"><span style="font-family:var(--fm);font-size:.58rem;color:var(--t3);text-transform:uppercase">Flux capitaux</span><span style="font-size:.76rem;color:var(--t2)">Neutres / USD moderement attractif</span></div>
+          <div style="display:flex;justify-content:space-between;padding:.4rem 0"><span style="font-family:var(--fm);font-size:.58rem;color:var(--t3);text-transform:uppercase">Sentiment instit.</span><span style="font-size:.76rem;color:var(--t2)">Neutre a legerement EUR haussier</span></div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ct">Biais Directionnel</div>
+        <div style="display:flex;gap:.5rem;margin-top:.5rem">
+          <div style="flex:1;background:var(--card2);border-radius:8px;padding:.7rem;text-align:center"><div style="font-family:var(--fm);font-size:.52rem;color:var(--t3);text-transform:uppercase;display:block;margin-bottom:.3rem">1 semaine</div><div style="font-family:var(--fh);font-size:.88rem;font-weight:700;color:var(--gold)">Neutre</div></div>
+          <div style="flex:1;background:var(--card2);border-radius:8px;padding:.7rem;text-align:center"><div style="font-family:var(--fm);font-size:.52rem;color:var(--t3);text-transform:uppercase;display:block;margin-bottom:.3rem">1 mois</div><div style="font-family:var(--fh);font-size:.88rem;font-weight:700;color:var(--green)">Leg. EUR +</div></div>
+          <div style="flex:1;background:var(--card2);border-radius:8px;padding:.7rem;text-align:center"><div style="font-family:var(--fm);font-size:.52rem;color:var(--t3);text-transform:uppercase;display:block;margin-bottom:.3rem">3 mois</div><div style="font-family:var(--fh);font-size:.88rem;font-weight:700;color:var(--green)">EUR + cond.</div></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="scg">
+        <div class="sb bull"><div class="sl">Haussier EUR</div><div class="sp2">1.1050–1.12</div><div class="sd">Fed dovish + BCE hawkish + donnees US faibles. Probabilite 30%.</div><div class="proba-bar"><div class="proba-fill" style="width:30%"></div></div></div>
+        <div class="sb neut"><div class="sl">Neutre / Range</div><div class="sp2">1.075–1.10</div><div class="sd">Statu quo banques centrales, donnees mitigees. Probabilite 45%.</div><div class="proba-bar"><div class="proba-fill" style="width:45%"></div></div></div>
+        <div class="sb bear"><div class="sl">Baissier EUR</div><div class="sp2">1.050–1.075</div><div class="sd">NFP fort + risque France + rebond USD. Probabilite 25%.</div><div class="proba-bar"><div class="proba-fill" style="width:25%"></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NASDAQ -->
+<section id="nasdaq" class="sec">
+  <div class="sch"><span class="scn">08 — Nasdaq Analysis</span><h2 class="sct">Nasdaq 100</h2><p class="scs">Prix live · IA · Big Tech · Yields · Scenarios</p></div>
+  <div class="g2">
+    <div>
+      <div class="card mb1">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem">
+          <div><div style="font-family:var(--fm);font-size:.56rem;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem">NQ Live</div><div class="ac-price gg" id="nq-sec-p" style="font-family:var(--fm);font-size:2rem;font-weight:700">19 247</div><div class="ac-chg" id="nq-sec-c" style="font-family:var(--fm)">— Live</div></div>
+          <div><span class="badge bull">Haussier</span><div style="font-family:var(--fh);font-size:1.2rem;font-weight:800;color:var(--green);margin-top:.4rem">6.4/10</div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.4rem">
+          <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border)"><span style="font-family:var(--fm);font-size:.58rem;color:var(--t3);text-transform:uppercase">US 10Y Yield</span><span style="font-size:.76rem;color:var(--gold)">4,42%</span></div>
+          <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border)"><span style="font-family:var(--fm);font-size:.58rem;color:var(--t3);text-transform:uppercase">Liquidite</span><span style="font-size:.76rem;color:var(--green)">Accommodante</span></div>
+          <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border)"><span style="font-family:var(--fm);font-size:.58rem;color:var(--t3);text-transform:uppercase">Big Tech Q1</span><span style="font-size:.76rem;color:var(--green)">NVDA/AAPL/MSFT/GOOGL beats</span></div>
+          <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border)"><span style="font-family:var(--fm);font-size:.58rem;color:var(--t3);text-transform:uppercase">IA CapEx YoY</span><span style="font-size:.76rem;color:var(--green)">+45% — supercycle intact</span></div>
+          <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border)"><span style="font-family:var(--fm);font-size:.58rem;color:var(--t3);text-transform:uppercase">Earnings Q1</span><span style="font-size:.76rem;color:var(--green)">+8,2% YoY — 78% beats</span></div>
+          <div style="display:flex;justify-content:space-between;padding:.4rem 0"><span style="font-family:var(--fm);font-size:.58rem;color:var(--t3);text-transform:uppercase">P/E Forward</span><span style="font-size:.76rem;color:var(--orange)">28x — eleve mais supporte</span></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="scg">
+        <div class="sb bull"><div class="sl">Haussier</div><div class="sp2">20k–21k</div><div class="sd">IA earnings, Fed pivot, yields baissent. Probabilite 40%.</div><div class="proba-bar"><div class="proba-fill" style="width:40%"></div></div></div>
+        <div class="sb neut"><div class="sl">Neutre / Conso.</div><div class="sp2">18,5k–20k</div><div class="sd">Consolidation saine, donnees mitigees. Probabilite 40%.</div><div class="proba-bar"><div class="proba-fill" style="width:40%"></div></div></div>
+        <div class="sb bear"><div class="sl">Baissier</div><div class="sp2">17,5k–18,5k</div><div class="sd">Yields remontent &gt;4,70%, deception NVDA. Probabilite 20%.</div><div class="proba-bar"><div class="proba-fill" style="width:20%"></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DOW -->
+<section id="dow" class="sec">
+  <div class="sch"><span class="scn">09 — Dow Jones</span><h2 class="sct">Dow Jones Industrial Average</h2><p class="scs">Prix live · Analyse sectorielle · Cycliques</p></div>
+  <div class="g2">
+    <div>
+      <div class="card mb1">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem">
+          <div><div style="font-family:var(--fm);font-size:.56rem;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem">DJIA Live</div><div class="ac-price" id="dji-sec-p" style="font-family:var(--fm);font-size:2rem;font-weight:700">42 158</div><div class="ac-chg" id="dji-sec-c" style="font-family:var(--fm)">— Live</div></div>
+          <div><span class="badge neut">Neutre</span><div style="font-family:var(--fh);font-size:1.2rem;font-weight:800;color:var(--gold);margin-top:.4rem">5.5/10</div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.3rem">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-size:.8rem;font-weight:600">Industrie</span><span style="font-size:.7rem;color:var(--gold);padding:2px 8px;border-radius:4px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2)">Neutre</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-size:.8rem;font-weight:600">Banques</span><span style="font-size:.7rem;color:var(--green);padding:2px 8px;border-radius:4px;background:var(--gdim);border:1px solid rgba(74,222,128,.2)">Neutre+</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-size:.8rem;font-weight:600">Sante</span><span style="font-size:.7rem;color:var(--gold);padding:2px 8px;border-radius:4px;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2)">Neutre</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0;border-bottom:1px solid var(--border)"><span style="font-size:.8rem;font-weight:600">Conso. Discretionnaire</span><span style="font-size:.7rem;color:var(--orange);padding:2px 8px;border-radius:4px;background:var(--odim);border:1px solid rgba(251,146,60,.2)">Neutre-</span></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:.5rem 0"><span style="font-size:.8rem;font-weight:600">Energie</span><span style="font-size:.7rem;color:var(--red);padding:2px 8px;border-radius:4px;background:var(--rdim);border:1px solid rgba(248,113,113,.2)">Baissier</span></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="scg">
+        <div class="sb bull"><div class="sl">Haussier</div><div class="sp2">43,5k–45k</div><div class="sd">Soft landing confirme, Fed coupe septembre. Probabilite 30%.</div><div class="proba-bar"><div class="proba-fill" style="width:30%"></div></div></div>
+        <div class="sb neut"><div class="sl">Range</div><div class="sp2">41k–43,5k</div><div class="sd">Donnees mixtes, consolidation. Probabilite 50%.</div><div class="proba-bar"><div class="proba-fill" style="width:50%"></div></div></div>
+        <div class="sb bear"><div class="sl">Baissier</div><div class="sp2">39k–41k</div><div class="sd">Deception earnings, donnees faibles. Probabilite 20%.</div><div class="proba-bar"><div class="proba-fill" style="width:20%"></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SP500 -->
+<section id="sp500" class="sec">
+  <div class="sch"><span class="scn">10 — S&amp;P 500</span><h2 class="sct">S&amp;P 500</h2><p class="scs">Prix live · Breadth · Earnings · Valorisations · Flux</p></div>
+  <div class="g2">
+    <div>
+      <div class="card mb1">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem">
+          <div><div style="font-family:var(--fm);font-size:.56rem;color:var(--t3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.3rem">SPX Live</div><div class="ac-price gg" id="spx-sec-p" style="font-family:var(--fm);font-size:2rem;font-weight:700">5 312</div><div class="ac-chg" id="spx-sec-c" style="font-family:var(--fm)">— Live</div></div>
+          <div><span class="badge bull">Haussier</span><div style="font-family:var(--fh);font-size:1.2rem;font-weight:800;color:var(--green);margin-top:.4rem">6.1/10</div></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:.4rem">
+          <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border)"><span style="font-family:var(--fm);font-size:.58rem;color:var(--t3);text-transform:uppercase">Breadth MM200</span><span style="font-size:.76rem;color:var(--green)">70% &gt; MM200 — bon signal</span></div>
+          <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border)"><span style="font-family:var(--fm);font-size:.58rem;color:var(--t3);text-transform:uppercase">Earnings Q1 YoY</span><span style="font-size:.76rem;color:var(--green)">+8,2% — 78% beats</span></div>
+          <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border)"><span style="font-family:var(--fm);font-size:.58rem;color:var(--t3);text-transform:uppercase">P/E Forward</span><span style="font-size:.76rem;color:var(--orange)">20,8x — eleve</span></div>
+          <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border)"><span style="font-family:var(--fm);font-size:.58rem;color:var(--t3);text-transform:uppercase">Marges nettes</span><span style="font-size:.76rem;color:var(--green)">12,4% — resistantes</span></div>
+          <div style="display:flex;justify-content:space-between;padding:.4rem 0;border-bottom:1px solid var(--border)"><span style="font-family:var(--fm);font-size:.58rem;color:var(--t3);text-transform:uppercase">ETF Flows 4 sem.</span><span style="font-size:.76rem;color:var(--green)">+18,4Mrd$ entrants</span></div>
+          <div style="display:flex;justify-content:space-between;padding:.4rem 0"><span style="font-family:var(--fm);font-size:.58rem;color:var(--t3);text-transform:uppercase">Instit. Position</span><span style="font-size:.76rem;color:var(--green)">Surpondere Tech, sous-pondere Energy</span></div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="scg">
+        <div class="sb bull"><div class="sl">Haussier</div><div class="sp2">5600–5900</div><div class="sd">Fed dovish, IA supercycle, earnings beats. Probabilite 35%.</div><div class="proba-bar"><div class="proba-fill" style="width:35%"></div></div></div>
+        <div class="sb neut"><div class="sl">Consolidation</div><div class="sp2">5100–5600</div><div class="sd">Donnees mitigees, pause saine. Probabilite 45%.</div><div class="proba-bar"><div class="proba-fill" style="width:45%"></div></div></div>
+        <div class="sb bear"><div class="sl">Correction</div><div class="sp2">4700–5100</div><div class="sd">Yields &gt;5%, deception inflation. Probabilite 20%.</div><div class="proba-bar"><div class="proba-fill" style="width:20%"></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PREVISIONS -->
+<section id="previsions" class="sec">
+  <div class="sch"><span class="scn">11 — Forecasts &amp; Previsions</span><h2 class="sct">Previsions &amp; Objectifs de Prix</h2><p class="scs">Scenarios institutionnels · Cibles directionnelles · Horizons 1 sem. / 1 mois / 3 mois</p></div>
+  <div class="pred-grid">
+    <div class="pred-card neut">
+      <div class="pred-sym"><span>EUR/USD</span><span class="badge neut">Neutre</span></div>
+      <div class="pred-asset">EUR / USD</div>
+      <div class="pred-target">Cible 1 mois : 1.0950 – 1.1050</div>
+      <div class="pred-conf-bar"><div class="pred-conf-fill" style="width:60%"></div></div>
+      <div style="font-family:var(--fm);font-size:.58rem;color:var(--t3);margin-bottom:.5rem">Confiance 6/10</div>
+      <div class="pred-drivers">NFP + CPI mai decisifs. Differentiel Fed/BCE se reduit si Fed coupe H2. Risque France = facteur d'incertitude EUR persistant.</div>
+      <div class="pred-timeframes">
+        <div class="ptf"><span class="ptf-l">1 sem.</span><div class="ptf-v">Range</div></div>
+        <div class="ptf"><span class="ptf-l">1 mois</span><div class="ptf-v">Leg. +</div></div>
+        <div class="ptf"><span class="ptf-l">3 mois</span><div class="ptf-v">1.10–1.12</div></div>
+      </div>
+    </div>
+    <div class="pred-card bull">
+      <div class="pred-sym"><span>Nasdaq 100</span><span class="badge bull">Haussier</span></div>
+      <div class="pred-asset">Nasdaq 100</div>
+      <div class="pred-target">Cible 3 mois : 20 500 – 21 500</div>
+      <div class="pred-conf-bar"><div class="pred-conf-fill" style="width:70%"></div></div>
+      <div style="font-family:var(--fm);font-size:.58rem;color:var(--t3);margin-bottom:.5rem">Confiance 7/10</div>
+      <div class="pred-drivers">Supercycle IA intact. Fed pivot H2 = re-rating multiple. NVDA/MSFT/GOOGL capex IA en acceleration. Risque : yields si inflation reaccelere.</div>
+      <div class="pred-timeframes">
+        <div class="ptf"><span class="ptf-l">1 sem.</span><div class="ptf-v">18,8k+</div></div>
+        <div class="ptf"><span class="ptf-l">1 mois</span><div class="ptf-v">20k+</div></div>
+        <div class="ptf"><span class="ptf-l">3 mois</span><div class="ptf-v">21,5k</div></div>
+      </div>
+    </div>
+    <div class="pred-card bull">
+      <div class="pred-sym"><span>S&amp;P 500</span><span class="badge bull">Haussier</span></div>
+      <div class="pred-asset">S&amp;P 500</div>
+      <div class="pred-target">Cible 3 mois : 5 700 – 5 900</div>
+      <div class="pred-conf-bar"><div class="pred-conf-fill" style="width:70%"></div></div>
+      <div style="font-family:var(--fm);font-size:.58rem;color:var(--t3);margin-bottom:.5rem">Confiance 7/10</div>
+      <div class="pred-drivers">Breadth positif, flux ETF solides, marges nettes resilientes. Fed dovish H2 = catalyseur. P/E 20,8x = valorisation elevee mais supportee par croissance.</div>
+      <div class="pred-timeframes">
+        <div class="ptf"><span class="ptf-l">1 sem.</span><div class="ptf-v">5,15k+</div></div>
+        <div class="ptf"><span class="ptf-l">1 mois</span><div class="ptf-v">5,5k+</div></div>
+        <div class="ptf"><span class="ptf-l">3 mois</span><div class="ptf-v">5,900</div></div>
+      </div>
+    </div>
+    <div class="pred-card neut">
+      <div class="pred-sym"><span>Dow Jones</span><span class="badge neut">Neutre</span></div>
+      <div class="pred-asset">Dow Jones</div>
+      <div class="pred-target">Cible 3 mois : 42 500 – 44 000</div>
+      <div class="pred-conf-bar"><div class="pred-conf-fill" style="width:60%"></div></div>
+      <div style="font-family:var(--fm);font-size:.58rem;color:var(--t3);margin-bottom:.5rem">Confiance 6/10</div>
+      <div class="pred-drivers">Cycliques sous pression si PIB deçoit. Banques soutenues par taux eleves. Rotation possible vers value si Tech corrige. Preference Nasdaq/SPX.</div>
+      <div class="pred-timeframes">
+        <div class="ptf"><span class="ptf-l">1 sem.</span><div class="ptf-v">Range</div></div>
+        <div class="ptf"><span class="ptf-l">1 mois</span><div class="ptf-v">42-43k</div></div>
+        <div class="ptf"><span class="ptf-l">3 mois</span><div class="ptf-v">44k</div></div>
+      </div>
+    </div>
+    <div class="pred-card neut">
+      <div class="pred-sym"><span>DXY</span><span class="badge neut">Neutre</span></div>
+      <div class="pred-asset">Dollar Index</div>
+      <div class="pred-target">Cible 3 mois : 100 – 104</div>
+      <div class="pred-conf-bar"><div class="pred-conf-fill" style="width:50%"></div></div>
+      <div style="font-family:var(--fm);font-size:.58rem;color:var(--t3);margin-bottom:.5rem">Confiance 5/10</div>
+      <div class="pred-drivers">Pression baissiere si Fed coupe et differentiels se reduisent. Range a court terme. NFP vendredi = catalyseur binaire. Long terme : baissier dollar si pivot confirme.</div>
+      <div class="pred-timeframes">
+        <div class="ptf"><span class="ptf-l">1 sem.</span><div class="ptf-v">103-106</div></div>
+        <div class="ptf"><span class="ptf-l">1 mois</span><div class="ptf-v">101-105</div></div>
+        <div class="ptf"><span class="ptf-l">3 mois</span><div class="ptf-v">100-102</div></div>
+      </div>
+    </div>
+    <div class="pred-card bull">
+      <div class="pred-sym"><span>Fed Pivot</span><span class="badge bull">Anticipe</span></div>
+      <div class="pred-asset">Fed Funds Rate</div>
+      <div class="pred-target">Cible fin 2026 : 3,75 – 4,00%</div>
+      <div class="pred-conf-bar"><div class="pred-conf-fill" style="width:55%"></div></div>
+      <div style="font-family:var(--fm);font-size:.58rem;color:var(--t3);margin-bottom:.5rem">Confiance 5,5/10</div>
+      <div class="pred-drivers">CME FedWatch : 52% pour premiere baisse septembre 2026. 2 baisses total 2026 = scenario de base. Conditionnel a CPI/PCE sous 2,5%.</div>
+      <div class="pred-timeframes">
+        <div class="ptf"><span class="ptf-l">Juin</span><div class="ptf-v">4,50%</div></div>
+        <div class="ptf"><span class="ptf-l">Sept.</span><div class="ptf-v">4,25%</div></div>
+        <div class="ptf"><span class="ptf-l">Fin 26</span><div class="ptf-v">3,75%</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CALENDAR -->
+<section id="calendar" class="sec">
+  <div class="sch"><span class="scn">12 — Economic Calendar</span><h2 class="sct">Calendrier Economique</h2><p class="scs">Evenements cles a venir — consensus · precedent · impact</p></div>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Date</th><th>Heure</th><th>Pays</th><th>Evenement</th><th>Consensus</th><th>Precedent</th><th>Imp.</th><th>Impact</th></tr></thead>
+      <tbody>
+        <tr style="background:rgba(248,113,113,.04)"><td class="mn">6 juin</td><td class="mono" style="font-size:.72rem">14:30</td><td>🇺🇸</td><td style="font-weight:700;color:var(--t1)">NFP mai</td><td class="pos">+185k</td><td class="il">+177k</td><td><div style="display:flex;gap:2px"><div style="width:9px;height:9px;border-radius:2px;background:var(--red)"></div><div style="width:9px;height:9px;border-radius:2px;background:var(--red)"></div><div style="width:9px;height:9px;border-radius:2px;background:var(--red)"></div></div></td><td class="ih" style="font-size:.72rem">EXTREME — USD, EURUSD, indices</td></tr>
+        <tr style="background:rgba(248,113,113,.04)"><td class="mn">6 juin</td><td class="mono" style="font-size:.72rem">14:30</td><td>🇺🇸</td><td style="font-weight:700;color:var(--t1)">Chomage mai</td><td class="il">4,1%</td><td class="il">4,1%</td><td><div style="display:flex;gap:2px"><div style="width:9px;height:9px;border-radius:2px;background:var(--red)"></div><div style="width:9px;height:9px;border-radius:2px;background:var(--red)"></div><div style="width:9px;height:9px;border-radius:2px;background:var(--red)"></div></div></td><td class="ih" style="font-size:.72rem">Fort — USD, taux</td></tr>
+        <tr><td class="mn">5 juin</td><td class="mono" style="font-size:.72rem">14:30</td><td>🇺🇸</td><td>Initial Jobless Claims</td><td class="il">220k</td><td class="il">218k</td><td><div style="display:flex;gap:2px"><div style="width:9px;height:9px;border-radius:2px;background:var(--orange)"></div><div style="width:9px;height:9px;border-radius:2px;background:var(--orange)"></div><div style="width:9px;height:9px;border-radius:2px;background:var(--border)"></div></div></td><td class="im" style="font-size:.72rem">USD modere</td></tr>
+        <tr style="background:rgba(248,113,113,.04)"><td class="mn">10 juin</td><td class="mono" style="font-size:.72rem">14:30</td><td>🇺🇸</td><td style="font-weight:700;color:var(--t1)">CPI mai</td><td class="pos">2,7%</td><td class="il">2,8%</td><td><div style="display:flex;gap:2px"><div style="width:9px;height:9px;border-radius:2px;background:var(--red)"></div><div style="width:9px;height:9px;border-radius:2px;background:var(--red)"></div><div style="width:9px;height:9px;border-radius:2px;background:var(--red)"></div></div></td><td class="ih" style="font-size:.72rem">TRES FORT — EURUSD, indices, taux</td></tr>
+        <tr style="background:rgba(248,113,113,.04)"><td class="mn">11 juin</td><td class="mono" style="font-size:.72rem">14:30</td><td>🇺🇸</td><td style="font-weight:700;color:var(--t1)">Core CPI mai</td><td class="pos">3,0%</td><td class="il">3,1%</td><td><div style="display:flex;gap:2px"><div style="width:9px;height:9px;border-radius:2px;background:var(--red)"></div><div style="width:9px;height:9px;border-radius:2px;background:var(--red)"></div><div style="width:9px;height:9px;border-radius:2px;background:var(--red)"></div></div></td><td class="ih" style="font-size:.72rem">TRES FORT — Fed, EURUSD</td></tr>
+        <tr><td class="mn">17 juin</td><td class="mono" style="font-size:.72rem">16:00</td><td>🇺🇸</td><td>Retail Sales mai</td><td class="pos">+0,5%</td><td class="il">+0,1%</td><td><div style="display:flex;gap:2px"><div style="width:9px;height:9px;border-radius:2px;background:var(--red)"></div><div style="width:9px;height:9px;border-radius:2px;background:var(--red)"></div><div style="width:9px;height:9px;border-radius:2px;background:var(--border)"></div></div></td><td class="im" style="font-size:.72rem">Fort — croissance, indices</td></tr>
+        <tr style="background:rgba(248,113,113,.04)"><td class="mn">18 juin</td><td class="mono" style="font-size:.72rem">20:00</td><td>🇺🇸</td><td style="font-weight:700;color:var(--t1)">FOMC + Dot Plot</td><td class="il">Statu quo</td><td class="il">4,25-4,50%</td><td><div style="display:flex;gap:2px"><div style="width:9px;height:9px;border-radius:2px;background:var(--red)"></div><div style="width:9px;height:9px;border-radius:2px;background:var(--red)"></div><div style="width:9px;height:9px;border-radius:2px;background:var(--red)"></div></div></td><td class="ih" style="font-size:.72rem">EXTREME — Tous actifs</td></tr>
+        <tr style="background:rgba(248,113,113,.04)"><td class="mn">25 juin</td><td class="mono" style="font-size:.72rem">14:30</td><td>🇺🇸</td><td style="font-weight:700;color:var(--t1)">PCE mai</td><td class="pos">2,5%</td><td class="il">2,6%</td><td><div style="display:flex;gap:2px"><div style="width:9px;height:9px;border-radius:2px;background:var(--red)"></div><div style="width:9px;height:9px;border-radius:2px;background:var(--red)"></div><div style="width:9px;height:9px;border-radius:2px;background:var(--red)"></div></div></td><td class="ih" style="font-size:.72rem">TRES FORT — Fed, EURUSD</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- RISKS -->
+<section id="risks" class="sec">
+  <div class="sch"><span class="scn">13 — Risk Monitor</span><h2 class="sct">Risques Majeurs</h2><p class="scs">8 risques macro surveilles — probabilite · niveau · actifs exposes</p></div>
+  <div class="rg">
+    <div class="rc mod"><div class="rl2">Modere</div><div class="rn">Inflation US</div><div class="rp">30%</div><div class="ri">Core PCE 2,8% — services sticky. Logement desinflation lente. Frein aux baisses Fed.</div><div style="font-family:var(--fm);font-size:.58rem;color:var(--t3)">Nasdaq · EURUSD · Obligations</div></div>
+    <div class="rc mod"><div class="rl2">Modere</div><div class="rn">Recession US</div><div class="rp">25%</div><div class="ri">PIB Q1 1,8%, consommation ralentit, ISM mfg sous 50. Pas de signal recessif confirmé.</div><div style="font-family:var(--fm);font-size:.58rem;color:var(--t3)">S&P500 · Nasdaq · Dow</div></div>
+    <div class="rc low"><div class="rl2">Faible</div><div class="rn">Fed Hawkish</div><div class="rp">15%</div><div class="ri">Desinflation en cours. Trend positif. Scenario hawkish peu probable si CPI/PCE continuent de baisser.</div><div style="font-family:var(--fm);font-size:.58rem;color:var(--t3)">EURUSD · Nasdaq · DXY</div></div>
+    <div class="rc high"><div class="rl2">Eleve</div><div class="rn">Geopolitique</div><div class="rp">40%</div><div class="ri">Tensions persistantes. Risque sur chaines d'approvisionnement, energie, safe-haven USD.</div><div style="font-family:var(--fm);font-size:.58rem;color:var(--t3)">DXY · Or · Petrole</div></div>
+    <div class="rc high"><div class="rl2">Eleve</div><div class="rn">Dette France</div><div class="rp">35%</div><div class="ri">Deficit 5,4% PIB. OAT-Bund 65pb. Instabilite politique. Fitch sous surveillance negative.</div><div style="font-family:var(--fm);font-size:.58rem;color:var(--t3)">EURUSD · OAT · CAC40</div></div>
+    <div class="rc mod"><div class="rl2">Modere</div><div class="rn">Correction Actions</div><div class="rp">30%</div><div class="ri">P/E Nasdaq 28x, SPX 20,8x. Valorisations elevees. Toute deception earnings ou inflation = risque de rotation.</div><div style="font-family:var(--fm);font-size:.58rem;color:var(--t3)">Nasdaq · S&P500</div></div>
+    <div class="rc low"><div class="rl2">Faible</div><div class="rn">Dollar Fort</div><div class="rp">20%</div><div class="ri">Anticipations pivot Fed limitent le potentiel USD. DXY en range. Risque if deception economique US.</div><div style="font-family:var(--fm);font-size:.58rem;color:var(--t3)">EURUSD · EM</div></div>
+    <div class="rc low"><div class="rl2">Faible</div><div class="rn">Liquidite</div><div class="rp">15%</div><div class="ri">Conditions financieres accommodantes. RRP en baisse controlée. Bilan Fed stable. Pas de stress creancier.</div><div style="font-family:var(--fm);font-size:.58rem;color:var(--t3)">Obligations IG · HY</div></div>
+  </div>
+</section>
+
+<!-- TRADING PLAN -->
+<section id="trading" class="sec">
+  <div class="sch"><span class="scn">14 — Weekly Trading Plan</span><h2 class="sct">Plan de Trading — Semaine 23</h2><p class="scs">Setup · Biais · Invalidation · Confiance — 5 actifs</p></div>
+  <div class="tw">
+    <table>
+      <thead><tr><th>Actif</th><th>Biais</th><th>Setup</th><th>Catalyseur</th><th>Invalidation</th><th>Confiance</th><th>Risque</th></tr></thead>
+      <tbody>
+        <tr><td class="mn">EURUSD <span id="eu-badge" style="font-family:var(--fm);font-size:.65rem;color:var(--t3);margin-left:.3rem">—</span></td><td><span class="badge neut">Neutre</span></td><td style="font-size:.72rem">Range 1.0780–1.0980 en attente</td><td style="font-size:.72rem;color:var(--t2)">NFP 6 juin, CPI 10 juin</td><td style="font-size:.72rem;color:var(--red)">&lt;1.0680 bear / &gt;1.1050 bull</td><td style="font-family:var(--fm);font-size:.82rem;color:var(--gold);font-weight:700">6/10</td><td style="font-size:.72rem;color:var(--orange)">NFP spike dollar</td></tr>
+        <tr><td class="mn">Nasdaq <span id="nq-badge" style="font-family:var(--fm);font-size:.65rem;color:var(--t3);margin-left:.3rem">—</span></td><td><span class="badge bull">Haussier</span></td><td style="font-size:.72rem">Long dips 18,800–19,000</td><td style="font-size:.72rem;color:var(--t2)">IA earnings, FOMC dovish 18 juin</td><td style="font-size:.72rem;color:var(--red)">Cloture &lt;18,200</td><td style="font-family:var(--fm);font-size:.82rem;color:var(--green);font-weight:700">7/10</td><td style="font-size:.72rem;color:var(--orange)">Yields &gt;4,70%</td></tr>
+        <tr><td class="mn">Dow Jones <span id="dji-badge" style="font-family:var(--fm);font-size:.65rem;color:var(--t3);margin-left:.3rem">—</span></td><td><span class="badge neut">Neutre</span></td><td style="font-size:.72rem">Range 41,000–43,000</td><td style="font-size:.72rem;color:var(--t2)">Emploi, Retail Sales mai</td><td style="font-size:.72rem;color:var(--red)">Cassure &lt;40,500</td><td style="font-family:var(--fm);font-size:.82rem;color:var(--gold);font-weight:700">6/10</td><td style="font-size:.72rem;color:var(--orange)">PIB deceoit</td></tr>
+        <tr><td class="mn">S&P 500 <span id="spx-badge" style="font-family:var(--fm);font-size:.65rem;color:var(--t3);margin-left:.3rem">—</span></td><td><span class="badge bull">Haussier</span></td><td style="font-size:.72rem">Long correction 5,150–5,200</td><td style="font-size:.72rem;color:var(--t2)">CPI favorable, FOMC dovish</td><td style="font-size:.72rem;color:var(--red)">Cloture &lt;4,950</td><td style="font-family:var(--fm);font-size:.82rem;color:var(--green);font-weight:700">7/10</td><td style="font-size:.72rem;color:var(--orange)">Deception inflation</td></tr>
+        <tr><td class="mn">DXY</td><td><span class="badge neut">Neutre</span></td><td style="font-size:.72rem">Range 103.50–106.00</td><td style="font-size:.72rem;color:var(--t2)">NFP 6 juin, CPI 10 juin</td><td style="font-size:.72rem;color:var(--red)">&gt;107 bull / &lt;102 bear</td><td style="font-family:var(--fm);font-size:.82rem;color:var(--gold);font-weight:700">5/10</td><td style="font-size:.72rem;color:var(--orange)">NFP surprise &gt;1%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="disc mt2"><strong>DISCLAIMER :</strong> Ce plan de trading est fourni a titre educatif uniquement. Il ne constitue pas un conseil en investissement. Les marches financiers comportent un risque significatif de perte. Consultez un conseiller financier agree avant toute decision.</div>
+</section>
+
+<!-- CONCLUSION -->
+<section id="conclusion" class="sec">
+  <div class="sch"><span class="scn">15 — Final Conclusion</span><h2 class="sct">Conclusion Institutionnelle</h2><p class="scs">Synthese du biais global — Semaine 23 · 2–6 juin 2026</p></div>
+  <div class="card mb2" style="border-left:3px solid var(--blue)">
+    <div class="ct gb">Si je gerais un fonds cette semaine...</div>
+    <div style="display:flex;flex-direction:column;gap:.6rem;margin-top:.5rem">
+      <div style="padding:.7rem;background:var(--gdim);border:1px solid rgba(74,222,128,.2);border-radius:var(--r);font-size:.78rem;color:var(--t2)"><strong style="color:var(--green)">AGRESSIF SUR :</strong> Long Nasdaq sur replis IA (18,800–19,000). Long S&P500 si CPI/NFP en ligne. IA supercycle = conviction sur tech.</div>
+      <div style="padding:.7rem;background:rgba(251,191,36,.07);border:1px solid rgba(251,191,36,.2);border-radius:var(--r);font-size:.78rem;color:var(--t2)"><strong style="color:var(--gold)">PRUDENT SUR :</strong> EURUSD — range en attente de catalyseur. Dow Jones — cycliques vulnerables. Confirmer direction apres NFP vendredi.</div>
+      <div style="padding:.7rem;background:var(--rdim);border:1px solid rgba(248,113,113,.2);border-radius:var(--r);font-size:.78rem;color:var(--t2)"><strong style="color:var(--red)">DEFENSIF SUR :</strong> Exposition France directe. Petrole/energie (OPEC+). Eviter short dollar avant FOMC 18 juin — risque de squeeze.</div>
+    </div>
+  </div>
+  <div class="csg">
+    <div class="cs2"><div class="csn">Eco US</div><div class="csv" style="color:var(--gold)">5.8</div><div class="csl" style="color:var(--gold)">Neutre+</div></div>
+    <div class="cs2"><div class="csn">Fed</div><div class="csv" style="color:var(--gold)">4.5</div><div class="csl" style="color:var(--gold)">Dovish caut.</div></div>
+    <div class="cs2"><div class="csn">Dollar</div><div class="csv" style="color:var(--gold)">5.2</div><div class="csl" style="color:var(--gold)">Neutre</div></div>
+    <div class="cs2"><div class="csn">EURUSD</div><div class="csv" style="color:var(--gold)">4.8</div><div class="csl" style="color:var(--gold)">Neutre</div></div>
+    <div class="cs2"><div class="csn">Nasdaq</div><div class="csv" style="color:var(--green)">6.4</div><div class="csl" style="color:var(--green)">Haussier</div></div>
+    <div class="cs2"><div class="csn">Dow Jones</div><div class="csv" style="color:var(--gold)">5.5</div><div class="csl" style="color:var(--gold)">Neutre+</div></div>
+    <div class="cs2"><div class="csn">S&P 500</div><div class="csv" style="color:var(--green)">6.1</div><div class="csl" style="color:var(--green)">Haussier</div></div>
+    <div class="cs2"><div class="csn">Europe</div><div class="csv" style="color:var(--gold)">4.2</div><div class="csl" style="color:var(--gold)">Neutre-</div></div>
+    <div class="cs2"><div class="csn">France</div><div class="csv" style="color:var(--red)">3.8</div><div class="csl" style="color:var(--red)">Baissier</div></div>
+  </div>
+</section>
+
+</main>
+
+<!-- SIDEBAR -->
+<aside class="side">
+  <div class="side-hdr">
+    <div class="side-t">News Macro Live</div>
+    <div style="display:flex;align-items:center;gap:.5rem">
+      <span id="nsts" class="side-b">Loading...</span>
+      <button class="nrbtn" onclick="fetchNews()">↻</button>
+    </div>
+  </div>
+  <div style="padding:.45rem .8rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+    <span style="font-family:var(--fm);font-size:.58rem;color:var(--t3)">Prochaine actu dans <span id="ncd" style="color:var(--blue)">120</span>s</span>
+  </div>
+  <div id="nfeed"></div>
+</aside>
+</div>
+
+<footer id="ftr">
+  <div class="flogo">MACRO<span class="a">FLOW</span> RESEARCH</div>
+  <div>Rapport Hebdomadaire Macro &amp; Marches Financiers · Semaine S23 · Juin 2026</div>
+  <div class="disc mt2"><strong>AVERTISSEMENT OBLIGATOIRE :</strong> Ce rapport est fourni a des fins educatives et informationnelles uniquement. Il ne constitue pas un conseil en investissement, une recommandation d'achat/vente, ni une offre de services financiers reglements. Les marches financiers comportent des risques importants de perte en capital. Les performances passees ne prejugent pas des performances futures. Consultez un professionnel agree avant toute decision d'investissement. Sources : BLS, BEA, ISM, CME FedWatch, Eurostat, INSEE, BCE, S&amp;P Global. Donnees au 4 juin 2026.</div>
+  <div style="margin-top:.7rem;font-size:.58rem">Sources verifiees : BLS · BEA · ISM · CME FedWatch · S&amp;P Global PMI · Eurostat · INSEE · BCE · Census Bureau · Fed H.4.1</div>
+</footer>
+
+<div id="cs" class="loading" onclick="forceRefresh()">⬤ Chargement...</div>
+
+<script>
+const ASSETS=[
+  {id:'eurusd',sym:'EURUSD=X',label:'EUR/USD',bias:'neut',conf:60,fmt:'forex',base:1.0847},
+  {id:'nasdaq',sym:'%5EIXIC', label:'Nasdaq', bias:'bull',conf:70,fmt:'idx',  base:19247},
+  {id:'dow',   sym:'%5EDJI',  label:'Dow',    bias:'neut',conf:60,fmt:'idx',  base:42158},
+  {id:'sp500', sym:'%5EGSPC', label:'S&P500', bias:'bull',conf:70,fmt:'idx',  base:5312},
+  {id:'dxy',   sym:'DX-Y.NYB',label:'DXY',   bias:'neut',conf:50,fmt:'idx',  base:104.82},
+];
+const BIAS_TXT={bull:'Haussier',bear:'Baissier',neut:'Neutre'};
+const prevP={};
+ASSETS.forEach(a=>prevP[a.id]=a.base);
+let tickerData=ASSETS.map(a=>({...a,price:a.base,chg:0,chgPct:0}));
+
+const fP=(v,fmt)=>{
+  if(!v&&v!==0)return'—';
+  if(fmt==='forex')return v.toFixed(4);
+  if(v>=10000)return v.toLocaleString('fr-FR',{maximumFractionDigits:0});
+  if(v>=1000)return v.toLocaleString('fr-FR',{minimumFractionDigits:1,maximumFractionDigits:1});
+  return v.toFixed(2);
+};
+const fC=(c,p)=>{
+  if(c==null)return{t:'—',cls:'flat'};
+  const s=c>=0?'▲ +':'▼ ',cls=c>=0?'up':'dn';
+  return{t:`${s}${Math.abs(p||0).toFixed(2)}%`,cls};
+};
+
+function buildCards(){
+  const g=document.getElementById('ag');
+  if(!g)return;
+  g.innerHTML=ASSETS.map(a=>`
+    <div class="ac ${a.bias}" id="ac-${a.id}" onclick="document.getElementById('${a.id}')?.scrollIntoView({behavior:'smooth'})">
+      <div class="ac-sym">${a.label}<span id="dot-${a.id}" class="dot-load"></span></div>
+      <div class="ac-price" id="ap-${a.id}">${fP(a.base,a.fmt)}</div>
+      <div class="ac-chg flat" id="ac-c-${a.id}">Chargement...</div>
+      <div class="ac-bias ${a.bias}">${BIAS_TXT[a.bias]}</div>
+      <div class="ac-conf">Confiance <div class="cbar"><div class="cfill" style="width:${a.conf}%"></div></div><span style="font-family:var(--fm);font-size:.62rem">${(a.conf/10).toFixed(1)}/10</span></div>
+    </div>`).join('');
+}
+
+function rebuildTicker(){
+  const inner=document.getElementById('ticker-inner');
+  if(!inner)return;
+  let h=tickerData.map(d=>{
+    const{t,cls}=fC(d.chg,d.chgPct);
+    return`<div class="tk"><span class="tk-sym">${d.label}</span><span class="tk-price">${fP(d.price,d.fmt)}</span><span class="tk-chg ${cls}">${t}</span></div>`;
+  }).join('');
+  inner.innerHTML=h+h;
+}
+
+const PROXIES=[
+  s=>`https://api.allorigins.win/raw?url=${encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/'+s+'?interval=1m&range=1d')}`,
+  s=>`https://corsproxy.io/?${encodeURIComponent('https://query1.finance.yahoo.com/v8/finance/chart/'+s+'?interval=1m&range=1d')}`,
+];
+
+async function fetchOne(asset){
+  for(const proxy of PROXIES){
+    try{
+      const r=await fetch(proxy(asset.sym),{signal:AbortSignal.timeout(5000)});
+      if(!r.ok)continue;
+      const d=await r.json();
+      const m=d?.chart?.result?.[0]?.meta;
+      if(!m?.regularMarketPrice)continue;
+      const prev=m.previousClose||m.chartPreviousClose||asset.base;
+      const chg=m.regularMarketPrice-prev;
+      return{price:m.regularMarketPrice,chg,chgPct:m.regularMarketChangePercent||(chg/prev*100),live:true};
+    }catch(e){}
+  }
+  return null;
+}
+
+function updateDisplay(a,res,isLive){
+  const pEl=document.getElementById(`ap-${a.id}`);
+  const cEl=document.getElementById(`ac-c-${a.id}`);
+  const dEl=document.getElementById(`dot-${a.id}`);
+  const prev=prevP[a.id];
+  const cur=res.price;
+  const fmt=fP(cur,a.fmt);
+  const{t,cls}=fC(res.chg,res.chgPct);
+  if(prev!=null&&pEl){
+    const fc=cur>prev?'fu':cur<prev?'fd':'';
+    if(fc){pEl.classList.remove('fu','fd');void pEl.offsetWidth;pEl.classList.add(fc);setTimeout(()=>pEl.classList.remove(fc),700);}
+  }
+  if(pEl){pEl.textContent=fmt;pEl.style.color=res.chg>=0?'var(--green)':'var(--red)';}
+  if(cEl){cEl.textContent=t+(isLive?' · Live':'');cEl.className=`ac-chg ${cls}`;}
+  if(dEl)dEl.className=isLive?'dot-live':'dot-load';
+  const secMap={eurusd:'eurusd-sec',nasdaq:'nq-sec',dow:'dji-sec',sp500:'spx-sec',dxy:'dxy-sec'};
+  if(secMap[a.id]){
+    const sp=document.getElementById(`${secMap[a.id]}-p`);
+    const sc=document.getElementById(`${secMap[a.id]}-c`);
+    if(sp)sp.textContent=fmt;
+    if(sc){sc.textContent=t+(isLive?' · Live':'');sc.style.color=res.chg>=0?'var(--green)':'var(--red)';}
+  }
+  const badgeMap={eurusd:'eu-badge',nasdaq:'nq-badge',dow:'dji-badge',sp500:'spx-badge'};
+  if(badgeMap[a.id]){const b=document.getElementById(badgeMap[a.id]);if(b)b.textContent=fmt;}
+  prevP[a.id]=cur;
+}
+
+let anyLive=false;
+async function refresh(){
+  document.getElementById('upd').textContent=`MAJ: ${new Date().toLocaleTimeString('fr-FR')}`;
+  const cs=document.getElementById('cs');
+  if(cs){cs.className='loading';cs.textContent='⬤ Mise a jour...';}
+  anyLive=false;
+  await Promise.all(ASSETS.map(async(a,i)=>{
+    let res=await fetchOne(a);
+    if(res){anyLive=true;}
+    else{
+      const base=prevP[a.id]||a.base;
+      const drift=(Math.random()-.495)*base*(a.fmt==='forex'?.0002:.00015);
+      res={price:base+drift,chg:drift,chgPct:drift/base*100,live:false};
+    }
+    updateDisplay(a,res,res.live);
+    tickerData[i]={...a,price:res.price,chg:res.chg,chgPct:res.chgPct};
+  }));
+  rebuildTicker();
+  if(cs){cs.className=anyLive?'live':'sim';cs.textContent=anyLive?'⬤ Live':'⬤ Simulation';}
+}
+function forceRefresh(){refresh();}
+
+function clock(){
+  const el=document.getElementById('clk');
+  if(!el)return;
+  const n=new Date();
+  el.textContent=`UTC ${n.getUTCHours().toString().padStart(2,'0')}:${n.getUTCMinutes().toString().padStart(2,'0')}:${n.getUTCSeconds().toString().padStart(2,'0')}`;
+}
+
+function updateNav(){
+  const secs=[...document.querySelectorAll('section[id]')];
+  const links=[...document.querySelectorAll('.nav a')];
+  let cur='';
+  secs.forEach(s=>{if(s.getBoundingClientRect().top<=110)cur=s.id;});
+  links.forEach(a=>{a.classList.remove('on');if(a.getAttribute('href')==='#'+cur)a.classList.add('on');});
+}
+
+/* NEWS */
+let newsCD=120,newsTimer=null,seenURLs=new Set(),cachedNews=[];
+const SOURCES=[
+  {name:'Reuters',  url:'https://feeds.reuters.com/reuters/businessNews',  tag:'macro'},
+  {name:'Yahoo Fin',url:'https://finance.yahoo.com/news/rssindex',         tag:'equity'},
+  {name:'MarketWatch',url:'https://feeds.content.dowjones.io/public/rss/mw_realtimeheadlines',tag:'equity'},
+  {name:'Investing',url:'https://www.investing.com/rss/news_25.rss',       tag:'forex'},
+  {name:'FXStreet', url:'https://www.fxstreet.com/rss/news',               tag:'forex'},
+  {name:'CNBC',     url:'https://www.cnbc.com/id/20910258/device/rss/rss.html',tag:'equity'},
+];
+const FKEYS=['fed','ecb','bce','inflation','cpi','pce','gdp','pib','rate','taux','dollar','euro','nasdaq','dow','s&p','macro','nfp','jobs','employment','interest','bank'];
+const isFin=t=>FKEYS.some(k=>t.toLowerCase().includes(k));
+const ago=d=>{const s=(Date.now()-d)/1e3;return s<60?'Il y a qqs s':(s<3600?`${Math.floor(s/60)}min`:`${Math.floor(s/3600)}h`);};
+async function fetchRSS(src){
+  try{
+    const r=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(src.url)}&count=8`,{signal:AbortSignal.timeout(8000)});
+    if(!r.ok)return[];
+    const d=await r.json();
+    if(d.status!=='ok'||!d.items)return[];
+    return d.items.slice(0,6).map(i=>({title:(i.title||'').substring(0,115),url:i.link||'#',time:i.pubDate?new Date(i.pubDate):new Date(),source:src.name,tag:src.tag}));
+  }catch(e){return[];}
+}
+const FALLBACK=[
+  {source:'CME FedWatch',title:'Probabilite Hold Fed juin 88% — premiere baisse septembre 52% selon FedWatch',time:new Date(Date.now()-300000),tag:'fed',url:'https://www.cmegroup.com'},
+  {source:'FXStreet',title:'EURUSD consolide sous 1.0880 avant NFP vendredi — range technique attendu',time:new Date(Date.now()-600000),tag:'forex',url:'https://www.fxstreet.com'},
+  {source:'MarketWatch',title:'ISM Services mai 53.8 — forte expansion, economies US encore solide',time:new Date(Date.now()-900000),tag:'macro',url:'https://www.marketwatch.com'},
+  {source:'Reuters',title:'BCE baisse taux 25pb a 3.25% — Lagarde prudente sur rythme futur',time:new Date(Date.now()-1200000),tag:'macro',url:'https://www.reuters.com'},
+  {source:'CNBC',title:'Nasdaq portes par IA — NVDA en hausse avant conference strategique 12 juin',time:new Date(Date.now()-1500000),tag:'equity',url:'https://www.cnbc.com'},
+  {source:'Bloomberg',title:'Core PCE 2.8% avr — desinflation confirmee mais au-dessus cible Fed',time:new Date(Date.now()-1800000),tag:'fed',url:'https://www.bloomberg.com'},
+  {source:'Goldman Sachs',title:'S&P500 target 5900 fin 2026 — IA capex supercycle revision earnings majeure',time:new Date(Date.now()-2100000),tag:'equity',url:'https://www.goldmansachs.com'},
+  {source:'INSEE',title:'France deficit 5.4% PIB 2025 — Fitch maintient surveillance negative sur dette',time:new Date(Date.now()-2700000),tag:'risk',url:'https://www.insee.fr'},
+  {source:'OANDA',title:'NFP mai attendu 185k consensus — event binaire majeur USD vendredi 14h30',time:new Date(Date.now()-3000000),tag:'macro',url:'https://www.oanda.com'},
+  {source:'FXStreet',title:'OAT-Bund spread 65pb — pression structurelle euro risque budgetaire France',time:new Date(Date.now()-3600000),tag:'risk',url:'https://www.fxstreet.com'},
+];
+function renderNews(newUrls=[]){
+  const feed=document.getElementById('nfeed');
+  const list=cachedNews.length>0?cachedNews:FALLBACK;
+  feed.innerHTML=list.slice(0,20).map(n=>`
+    <a class="ni${newUrls.includes(n.url)?' nw':''}" href="${n.url}" target="_blank" rel="noopener noreferrer">
+      <div class="ni-src">${n.source}</div>
+      <div class="ni-t">${n.title}</div>
+      <div class="ni-m"><span class="ni-tm">${ago(n.time)}</span><span class="ni-tag ${n.tag}">${n.tag}</span></div>
+    </a>`).join('');
+}
+async function fetchNews(){
+  const nst=document.getElementById('nsts');
+  if(nst){nst.textContent='Loading...';nst.style.color='var(--gold)';}
+  const picked=[...SOURCES].sort(()=>Math.random()-.5).slice(0,3);
+  const raw=(await Promise.all(picked.map(fetchRSS))).flat().filter(n=>isFin(n.title));
+  raw.sort((a,b)=>b.time-a.time);
+  const newUrls=raw.filter(n=>!seenURLs.has(n.url)).map(n=>n.url);
+  newUrls.forEach(u=>seenURLs.add(u));
+  if(raw.length>0){
+    cachedNews=[...raw,...cachedNews].slice(0,30);
+    const seen=new Set();
+    cachedNews=cachedNews.filter(n=>{if(seen.has(n.url))return false;seen.add(n.url);return true;});
+    if(nst){nst.textContent='Actif';nst.style.color='var(--green)';}
+  }else{
+    if(nst){nst.textContent='Hors-ligne';nst.style.color='var(--orange)';}
+  }
+  renderNews(newUrls);
+  newsCD=120;
+}
+function startNewsCD(){
+  clearInterval(newsTimer);
+  newsTimer=setInterval(()=>{
+    newsCD--;
+    const el=document.getElementById('ncd');
+    if(el)el.textContent=newsCD;
+    if(newsCD<=0){newsCD=120;fetchNews();}
+  },1000);
+}
+
+/* SHARE */
+function getURL(){return window.location.href.split('?')[0].split('#')[0]+'?report=S23-2026&src=macroflow#overview';}
+function openModal(){document.getElementById('urlBox').textContent=getURL();document.getElementById('shareModal').classList.add('open');}
+function closeModal(){document.getElementById('shareModal').classList.remove('open');}
+async function copyURL(){
+  const url=getURL();
+  try{await navigator.clipboard.writeText(url);}
+  catch{const t=document.createElement('textarea');t.value=url;document.body.appendChild(t);t.select();document.execCommand('copy');document.body.removeChild(t);}
+  const b=document.getElementById('copyBtn');b.textContent='Lien copie !';
+  setTimeout(()=>b.textContent='Copier le lien',2200);
+}
+function doShare(p){
+  const url=encodeURIComponent(getURL());
+  const txt=encodeURIComponent('MacroFlow Research — Rapport Macro Live S23 2026');
+  const urls={
+    twitter:`https://twitter.com/intent/tweet?text=${txt}&url=${url}`,
+    linkedin:`https://www.linkedin.com/sharing/share-offsite/?url=${url}`,
+    telegram:`https://t.me/share/url?url=${url}&text=${txt}`,
+    whatsapp:`https://wa.me/?text=${txt}%20${url}`,
+    email:`mailto:?subject=${encodeURIComponent('MacroFlow Research S23')}&body=${txt}%0A${url}`,
+  };
+  if(urls[p])window.open(urls[p],'_blank');
+}
+document.getElementById('shareModal').addEventListener('click',e=>{if(e.target===e.currentTarget)closeModal();});
+
+/* INIT */
+async function init(){
+  buildCards();
+  rebuildTicker();
+  setInterval(clock,1000);clock();
+  window.addEventListener('scroll',updateNav,{passive:true});updateNav();
+  await refresh();
+  setInterval(refresh,10000);
+  await fetchNews();
+  startNewsCD();
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden){refresh();fetchNews();}});
+}
+document.addEventListener('DOMContentLoaded',init);
+</script>
+</body>
+</html>

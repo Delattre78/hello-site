@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ICT BACKTEST LAB — V6 Engine · 50 ans · 4 paires</title>
+<meta name="description" content="Backtest simulé de la stratégie ICT SIGNAL PRO V6 — EURUSD, Nasdaq, Dow Jones, S&P500 — 50 ans, année par année">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#05070f;--panel:#090c18;--card:#0e1120;--card2:#141828;--card3:#1a1f30;
+  --border:rgba(255,255,255,0.07);--borderb:rgba(56,189,248,0.22);
+  --blue:#38bdf8;--bdim:rgba(56,189,248,0.1);
+  --green:#4ade80;--gdim:rgba(74,222,128,0.1);
+  --red:#f87171;--rdim:rgba(248,113,113,0.1);
+  --orange:#fb923c;--odim:rgba(251,146,60,0.1);
+  --gold:#fbbf24;--purple:#a78bfa;
+  --t1:#eef2ff;--t2:#8892b0;--t3:#374151;
+  --fh:'Syne',sans-serif;--fm:'DM Mono',monospace;--fb:'DM Sans',sans-serif;
+  --r:10px;--rl:16px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--t1);font-family:var(--fb);font-size:14px;line-height:1.6;overflow-x:hidden}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#1e2a40;border-radius:2px}
+
+#hdr{position:sticky;top:0;z-index:100;background:rgba(5,7,15,.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.hdr-top{display:flex;align-items:center;justify-content:space-between;padding:.7rem 1.5rem;flex-wrap:wrap;gap:.5rem}
+.logo{font-family:var(--fh);font-size:1.05rem;font-weight:800;letter-spacing:.06em}
+.logo span{color:var(--blue)}
+.hdr-r{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap}
+.badge{background:var(--bdim);border:1px solid var(--borderb);color:var(--blue);font-family:var(--fm);font-size:.6rem;padding:3px 10px;border-radius:20px;letter-spacing:.1em;text-transform:uppercase}
+.badge.sim{background:rgba(251,191,36,.08);border-color:rgba(251,191,36,.3);color:var(--gold)}
+.hbtn{background:var(--bdim);border:1px solid var(--borderb);color:var(--blue);font-family:var(--fm);font-size:.62rem;padding:5px 13px;border-radius:6px;cursor:pointer;letter-spacing:.06em;text-transform:uppercase;transition:all .2s;text-decoration:none}
+.hbtn:hover{background:rgba(56,189,248,.2)}
+
+.hero{padding:2.2rem 2rem 1.6rem;background:linear-gradient(135deg,rgba(56,189,248,.04),transparent 60%),radial-gradient(ellipse 80% 50% at 50% 0%,rgba(74,222,128,.04),transparent 70%);border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:50px 50px;opacity:.3}
+.hero>*{position:relative;z-index:1}
+.hero h1{font-family:var(--fh);font-size:clamp(1.4rem,3vw,2rem);font-weight:800;line-height:1.15;margin-bottom:.4rem}
+.hero h1 span{color:var(--blue)}
+.hero p{font-size:.8rem;color:var(--t2);max-width:760px}
+.disc{margin-top:.9rem;background:rgba(251,191,36,.06);border:1px solid rgba(251,191,36,.25);border-radius:var(--r);padding:.7rem 1rem;font-size:.72rem;color:var(--gold);max-width:860px}
+.disc b{color:var(--gold)}
+
+.controls{display:flex;align-items:center;gap:.8rem;padding:1rem 2rem;border-bottom:1px solid var(--border);flex-wrap:wrap;background:var(--panel)}
+.ctl-label{font-family:var(--fm);font-size:.58rem;color:var(--t3);letter-spacing:.15em;text-transform:uppercase}
+.seg{display:flex;border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.seg button{background:transparent;border:none;color:var(--t2);font-family:var(--fm);font-size:.66rem;padding:7px 14px;cursor:pointer;letter-spacing:.04em;transition:all .15s;border-right:1px solid var(--border)}
+.seg button:last-child{border-right:none}
+.seg button:hover{color:var(--t1);background:rgba(255,255,255,.03)}
+.seg button.on{background:var(--bdim);color:var(--blue)}
+.seg.green button.on{background:var(--gdim);color:var(--green)}
+
+.sec{padding:1.6rem 2rem;border-bottom:1px solid var(--border)}
+.scn{font-family:var(--fm);font-size:.58rem;color:var(--t3);letter-spacing:.2em;display:block;margin-bottom:.2rem;text-transform:uppercase}
+.sct{font-family:var(--fh);font-size:1.15rem;font-weight:700;margin-bottom:1rem}
+
+.stats{display:grid;grid-template-columns:repeat(8,1fr);gap:.6rem}
+@media(max-width:1200px){.stats{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:640px){.stats{grid-template-columns:repeat(2,1fr)}}
+.stat{background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:.8rem .9rem}
+.stat .k{font-family:var(--fm);font-size:.56rem;color:var(--t3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:.25rem}
+.stat .v{font-family:var(--fm);font-size:1.05rem;font-weight:600}
+.stat .s{font-size:.62rem;color:var(--t2);margin-top:.1rem}
+.pos{color:var(--green)}.neg{color:var(--red)}.gold{color:var(--gold)}.blue{color:var(--blue)}.pur{color:var(--purple)}
+
+.chart-wrap{background:var(--card);border:1px solid var(--border);border-radius:var(--rl);padding:1rem;position:relative}
+canvas{width:100%;display:block}
+.ch-leg{display:flex;gap:1.2rem;padding:.5rem .4rem 0;font-family:var(--fm);font-size:.6rem;color:var(--t2);flex-wrap:wrap}
+.ch-leg i{display:inline-block;width:14px;height:2px;vertical-align:middle;margin-right:5px}
+
+.years{display:grid;grid-template-columns:repeat(10,1fr);gap:.45rem}
+@media(max-width:1400px){.years{grid-template-columns:repeat(8,1fr)}}
+@media(max-width:1100px){.years{grid-template-columns:repeat(5,1fr)}}
+@media(max-width:640px){.years{grid-template-columns:repeat(3,1fr)}}
+.yc{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.55rem .55rem .5rem;cursor:pointer;transition:transform .15s,border-color .2s;position:relative;overflow:hidden}
+.yc:hover{transform:translateY(-2px);border-color:var(--borderb)}
+.yc::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px}
+.yc.up::after{background:var(--green)}.yc.dn::after{background:var(--red)}.yc.fl::after{background:var(--gold)}
+.yc .y{font-family:var(--fm);font-size:.62rem;color:var(--t2);letter-spacing:.06em;display:flex;justify-content:space-between;align-items:center}
+.yc .ret{font-family:var(--fm);font-size:.85rem;font-weight:600;margin:.15rem 0 .1rem}
+.yc .meta{font-size:.56rem;color:var(--t2);font-family:var(--fm)}
+.yc .tag{font-size:.5rem;font-family:var(--fm);color:var(--gold);background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.2);border-radius:4px;padding:0 4px;letter-spacing:.02em;white-space:nowrap}
+
+.cmp-table{width:100%;border-collapse:collapse;font-family:var(--fm);font-size:.72rem}
+.cmp-table th{text-align:left;color:var(--t3);font-weight:400;font-size:.58rem;letter-spacing:.12em;text-transform:uppercase;padding:.5rem .7rem;border-bottom:1px solid var(--border)}
+.cmp-table td{padding:.55rem .7rem;border-bottom:1px solid var(--border);color:var(--t1)}
+.cmp-table tr:hover td{background:rgba(255,255,255,.02)}
+
+#modal-bg{position:fixed;inset:0;background:rgba(3,5,10,.8);backdrop-filter:blur(6px);z-index:300;display:none;align-items:center;justify-content:center;padding:1.5rem}
+#modal-bg.open{display:flex}
+#modal{background:var(--panel);border:1px solid var(--borderb);border-radius:var(--rl);max-width:680px;width:100%;max-height:86vh;overflow-y:auto;padding:1.4rem 1.5rem}
+#modal h3{font-family:var(--fh);font-size:1.2rem;display:flex;justify-content:space-between;align-items:center;margin-bottom:.2rem}
+#modal .sub{font-size:.72rem;color:var(--t2);margin-bottom:1rem}
+#modal .close{background:none;border:1px solid var(--border);color:var(--t2);border-radius:6px;font-size:.8rem;cursor:pointer;padding:2px 10px}
+.mgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem;margin-bottom:1rem}
+@media(max-width:560px){.mgrid{grid-template-columns:repeat(2,1fr)}}
+.mstat{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.55rem .65rem}
+.mstat .k{font-family:var(--fm);font-size:.52rem;color:var(--t3);letter-spacing:.1em;text-transform:uppercase}
+.mstat .v{font-family:var(--fm);font-size:.85rem;font-weight:600;margin-top:.15rem}
+.mtable{width:100%;border-collapse:collapse;font-family:var(--fm);font-size:.66rem}
+.mtable th{text-align:right;color:var(--t3);font-weight:400;font-size:.54rem;letter-spacing:.1em;text-transform:uppercase;padding:.35rem .5rem;border-bottom:1px solid var(--border)}
+.mtable th:first-child{text-align:left}
+.mtable td{padding:.38rem .5rem;border-bottom:1px solid var(--border);text-align:right}
+.mtable td:first-child{text-align:left;color:var(--t2)}
+
+.note{font-size:.66rem;color:var(--t2);margin-top:.8rem;font-family:var(--fm)}
+footer{padding:1.6rem 2rem;color:var(--t3);font-size:.66rem;line-height:1.7}
+.loading{display:inline-block;width:10px;height:10px;border:2px solid var(--bdim);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;vertical-align:middle}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<header id="hdr">
+  <div class="hdr-top">
+    <div class="logo">ICT <span>BACKTEST</span> LAB</div>
+    <div class="hdr-r">
+      <span class="badge">V6 Full Engine</span>
+      <span class="badge sim">⚠ Simulation</span>
+      <a class="hbtn" href="/ICT_SIGNAL_PRO_V6.pine" download>↓ Code Pine V6</a>
+      <a class="hbtn" href="/">← Dashboard</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <h1>Backtest <span>50 ans</span> · année par année · 4 paires</h1>
+  <p>Moteur de simulation de la stratégie <b>ICT SIGNAL PRO V6</b> (sweeps de liquidité → structure → FVG/zone → killzones → score) appliqué à des séries horaires reconstituées sur 1976–2025, calibrées sur les régimes historiques réels de chaque instrument (drift, volatilité, caractère trend/range : 1987, dot-com, 2008, COVID, 2022…).</p>
+  <div class="disc"><b>⚠ À lire :</b> les données tick/intraday réelles sur 50 ans n'existent pas en accès libre — ce backtest tourne sur des <b>séries synthétiques calibrées</b> (Monte-Carlo par régime annuel), pas sur l'historique réel du marché. L'EURUSD avant 1999 est reconstitué façon DEM/USD. Résultats indicatifs pour comparer les régimes et les réglages — <b>pas une promesse de performance</b>. Performances simulées ≠ résultats futurs. Pas un conseil en investissement.</div>
+</section>
+
+<div class="controls">
+  <span class="ctl-label">Paire</span>
+  <div class="seg" id="seg-pair">
+    <button data-p="EURUSD" class="on">EURUSD</button>
+    <button data-p="NASDAQ">NASDAQ 100</button>
+    <button data-p="SP500">S&P 500</button>
+    <button data-p="DOW">DOW JONES</button>
+  </div>
+  <span class="ctl-label">Risque/trade</span>
+  <div class="seg green" id="seg-risk">
+    <button data-r="0.5">0.5%</button>
+    <button data-r="1" class="on">1%</button>
+    <button data-r="2">2%</button>
+  </div>
+  <span class="ctl-label">Sélectivité</span>
+  <div class="seg" id="seg-th">
+    <button data-t="7" class="on">Standard</button>
+    <button data-t="8">Strict</button>
+    <button data-t="9">Élite</button>
+  </div>
+  <span id="calc-state" style="font-family:var(--fm);font-size:.62rem;color:var(--t2)"></span>
+</div>
+
+<section class="sec">
+  <span class="scn">Synthèse 1976 – 2025</span>
+  <div class="sct" id="sum-title">EURUSD — 50 ans</div>
+  <div class="stats" id="stats"></div>
+</section>
+
+<section class="sec">
+  <span class="scn">Courbe de capital · échelle log · risque composé</span>
+  <div class="sct">Equity 50 ans</div>
+  <div class="chart-wrap">
+    <canvas id="eq" height="300"></canvas>
+    <div class="ch-leg">
+      <span><i style="background:var(--green)"></i>Capital stratégie (base 100)</span>
+      <span><i style="background:var(--t3)"></i>Buy &amp; hold marché (base 100)</span>
+    </div>
+  </div>
+</section>
+
+<section class="sec">
+  <span class="scn">Détail annuel — cliquer une année pour le détail mensuel</span>
+  <div class="sct">50 années, une par une</div>
+  <div class="years" id="years"></div>
+  <div class="note">Retour % = résultat composé de l'année au risque sélectionné · R = somme des R-multiples · WR = % de trades gagnants · badge doré = contexte macro marquant</div>
+</section>
+
+<section class="sec">
+  <span class="scn">Toutes paires · mêmes réglages</span>
+  <div class="sct">Comparatif 4 paires sur 50 ans</div>
+  <table class="cmp-table">
+    <thead><tr><th>Paire</th><th>Trades</th><th>Win rate</th><th>Profit factor</th><th>R net</th><th>Retour total</th><th>CAGR</th><th>Max DD</th><th>Meilleure année</th><th>Pire année</th></tr></thead>
+    <tbody id="cmp-body"></tbody>
+  </table>
+</section>
+
+<footer>
+  ICT BACKTEST LAB · moteur V6 — simulation Monte-Carlo calibrée régimes 1976-2025 · graine déterministe (résultats reproductibles)<br>
+  ⚠ Simulation pédagogique sur données synthétiques. Ceci n'est pas un conseil en investissement ; le trading à effet de levier comporte un risque de perte totale.
+</footer>
+
+<div id="modal-bg"><div id="modal"></div></div>
+
+<script>
+"use strict";
+/* ════════════════════════ RÉGIMES HISTORIQUES ════════════════════════
+   [drift annuel, volatilité annualisée, trendiness 0-1, "badge"]      */
+const REGIMES = {
+  EURUSD: { base:[0.00,0.10,0.25], px0:1.10, fmt:4, vol0:9000,
+    y:{1976:[0.06,0.11,0.4],1977:[0.08,0.10,0.5],1978:[0.12,0.12,0.6],1979:[0.04,0.11,0.3],
+       1980:[-0.10,0.13,0.6,"Volcker"],1981:[-0.12,0.14,0.7,"Volcker"],1982:[-0.08,0.12,0.5],1983:[-0.06,0.11,0.4],1984:[-0.12,0.13,0.7,"USD fort"],
+       1985:[0.18,0.15,0.8,"Plaza Accord"],1986:[0.14,0.13,0.7],1987:[0.10,0.12,0.5,"Louvre"],1988:[-0.04,0.11,0.3],1989:[-0.02,0.11,0.2],
+       1990:[0.08,0.11,0.5],1991:[-0.02,0.11,0.2],1992:[0.04,0.13,0.4,"Crise SME"],1993:[-0.04,0.10,0.3],1994:[0.06,0.10,0.4],
+       1995:[0.08,0.11,0.5],1996:[-0.04,0.08,0.3],1997:[-0.10,0.09,0.6],1998:[0.06,0.10,0.4,"LTCM"],
+       1999:[-0.14,0.10,0.7,"Lancement €"],2000:[-0.08,0.12,0.5,"Dot-com"],2001:[-0.05,0.11,0.3],
+       2002:[0.15,0.10,0.7],2003:[0.17,0.10,0.8],2004:[0.08,0.10,0.5],2005:[-0.12,0.09,0.7],2006:[0.10,0.08,0.6],2007:[0.10,0.07,0.6],
+       2008:[-0.04,0.16,0.4,"GFC"],2009:[0.03,0.14,0.3],2010:[-0.07,0.13,0.4,"Crise grecque"],2011:[-0.03,0.12,0.3,"Crise euro"],
+       2012:[0.02,0.10,0.2],2013:[0.04,0.08,0.3],2014:[-0.12,0.07,0.8,"QE BCE"],2015:[-0.10,0.11,0.5,"Choc CHF"],2016:[-0.03,0.09,0.3],
+       2017:[0.14,0.07,0.8],2018:[-0.05,0.07,0.4],2019:[-0.02,0.05,0.2,"Vol record bas"],2020:[0.09,0.09,0.5,"COVID"],
+       2021:[-0.07,0.06,0.6],2022:[-0.06,0.12,0.5,"Parité €/$"],2023:[0.03,0.08,0.3],2024:[-0.06,0.07,0.4],2025:[0.12,0.09,0.6]}},
+  NASDAQ: { base:[0.10,0.18,0.45], px0:100, fmt:1, vol0:60000,
+    y:{1976:[0.15,0.13,0.5],1977:[0.07,0.12,0.4],1978:[0.12,0.15,0.4],1979:[0.28,0.14,0.6],
+       1980:[0.34,0.18,0.7],1981:[-0.03,0.16,0.3],1982:[0.19,0.18,0.5],1983:[0.20,0.15,0.6],1984:[-0.11,0.14,0.4],
+       1985:[0.25,0.13,0.7],1986:[0.07,0.15,0.4],1987:[0.05,0.30,0.5,"Black Monday"],1988:[0.15,0.16,0.5],1989:[0.19,0.13,0.6],
+       1990:[-0.10,0.20,0.5],1991:[0.53,0.16,0.8],1992:[0.09,0.13,0.4],1993:[0.11,0.11,0.4],1994:[-0.03,0.12,0.3],
+       1995:[0.40,0.11,0.9],1996:[0.42,0.16,0.8],1997:[0.21,0.22,0.6],1998:[0.85,0.28,0.9,"Bulle internet"],1999:[1.00,0.26,0.95,"Bulle internet"],
+       2000:[-0.37,0.40,0.7,"Dot-com krach"],2001:[-0.33,0.38,0.6,"Dot-com"],2002:[-0.38,0.36,0.7,"Dot-com"],
+       2003:[0.49,0.22,0.8],2004:[0.10,0.15,0.4],2005:[0.02,0.12,0.2],2006:[0.07,0.14,0.3],2007:[0.18,0.17,0.5],
+       2008:[-0.42,0.40,0.8,"GFC"],2009:[0.53,0.28,0.8],2010:[0.19,0.20,0.5],2011:[0.02,0.24,0.4],2012:[0.16,0.16,0.4],
+       2013:[0.35,0.12,0.8],2014:[0.17,0.13,0.5],2015:[0.08,0.17,0.3],2016:[0.05,0.15,0.3],2017:[0.31,0.10,0.9],
+       2018:[-0.01,0.20,0.4],2019:[0.38,0.14,0.8],2020:[0.47,0.34,0.8,"COVID"],2021:[0.26,0.17,0.6],
+       2022:[-0.33,0.30,0.8,"Inflation/Fed"],2023:[0.54,0.17,0.85,"Rally IA"],2024:[0.25,0.16,0.6,"Rally IA"],2025:[0.20,0.18,0.5]}},
+  SP500: { base:[0.08,0.15,0.40], px0:100, fmt:1, vol0:80000,
+    y:{1976:[0.19,0.12,0.5],1977:[-0.11,0.11,0.4],1978:[0.01,0.13,0.3],1979:[0.12,0.12,0.4],
+       1980:[0.26,0.16,0.6],1981:[-0.10,0.14,0.4],1982:[0.15,0.17,0.5],1983:[0.17,0.13,0.5],1984:[0.01,0.12,0.2],
+       1985:[0.26,0.11,0.7],1986:[0.15,0.14,0.5],1987:[0.02,0.28,0.5,"Black Monday"],1988:[0.12,0.15,0.4],1989:[0.27,0.12,0.7],
+       1990:[-0.07,0.16,0.4],1991:[0.26,0.13,0.7],1992:[0.04,0.10,0.3],1993:[0.07,0.09,0.3],1994:[-0.02,0.10,0.2],
+       1995:[0.34,0.08,0.9],1996:[0.20,0.12,0.6],1997:[0.31,0.18,0.7],1998:[0.27,0.20,0.6,"LTCM"],1999:[0.20,0.18,0.5],
+       2000:[-0.10,0.22,0.4,"Dot-com"],2001:[-0.13,0.21,0.5],2002:[-0.23,0.26,0.7,"Dot-com"],
+       2003:[0.26,0.17,0.7],2004:[0.09,0.11,0.4],2005:[0.03,0.10,0.2],2006:[0.14,0.10,0.5],2007:[0.04,0.16,0.3],
+       2008:[-0.38,0.36,0.8,"GFC"],2009:[0.23,0.27,0.7],2010:[0.13,0.18,0.4],2011:[0.00,0.23,0.4,"Crise euro"],2012:[0.13,0.13,0.4],
+       2013:[0.30,0.11,0.8],2014:[0.11,0.11,0.4],2015:[-0.01,0.15,0.3,"Choc Chine"],2016:[0.10,0.13,0.4],2017:[0.19,0.07,0.9],
+       2018:[-0.06,0.17,0.4],2019:[0.29,0.12,0.8],2020:[0.16,0.30,0.7,"COVID"],2021:[0.27,0.13,0.7],
+       2022:[-0.19,0.24,0.7,"Inflation/Fed"],2023:[0.24,0.13,0.7],2024:[0.23,0.12,0.7],2025:[0.14,0.15,0.5]}},
+  DOW: { base:[0.07,0.14,0.38], px0:1000, fmt:0, vol0:70000,
+    y:{1976:[0.18,0.11,0.5],1977:[-0.17,0.11,0.5],1978:[-0.03,0.13,0.3],1979:[0.04,0.11,0.3],
+       1980:[0.15,0.15,0.5],1981:[-0.09,0.13,0.4],1982:[0.20,0.16,0.5],1983:[0.20,0.12,0.6],1984:[-0.04,0.12,0.2],
+       1985:[0.28,0.11,0.7],1986:[0.23,0.14,0.6],1987:[0.02,0.28,0.5,"Black Monday"],1988:[0.12,0.15,0.4],1989:[0.27,0.12,0.7],
+       1990:[-0.04,0.16,0.3],1991:[0.20,0.13,0.6],1992:[0.04,0.09,0.3],1993:[0.14,0.08,0.5],1994:[0.02,0.10,0.2],
+       1995:[0.33,0.08,0.9],1996:[0.26,0.12,0.7],1997:[0.23,0.18,0.6],1998:[0.16,0.19,0.5,"LTCM"],1999:[0.25,0.16,0.6],
+       2000:[-0.06,0.20,0.3,"Dot-com"],2001:[-0.07,0.20,0.4],2002:[-0.17,0.25,0.6,"Dot-com"],
+       2003:[0.25,0.16,0.7],2004:[0.03,0.10,0.2],2005:[-0.01,0.10,0.2],2006:[0.16,0.09,0.6],2007:[0.06,0.15,0.3],
+       2008:[-0.34,0.34,0.8,"GFC"],2009:[0.19,0.25,0.6],2010:[0.11,0.16,0.4],2011:[0.06,0.21,0.4,"Crise euro"],2012:[0.07,0.12,0.3],
+       2013:[0.27,0.10,0.8],2014:[0.08,0.11,0.4],2015:[-0.02,0.14,0.3],2016:[0.13,0.12,0.5],2017:[0.25,0.07,0.9],
+       2018:[-0.06,0.16,0.4],2019:[0.22,0.11,0.7],2020:[0.07,0.29,0.6,"COVID"],2021:[0.19,0.12,0.6],
+       2022:[-0.09,0.20,0.5,"Inflation/Fed"],2023:[0.14,0.11,0.5],2024:[0.13,0.10,0.5],2025:[0.10,0.13,0.4]}}
+};
+const PAIR_LABEL = {EURUSD:"EURUSD", NASDAQ:"NASDAQ 100", SP500:"S&P 500", DOW:"DOW JONES"};
+const Y0 = 1976, Y1 = 2025, NY = Y1 - Y0 + 1;
+const BARS_DAY = 24, DAYS = 252, BARS_YEAR = BARS_DAY * DAYS;
+// volatilité intraday par heure (Paris) : asie calme, London & NY actives
+const HOURVOL = [.55,.5,.5,.55,.6,.65,.7,.9,1.3,1.35,1.25,1.0,.9,.85,.95,1.4,1.45,1.4,1.3,1.15,.9,.75,.65,.6];
+
+/* ════════════════════════ PRNG DÉTERMINISTE ════════════════════════ */
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function seedOf(pair,year){let h=2166136261;const s=pair+":"+year+":v6";for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619)}return h>>>0}
+
+/* ════════════ GÉNÉRATEUR DE SÉRIE H1 (régime calibré) ════════════ */
+function genYear(pair, year, px0){
+  const R = REGIMES[pair];
+  const [drift, vol, trend] = (R.y[year] || R.base);
+  const rnd = mulberry32(seedOf(pair, year));
+  const gauss = () => { const u = Math.max(rnd(), 1e-9), v = rnd(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); };
+  const hBar = drift / BARS_YEAR;
+  const sBar = vol / Math.sqrt(BARS_YEAR);
+  // ~10 jours "news" par an : NFP/CPI/FOMC → gap + vol x3 sur 2 h
+  const newsDays = new Set(); while(newsDays.size < 10) newsDays.add(1 + Math.floor(rnd()*DAYS));
+  const O=new Float64Array(BARS_YEAR),H=new Float64Array(BARS_YEAR),L=new Float64Array(BARS_YEAR),C=new Float64Array(BARS_YEAR),V=new Float64Array(BARS_YEAR),HR=new Uint8Array(BARS_YEAR);
+  let px = px0, prevRet = 0, volState = 1;
+  for(let i=0;i<BARS_YEAR;i++){
+    const day = Math.floor(i/BARS_DAY)+1, hour = i%BARS_DAY;
+    const isNews = newsDays.has(day) && (hour===14 || hour===15);
+    volState = 0.93*volState + 0.07*(0.45 + rnd()*1.6);
+    const hv = HOURVOL[hour];
+    const sig = sBar * hv * volState * (isNews?3:1);
+    const ret = hBar*hv*2 + trend*0.10*prevRet + sig*gauss() + (isNews? sig*0.8*gauss() : 0);
+    const o = px; px = px*Math.exp(ret); const c = px;
+    const wick = sig*(0.4+rnd()*0.9);
+    O[i]=o; C[i]=c;
+    H[i]=Math.max(o,c)*Math.exp(wick*0.55);
+    L[i]=Math.min(o,c)*Math.exp(-wick*0.55);
+    V[i]=R.vol0*hv*volState*(0.5+rnd())*(isNews?2.6:1);
+    HR[i]=hour; prevRet = ret;
+  }
+  return {O,H,L,C,V,HR,pxEnd:px,drift};
+}
+
+/* ════════════ STRATÉGIE V6 (proxy fidèle, score /12) ════════════
+   sweep liquidité → structure → FVG/zone → killzone → discount → flow */
+function runYear(bars, threshold, riskPct){
+  const {O,H,L,C,V,HR} = bars;
+  const n = BARS_YEAR;
+  let e50=C[0], e200=C[0], atr=(H[0]-L[0])||C[0]*0.001;
+  const k50=2/51, k200=2/201;
+  let lastSweepB=-999, lastSweepS=-999, lastStrB=-999, lastStrS=-999;
+  let pos=null, cooldown=0;
+  const trades=[]; let eq=1; const eqPath=[1]; let peak=1, maxDD=0;
+  for(let i=2;i<n;i++){
+    e50+= k50*(C[i]-e50); e200+= k200*(C[i]-e200);
+    const tr = Math.max(H[i]-L[i], Math.abs(H[i]-C[i-1]), Math.abs(L[i]-C[i-1]));
+    atr += (tr-atr)/14;
+    // ── gestion position ouverte ──
+    if(pos){
+      pos.age++;
+      let r = 0, closed = false;
+      if(pos.dir>0){
+        const hitSL = L[i]<=pos.sl, hit1 = H[i]>=pos.t1, hit2 = H[i]>=pos.t2, hit3 = H[i]>=pos.t3;
+        if(hitSL && !(hit1&&C[i]>O[i])){ r = pos.done1 ? pos.real : -1; closed=true; }
+        else {
+          if(hit1 && !pos.done1){ pos.done1=true; pos.real+=0.5*1.5; pos.sl=pos.entry; }
+          if(hit2 && !pos.done2 && pos.done1){ pos.done2=true; pos.real+=0.3*2.5; }
+          if(hit3 && pos.done2){ pos.real+=0.2*3.5; r=pos.real; closed=true; }
+          else if(pos.done1 && L[i]<=pos.sl){ r=pos.real; closed=true; }
+        }
+      } else {
+        const hitSL = H[i]>=pos.sl, hit1 = L[i]<=pos.t1, hit2 = L[i]<=pos.t2, hit3 = L[i]<=pos.t3;
+        if(hitSL && !(hit1&&C[i]<O[i])){ r = pos.done1 ? pos.real : -1; closed=true; }
+        else {
+          if(hit1 && !pos.done1){ pos.done1=true; pos.real+=0.5*1.5; pos.sl=pos.entry; }
+          if(hit2 && !pos.done2 && pos.done1){ pos.done2=true; pos.real+=0.3*2.5; }
+          if(hit3 && pos.done2){ pos.real+=0.2*3.5; r=pos.real; closed=true; }
+          else if(pos.done1 && H[i]>=pos.sl){ r=pos.real; closed=true; }
+        }
+      }
+      if(!closed && pos.age>48){ // time-stop : sortie au marché de la part restante
+        const move = (C[i]-pos.entry)/pos.slDist*pos.dir;
+        const frac = pos.done2 ? 0.2 : pos.done1 ? 0.5 : 1.0;
+        const floor = pos.done1 ? 0 : -1; // SL à BE après TP1
+        r = pos.real + Math.max(floor, Math.min(move, 3.5)) * frac;
+        closed = true;
+      }
+      if(closed){
+        trades.push({i, r, month: Math.min(11, Math.floor((i/BARS_YEAR)*12)), why:pos.why, dir:pos.dir});
+        eq*= 1 + r*riskPct/100; eqPath.push(eq);
+        if(eq>peak) peak=eq; const dd=(peak-eq)/peak; if(dd>maxDD) maxDD=dd;
+        pos=null; cooldown=6;
+      }
+      continue;
+    }
+    if(cooldown>0){ cooldown--; continue; }
+    // ── détection setup (proxy V6) ──
+    const hour = HR[i];
+    const inKZ = (hour>=8&&hour<11)||(hour>=15&&hour<20);
+    if(!inKZ) continue;
+    // fenêtres glissantes
+    let lo10=Infinity, hi10=-Infinity; for(let k=i-10;k<i;k++){ if(L[k]<lo10)lo10=L[k]; if(H[k]>hi10)hi10=H[k]; }
+    let lo100=Infinity, hi100=-Infinity; for(let k=Math.max(0,i-100);k<i;k++){ if(L[k]<lo100)lo100=L[k]; if(H[k]>hi100)hi100=H[k]; }
+    const mid=(lo100+hi100)/2;
+    const sweepB = L[i]<lo10 && C[i]>lo10 && C[i]>O[i];
+    const sweepS = H[i]>hi10 && C[i]<hi10 && C[i]<O[i];
+    if(sweepB) lastSweepB=i; if(sweepS) lastSweepS=i;
+    const brkUp = C[i]>hi10 && C[i-1]<=hi10, brkDn = C[i]<lo10 && C[i-1]>=lo10;
+    if(brkUp && i-lastSweepB<=10) lastStrB=i;
+    if(brkDn && i-lastSweepS<=10) lastStrS=i;
+    const fvgB = L[i]>H[i-2], fvgS = H[i]<L[i-2];
+    const body = Math.abs(C[i]-O[i]);
+    const disp = body>atr*1.1;
+    const clv = H[i]!==L[i] ? ((C[i]-L[i])-(H[i]-C[i]))/(H[i]-L[i]) : 0;
+    let d50=0; for(let k=Math.max(0,i-50);k<=i;k++){ const c2=(H[k]!==L[k])?((C[k]-L[k])-(H[k]-C[k]))/(H[k]-L[k]):0; d50+=V[k]*c2; }
+    // scores /12
+    const biasB = C[i]>e50 && e50>e200, biasS = C[i]<e50 && e50<e200;
+    let sc=0, why=[];
+    if(biasB){ sc+=3; why.push("BIAS");
+      if(i-lastSweepB<=10){sc+=2;why.push("SWEEP")}
+      if(i-lastStrB<=12){sc+=2;why.push("MSS")}
+      if(fvgB){sc+=1;why.push("FVG")}
+      if(disp&&C[i]>O[i]){sc+=1;why.push("DISP")}
+      sc+=1; // killzone (déjà filtrée)
+      if(C[i]<mid){sc+=1;why.push("DISC")}
+      if(d50>0&&clv>0.3){sc+=1;why.push("FLOW")}
+      if(sc>=threshold && i-lastSweepB<=10 && i-lastStrB<=12){
+        const slPx = Math.min(L[i],lo10)-atr*0.6; const slDist=C[i]-slPx;
+        if(slDist>atr*0.3 && slDist<atr*3.5){
+          pos={dir:1,entry:C[i],sl:slPx,slDist,t1:C[i]+slDist*1.5,t2:C[i]+slDist*2.5,t3:C[i]+slDist*3.5,done1:false,done2:false,real:0,age:0,why:why.join("·")};
+          continue;
+        }
+      }
+    }
+    if(biasS && !pos){ sc=3; why=["BIAS"];
+      if(i-lastSweepS<=10){sc+=2;why.push("SWEEP")}
+      if(i-lastStrS<=12){sc+=2;why.push("MSS")}
+      if(fvgS){sc+=1;why.push("FVG")}
+      if(disp&&C[i]<O[i]){sc+=1;why.push("DISP")}
+      sc+=1;
+      if(C[i]>mid){sc+=1;why.push("PREM")}
+      if(d50<0&&clv<-0.3){sc+=1;why.push("FLOW")}
+      if(sc>=threshold && i-lastSweepS<=10 && i-lastStrS<=12){
+        const slPx = Math.max(H[i],hi10)+atr*0.6; const slDist=slPx-C[i];
+        if(slDist>atr*0.3 && slDist<atr*3.5){
+          pos={dir:-1,entry:C[i],sl:slPx,slDist,t1:C[i]-slDist*1.5,t2:C[i]-slDist*2.5,t3:C[i]-slDist*3.5,done1:false,done2:false,real:0,age:0,why:why.join("·")};
+        }
+      }
+    }
+  }
+  // clôture forcée fin d'année
+  if(pos){ trades.push({i:n-1,r:pos.real,month:11,why:pos.why,dir:pos.dir}); eq*=1+pos.real*riskPct/100; eqPath.push(eq); }
+  return {trades, eq, maxDD, eqPath};
+}
+
+/* ════════════════════════ AGRÉGATION 50 ANS ════════════════════════ */
+const cache = {};
+function runAll(pair, threshold, riskPct){
+  const key = pair+"|"+threshold+"|"+riskPct;
+  if(cache[key]) return cache[key];
+  const R = REGIMES[pair];
+  let px = R.px0, eqG = 1, bhG = 1;
+  const years=[]; const eqSeries=[1], bhSeries=[1];
+  let peak=1, maxDDG=0, allTrades=0, allWins=0, gW=0, gL=0;
+  for(let y=Y0;y<=Y1;y++){
+    const bars = genYear(pair, y, px);
+    const res = runYear(bars, threshold, riskPct);
+    const tr = res.trades;
+    const wins = tr.filter(t=>t.r>0.05).length;
+    const sumR = tr.reduce((a,t)=>a+t.r,0);
+    const gw = tr.filter(t=>t.r>0).reduce((a,t)=>a+t.r,0);
+    const gl = Math.abs(tr.filter(t=>t.r<0).reduce((a,t)=>a+t.r,0));
+    const byM = Array.from({length:12},()=>({n:0,r:0}));
+    tr.forEach(t=>{byM[t.month].n++; byM[t.month].r+=t.r});
+    // série perdante max
+    let curL=0, maxL=0; tr.forEach(t=>{ if(t.r<-0.05){curL++; if(curL>maxL)maxL=curL}else if(t.r>0.05)curL=0; });
+    const yearRet = res.eq - 1;
+    eqG *= res.eq;
+    bhG *= Math.exp(bars.drift);
+    eqSeries.push(eqG); bhSeries.push(bhG);
+    if(eqG>peak)peak=eqG; const dd=(peak-eqG)/peak; if(dd>maxDDG)maxDDG=dd;
+    allTrades+=tr.length; allWins+=wins; gW+=gw; gL+=gl;
+    const meta = R.y[y]||R.base;
+    years.push({y, trades:tr.length, wins, wr: tr.length? wins/tr.length*100 :0, sumR, pf: gl>0? gw/gl : (gw>0?9.99:0), ret:yearRet*100, maxDD:res.maxDD*100, byM, maxLoseStreak:maxL, mktRet:(Math.exp(bars.drift)-1)*100, badge: meta[3]||null});
+    px = bars.pxEnd;
+  }
+  const out = {years, eqG, bhG, eqSeries, bhSeries, maxDDG:maxDDG*100, allTrades,
+    wr: allTrades? allWins/allTrades*100 : 0, pf: gL>0? gW/gL : 0,
+    sumR: years.reduce((a,b)=>a+b.sumR,0),
+    cagr: (Math.pow(eqG, 1/NY)-1)*100,
+    best: years.reduce((a,b)=> b.ret>a.ret?b:a),
+    worst: years.reduce((a,b)=> b.ret<a.ret?b:a)};
+  cache[key] = out;
+  return out;
+}
+
+/* ════════════════════════ UI ════════════════════════ */
+let curPair="EURUSD", curRisk=1, curTh=7;
+const $=s=>document.querySelector(s);
+const fmtPct=(x,d=1)=>(x>=0?"+":"")+x.toFixed(d)+"%";
+const fmtR=x=>(x>=0?"+":"")+x.toFixed(1)+"R";
+const cls=x=>x>0.001?"pos":x<-0.001?"neg":"gold";
+
+function segInit(id, attr, cb){
+  document.querySelectorAll(id+" button").forEach(b=>b.addEventListener("click",()=>{
+    document.querySelectorAll(id+" button").forEach(x=>x.classList.remove("on"));
+    b.classList.add("on"); cb(b.dataset[attr]);
+  }));
+}
+segInit("#seg-pair","p",v=>{curPair=v;render()});
+segInit("#seg-risk","r",v=>{curRisk=parseFloat(v);render()});
+segInit("#seg-th","t",v=>{curTh=parseInt(v);render()});
+
+function render(){
+  $("#calc-state").innerHTML='<span class="loading"></span> calcul…';
+  setTimeout(()=>{
+    const t0=performance.now();
+    const D = runAll(curPair, curTh, curRisk);
+    $("#sum-title").textContent = PAIR_LABEL[curPair]+" — 50 ans · risque "+curRisk+"%/trade";
+    // stats
+    const s=[
+      ["Trades (50 ans)", D.allTrades.toLocaleString("fr-FR"), Math.round(D.allTrades/NY)+" / an", "blue"],
+      ["Win rate", D.wr.toFixed(1)+"%", "TP1 atteint", D.wr>=50?"pos":"gold"],
+      ["Profit factor", D.pf.toFixed(2), "gains/pertes", D.pf>=1.3?"pos":D.pf>=1?"gold":"neg"],
+      ["R net total", fmtR(D.sumR), Math.round(D.sumR/NY*10)/10+"R / an", cls(D.sumR)],
+      ["Capital final", (D.eqG>=100? D.eqG.toFixed(0):D.eqG.toFixed(1))+"x", "base 100 → "+Math.round(D.eqG*100).toLocaleString("fr-FR"), cls(D.eqG-1)],
+      ["CAGR", fmtPct(D.cagr), "composé "+NY+" ans", cls(D.cagr)],
+      ["Max drawdown", "-"+D.maxDDG.toFixed(1)+"%", "sur capital", D.maxDDG<25?"gold":"neg"],
+      ["Best / Worst", D.best.y+" / "+D.worst.y, fmtPct(D.best.ret,0)+" / "+fmtPct(D.worst.ret,0), "pur"]
+    ];
+    $("#stats").innerHTML = s.map(x=>`<div class="stat"><div class="k">${x[0]}</div><div class="v ${x[3]}">${x[1]}</div><div class="s">${x[2]}</div></div>`).join("");
+    // années
+    $("#years").innerHTML = D.years.map((y,idx)=>{
+      const c = y.ret>2?"up":y.ret<-2?"dn":"fl";
+      return `<div class="yc ${c}" data-i="${idx}">
+        <div class="y"><span>${y.y}</span>${y.badge?`<span class="tag">${y.badge}</span>`:""}</div>
+        <div class="ret ${cls(y.ret)}">${fmtPct(y.ret)}</div>
+        <div class="meta">${fmtR(y.sumR)} · WR ${y.wr.toFixed(0)}% · ${y.trades} tr</div>
+      </div>`;
+    }).join("");
+    document.querySelectorAll(".yc").forEach(el=>el.addEventListener("click",()=>openModal(D.years[+el.dataset.i])));
+    drawEq(D);
+    renderCmp();
+    $("#calc-state").textContent = "calculé en "+Math.round(performance.now()-t0)+" ms · graine fixe";
+  },30);
+}
+
+function drawEq(D){
+  const cv=$("#eq"), dpr=window.devicePixelRatio||1;
+  const W=cv.clientWidth||cv.parentElement.clientWidth-32, Hh=300;
+  cv.width=W*dpr; cv.height=Hh*dpr;
+  const ctx=cv.getContext("2d"); ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,Hh);
+  const pad={l:46,r:12,t:12,b:24};
+  const all=[...D.eqSeries,...D.bhSeries].filter(v=>v>0);
+  const lmin=Math.log10(Math.min(...all)), lmax=Math.log10(Math.max(...all));
+  const X=i=>pad.l+(W-pad.l-pad.r)*i/(D.eqSeries.length-1);
+  const Y=v=>pad.t+(Hh-pad.t-pad.b)*(1-(Math.log10(v)-lmin)/Math.max(1e-9,lmax-lmin));
+  // grille horizontale (décades)
+  ctx.strokeStyle="rgba(255,255,255,.06)"; ctx.fillStyle="#374151"; ctx.font="9px DM Mono"; ctx.textAlign="right";
+  for(let e=Math.ceil(lmin);e<=Math.floor(lmax);e++){
+    const y=Y(Math.pow(10,e));
+    ctx.beginPath();ctx.moveTo(pad.l,y);ctx.lineTo(W-pad.r,y);ctx.stroke();
+    ctx.fillText((Math.pow(10,e)*100).toLocaleString("fr-FR"),pad.l-6,y+3);
+  }
+  // verticales décennies
+  ctx.textAlign="center";
+  for(let y=1980;y<=2020;y+=10){
+    const x=X(y-Y0+1);
+    ctx.strokeStyle="rgba(255,255,255,.04)";
+    ctx.beginPath();ctx.moveTo(x,pad.t);ctx.lineTo(x,Hh-pad.b);ctx.stroke();
+    ctx.fillText(y,x,Hh-8);
+  }
+  const line=(series,col,w)=>{ctx.strokeStyle=col;ctx.lineWidth=w;ctx.beginPath();series.forEach((v,i)=>{const x=X(i),y=Y(Math.max(v,1e-6));i?ctx.lineTo(x,y):ctx.moveTo(x,y)});ctx.stroke()};
+  line(D.bhSeries,"#374151",1);
+  line(D.eqSeries,"#4ade80",2);
+}
+
+function renderCmp(){
+  const rows = Object.keys(REGIMES).map(p=>{
+    const D = runAll(p, curTh, curRisk);
+    return `<tr>
+      <td style="color:var(--blue)">${PAIR_LABEL[p]}</td>
+      <td>${D.allTrades.toLocaleString("fr-FR")}</td>
+      <td class="${D.wr>=50?'pos':'gold'}">${D.wr.toFixed(1)}%</td>
+      <td class="${D.pf>=1.3?'pos':D.pf>=1?'gold':'neg'}">${D.pf.toFixed(2)}</td>
+      <td class="${cls(D.sumR)}">${fmtR(D.sumR)}</td>
+      <td class="${cls(D.eqG-1)}">${D.eqG.toFixed(1)}x</td>
+      <td class="${cls(D.cagr)}">${fmtPct(D.cagr)}</td>
+      <td class="neg">-${D.maxDDG.toFixed(1)}%</td>
+      <td>${D.best.y} <span class="pos">${fmtPct(D.best.ret,0)}</span></td>
+      <td>${D.worst.y} <span class="neg">${fmtPct(D.worst.ret,0)}</span></td>
+    </tr>`;
+  }).join("");
+  $("#cmp-body").innerHTML=rows;
+}
+
+const MONTHS=["Jan","Fév","Mar","Avr","Mai","Juin","Juil","Août","Sep","Oct","Nov","Déc"];
+function openModal(y){
+  const m=$("#modal");
+  m.innerHTML=`
+    <h3><span>${PAIR_LABEL[curPair]} — ${y.y} ${y.badge?`<span class="tag" style="font-size:.55rem;vertical-align:middle">${y.badge}</span>`:""}</span><button class="close" onclick="document.getElementById('modal-bg').classList.remove('open')">✕</button></h3>
+    <div class="sub">Marché (buy &amp; hold) : <span class="${cls(y.mktRet)}">${fmtPct(y.mktRet)}</span> · Stratégie V6 : <span class="${cls(y.ret)}">${fmtPct(y.ret)}</span> au risque ${curRisk}%/trade</div>
+    <div class="mgrid">
+      <div class="mstat"><div class="k">Trades</div><div class="v">${y.trades}</div></div>
+      <div class="mstat"><div class="k">Win rate</div><div class="v ${y.wr>=50?'pos':'gold'}">${y.wr.toFixed(1)}%</div></div>
+      <div class="mstat"><div class="k">R net</div><div class="v ${cls(y.sumR)}">${fmtR(y.sumR)}</div></div>
+      <div class="mstat"><div class="k">Profit factor</div><div class="v">${y.pf.toFixed(2)}</div></div>
+      <div class="mstat"><div class="k">Retour année</div><div class="v ${cls(y.ret)}">${fmtPct(y.ret)}</div></div>
+      <div class="mstat"><div class="k">Max DD année</div><div class="v neg">-${y.maxDD.toFixed(1)}%</div></div>
+      <div class="mstat"><div class="k">Pertes consécutives max</div><div class="v gold">${y.maxLoseStreak}</div></div>
+      <div class="mstat"><div class="k">Trades / mois</div><div class="v">${(y.trades/12).toFixed(1)}</div></div>
+    </div>
+    <table class="mtable">
+      <thead><tr><th>Mois</th><th>Trades</th><th>R net</th><th>Retour ≈</th></tr></thead>
+      <tbody>${y.byM.map((mm,i)=>`<tr><td>${MONTHS[i]}</td><td>${mm.n}</td><td class="${cls(mm.r)}">${fmtR(mm.r)}</td><td class="${cls(mm.r)}">${fmtPct(mm.r*curRisk,1)}</td></tr>`).join("")}</tbody>
+    </table>
+    <div class="note">Données simulées (Monte-Carlo calibrée sur le régime ${y.y}${y.badge? " — "+y.badge:""}) · graine déterministe</div>`;
+  $("#modal-bg").classList.add("open");
+}
+$("#modal-bg").addEventListener("click",e=>{if(e.target.id==="modal-bg")e.target.classList.remove("open")});
+
+render();
+window.addEventListener("resize",()=>{const D=cache[curPair+"|"+curTh+"|"+curRisk]; if(D)drawEq(D)});
+</script>
+</body>
+</html>
